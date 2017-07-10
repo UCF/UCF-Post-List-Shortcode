@@ -28,6 +28,10 @@ if ( !class_exists( 'UCF_Post_List_Common' ) ) {
 			return get_posts( self::prepare_post_list_args( $args ) );
 		}
 
+		/**
+		 * Additional massaging of arguments before passing them to
+		 * get_posts().
+		 **/
 		public static function prepare_post_list_args( $args ) {
 			$filtered_args = array_filter( $args, array( 'UCF_Post_List_Common', 'filter_post_list_arg' ) );
 			if ( class_exists( 'ACF' ) ) {
@@ -112,7 +116,7 @@ if ( !class_exists( 'UCF_Post_List_Common' ) ) {
 
 						// Finally, strip out meta_key and meta_value args in favor of
 						// using our pre-fetched list of post IDs:
-						unset( $args['meta_key'], $args['meta_value'] );
+						unset( $args['meta_key'], $args['meta_value'], $args['meta_serialized_relation'] );
 
 						if ( isset( $args['post__in'] ) ) {
 							$args['post__in'] = array_intersect( $args['post__in'], $reverse_posts );
