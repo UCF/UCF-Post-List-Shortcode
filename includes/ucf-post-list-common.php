@@ -56,7 +56,7 @@ if ( !function_exists( 'ucf_post_list_display_default_before' ) ) {
 	function ucf_post_list_display_default_before( $items, $title ) {
 		ob_start();
 	?>
-	<!-- TODO -->
+	<div class="ucf-post-list ucf-post-list-default">
 	<?php
 		echo ob_get_clean();
 	}
@@ -87,7 +87,17 @@ if ( !function_exists( 'ucf_post_list_display_default' ) ) {
 		if ( ! is_array( $items ) ) { $items = array( $items ); }
 		ob_start();
 	?>
-	<!-- TODO -->
+		<?php if ( $items ): ?>
+		<ul class="ucf-post-list-items">
+			<?php foreach ( $items as $item ): ?>
+			<li class="ucf-post-list-item">
+				<a href="<?php echo get_permalink( $item->ID ); ?>"><?php echo $item->post_title; ?></a>
+			</li>
+			<?php endforeach; ?>
+		</ul>
+		<?php else: ?>
+		<div class="ucf-post-list-error">No results found.</div>
+		<?php endif; ?>
 	<?php
 		echo ob_get_clean();
 	}
@@ -101,7 +111,7 @@ if ( !function_exists( 'ucf_post_list_display_default_after' ) ) {
 	function ucf_post_list_display_default_after( $items, $title ) {
 		ob_start();
 	?>
-	<!-- TODO -->
+	</div>
 	<?php
 		echo ob_get_clean();
 	}
