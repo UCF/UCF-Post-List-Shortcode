@@ -13,6 +13,10 @@ if ( !class_exists( 'UCF_Post_List_Config' ) ) {
 				'list_title'       => '',
 				'include_css'      => true,
 
+				// Custom argument for ACF relationship fields which defines
+				// the relation between reverse lookup posts
+				'meta_serialized_relation' => '',
+
 				// get_posts() unique arguments
 				// https://codex.wordpress.org/Function_Reference/get_posts
 
