@@ -6,29 +6,34 @@
 if ( !class_exists( 'UCF_Post_List_Common' ) ) {
 
 	class UCF_Post_List_Common {
-		public static function display_post_list( $layout='default' ) {
+		public static function display_post_list( $items, $layout, $title ) {
 			if ( has_action( 'ucf_post_list_display_' . $layout . '_before' ) ) {
-				do_action( 'ucf_post_list_display_' . $layout . '_before', $items, $title, $display_type );
+				do_action( 'ucf_post_list_display_' . $layout . '_before', $items, $title );
 			}
 
 			if ( has_action( 'ucf_post_list_display_' . $layout . '_title'  ) ) {
-				do_action( 'ucf_post_list_display_' . $layout . '_title', $items, $title, $display_type );
+				do_action( 'ucf_post_list_display_' . $layout . '_title', $items, $title );
 			}
 
 			if ( has_action( 'ucf_post_list_display_' . $layout  ) ) {
-				do_action( 'ucf_post_list_display_' . $layout, $items, $title, $display_type );
+				do_action( 'ucf_post_list_display_' . $layout, $items, $title );
 			}
 
 			if ( has_action( 'ucf_post_list_display_' . $layout . '_after' ) ) {
-				do_action( 'ucf_post_list_display_' . $layout . '_after', $items, $title, $display_type );
+				do_action( 'ucf_post_list_display_' . $layout . '_after', $items, $title );
 			}
+		}
+
+		public static function get_post_list( $args ) {
+			// TODO
+			return get_posts( $args );
 		}
 	}
 }
 
 if ( !function_exists( 'ucf_post_list_display_default_before' ) ) {
 
-	function ucf_post_list_display_default_before( $items, $title, $display_type ) {
+	function ucf_post_list_display_default_before( $items, $title ) {
 		ob_start();
 	?>
 	<!-- TODO -->
@@ -36,27 +41,29 @@ if ( !function_exists( 'ucf_post_list_display_default_before' ) ) {
 		echo ob_get_clean();
 	}
 
-	add_action( 'ucf_post_list_display_default_before', 'ucf_post_list_display_default_before', 10, 3 );
+	add_action( 'ucf_post_list_display_default_before', 'ucf_post_list_display_default_before', 10, 2 );
 
 }
 
 if ( !function_exists( 'ucf_post_list_display_default_title' ) ) {
 
-	function ucf_post_list_display_default_title( $items, $title, $display_type ) {
-		ob_start();
-	?>
-	<!-- TODO -->
-	<?php
-		echo ob_get_clean();
+	function ucf_post_list_display_default_title( $items, $title ) {
+		$formatted_title = '';
+
+		if ( $title ) {
+			$formatted_title = '<h2 class="ucf-post-list-title">' . $title . '</h2>';
+		}
+
+		echo $formatted_title;
 	}
 
-	add_action( 'ucf_post_list_display_default_title', 'ucf_post_list_display_default_title', 10, 3 );
+	add_action( 'ucf_post_list_display_default_title', 'ucf_post_list_display_default_title', 10, 2 );
 
 }
 
 if ( !function_exists( 'ucf_post_list_display_default' ) ) {
 
-	function ucf_post_list_display_default( $items, $title, $display_type ) {
+	function ucf_post_list_display_default( $items, $title ) {
 		if ( ! is_array( $items ) ) { $items = array( $items ); }
 		ob_start();
 	?>
@@ -65,13 +72,13 @@ if ( !function_exists( 'ucf_post_list_display_default' ) ) {
 		echo ob_get_clean();
 	}
 
-	add_action( 'ucf_post_list_display_default', 'ucf_post_list_display_default', 10, 3 );
+	add_action( 'ucf_post_list_display_default', 'ucf_post_list_display_default', 10, 2 );
 
 }
 
 if ( !function_exists( 'ucf_post_list_display_default_after' ) ) {
 
-	function ucf_post_list_display_default_after( $items, $title, $display_type ) {
+	function ucf_post_list_display_default_after( $items, $title ) {
 		ob_start();
 	?>
 	<!-- TODO -->
@@ -79,7 +86,7 @@ if ( !function_exists( 'ucf_post_list_display_default_after' ) ) {
 		echo ob_get_clean();
 	}
 
-	add_action( 'ucf_post_list_display_default_after', 'ucf_post_list_display_default_after', 10, 3 );
+	add_action( 'ucf_post_list_display_default_after', 'ucf_post_list_display_default_after', 10, 2 );
 
 }
 

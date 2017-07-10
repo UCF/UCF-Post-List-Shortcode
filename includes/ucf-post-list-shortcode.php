@@ -7,10 +7,12 @@ if ( !function_exists( 'sc_ucf_post_list' ) ) {
 
 	function sc_ucf_post_list( $atts, $content='' ) {
 		$atts = shortcode_atts( UCF_Post_List_Config::get_option_defaults(), $atts, 'sc_ucf_post_list' );
+		$layout = isset( $atts['layout'] ) ? $atts['layout'] : 'default';
+		$posts = UCF_Post_List_Common::get_post_list( $atts );
 
 		ob_start();
 
-		echo UCF_Post_List_Common::display_post_list( $atts['layout'] );
+		echo UCF_Post_List_Common::display_post_list( $posts, $layout, $atts['list_title'] );
 
 		return ob_get_clean(); // Shortcode must *return*!  Do not echo the result!
 	}

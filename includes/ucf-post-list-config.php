@@ -10,6 +10,7 @@ if ( !class_exists( 'UCF_Post_List_Config' ) ) {
 			$option_prefix = 'ucf_post_list_',
 			$option_defaults = array(
 				'layout'           => 'default',
+				'list_title'       => '',
 				'include_css'      => true,
 			);
 
@@ -32,6 +33,7 @@ if ( !class_exists( 'UCF_Post_List_Config' ) ) {
 		public static function add_options() {
 			$defaults = self::$option_defaults; // don't use self::get_option_defaults() here (default options haven't been set yet)
 
+			add_option( self::$option_prefix . 'list_title', $defaults['list_title'] );
 			add_option( self::$option_prefix . 'include_css', $defaults['include_css'] );
 		}
 
@@ -42,6 +44,7 @@ if ( !class_exists( 'UCF_Post_List_Config' ) ) {
 		 * @return void
 		 **/
 		public static function delete_options() {
+			delete_option( self::$option_prefix . 'list_title' );
 			delete_option( self::$option_prefix . 'include_css' );
 		}
 
