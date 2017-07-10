@@ -26,7 +26,27 @@ if ( !class_exists( 'UCF_Post_List_Common' ) ) {
 
 		public static function get_post_list( $args ) {
 			// TODO
-			return get_posts( $args );
+			var_dump($args);
+			echo '<br><br>';
+			var_dump(self::prepare_post_list_args( $args ));
+			echo '<br><br><br>';
+			return get_posts( self::prepare_post_list_args( $args ) );
+		}
+
+		public static function prepare_post_list_args( $args ) {
+			// TODO: meta_value support for ACF relationship fields
+			return array_filter( $args, array( 'UCF_Post_List_Common', 'filter_post_list_arg' ) );
+		}
+
+		/**
+		 * Removes empty arguments while preserving 0 value integers.
+		 **/
+		private static function filter_post_list_arg( $arg ) {
+			return !(
+				is_array( $arg ) && empty( $arg )
+				|| is_null( $arg )
+				|| is_string( $arg ) && empty( $arg )
+			);
 		}
 	}
 }
