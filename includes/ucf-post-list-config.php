@@ -101,11 +101,7 @@ if ( !class_exists( 'UCF_Post_List_Config' ) ) {
 
     			'post_mime_type' => array(),  // (string/array) - Allowed mime types (for attachments)
 
-				// NOTE: we don't support caching parameters in this shortcode
-
-				// NOTE: we don't support the 'fields' parameter in this shortcode
-
-				// NOTE: we don't support 'suppress_filters'
+				// NOTE: we don't support caching parameters, 'fields', or 'suppress_filters' in this shortcode
 			);
 
 		public static function get_layouts() {
@@ -127,7 +123,6 @@ if ( !class_exists( 'UCF_Post_List_Config' ) ) {
 		public static function add_options() {
 			$defaults = self::$option_defaults; // don't use self::get_option_defaults() here (default options haven't been set yet)
 
-			add_option( self::$option_prefix . 'list_title', $defaults['list_title'] );
 			add_option( self::$option_prefix . 'include_css', $defaults['include_css'] );
 		}
 
@@ -138,7 +133,6 @@ if ( !class_exists( 'UCF_Post_List_Config' ) ) {
 		 * @return void
 		 **/
 		public static function delete_options() {
-			delete_option( self::$option_prefix . 'list_title' );
 			delete_option( self::$option_prefix . 'include_css' );
 		}
 
@@ -215,8 +209,26 @@ if ( !class_exists( 'UCF_Post_List_Config' ) ) {
 						break;
 
 					// Custom associative array syntax (param="key1=>val1,key2=>val2") or a single string value
-					// TODO
 					case 'orderby':
+						if ( !is_array( $val ) ) {
+							if ( strpos( $val, ',' ) !== false ) {
+								$list[$key] = array();
+								$val_split = explode( ',', $val );
+
+								foreach ( $val_split as $keyval_pair ) {
+									$keyval_split = explode( '=&gt;', $keyval_pair );
+									if ( isset( $keyval_split[0] ) && isset( $keyval_split[1] ) ) {
+										$list[$key][sanitize_key( trim( $keyval_split[0] ) )] = sanitize_text_field( trim( $keyval_split[1] ) );
+									}
+								}
+							}
+							else {
+								$list[$key] = sanitize_text_field( $val );
+							}
+						}
+						else {
+							$list[$key] = array_map( 'sanitize_text_field', $val );
+						}
 						break;
 
 					// Integer (can be null)
