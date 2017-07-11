@@ -29,7 +29,8 @@ if ( !class_exists( 'UCF_Post_List_Common' ) ) {
 		}
 
 		public static function get_post_list( $args ) {
-			return get_posts( self::prepare_post_list_args( $args ) );
+			$filtered_args = self::prepare_post_list_args( $args );
+			return is_array( $filtered_args ) ? get_posts( $filtered_args ) : false;
 		}
 
 		/**
@@ -125,15 +126,23 @@ if ( !class_exists( 'UCF_Post_List_Common' ) ) {
 							$reverse_posts = get_posts( $reverse_query_args );
 						}
 
-						// Finally, strip out meta_key and meta_value args in favor of
-						// using our pre-fetched list of post IDs:
-						unset( $args['meta_key'], $args['meta_value'], $args['meta_serialized_relation'] );
+						if ( $reverse_posts ) {
+							// Finally, strip out meta_key and meta_value args in favor of
+							// using our pre-fetched list of post IDs:
+							unset( $args['meta_key'], $args['meta_value'], $args['meta_serialized_relation'] );
 
-						if ( isset( $args['post__in'] ) ) {
-							$args['post__in'] = array_intersect( $args['post__in'], $reverse_posts );
+							if ( isset( $args['post__in'] ) ) {
+								$args['post__in'] = array_intersect( $args['post__in'], $reverse_posts );
+							}
+							else {
+								$args['post__in'] = $reverse_posts;
+							}
 						}
 						else {
-							$args['post__in'] = $reverse_posts;
+							// No related posts match the given meta query--so
+							// the rest of the post query should return no
+							// results.
+							$args = false;
 						}
 					}
 
@@ -178,7 +187,7 @@ if ( !function_exists( 'ucf_post_list_display_default_title' ) ) {
 if ( !function_exists( 'ucf_post_list_display_default' ) ) {
 
 	function ucf_post_list_display_default( $items, $title ) {
-		if ( ! is_array( $items ) ) { $items = array( $items ); }
+		if ( ! is_array( $items ) && $items !== false ) { $items = array( $items ); }
 		ob_start();
 	?>
 		<?php if ( $items ): ?>
