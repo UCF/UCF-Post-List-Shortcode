@@ -28,7 +28,8 @@ if ( ! function_exists( 'ucf_post_list_shortcode_interface' ) ) {
 			'name'    => 'UCF Post List',
 			'desc'    => 'Displays a list of posts. Most WP_Query arguments are supported as shortcode attributes.',
 			'fields'  => array(),
-			'content' => false
+			'content' => false,
+			'preview' => false
 		);
 
 		$shortcodes[] = $settings;
