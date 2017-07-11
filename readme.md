@@ -9,7 +9,7 @@ This plugin provides a shortcode for displaying lists of posts.  It is written t
 
 Support for Advanced Custom Fields relationship fields is also available; e.g. you can query against a list of posts by one or more related posts: `[ucf-post-list meta_key="your_relationship_field" meta_value="related-post-slug-1,related-post-slug-2"]`
 
-The `[ucf-post-list]` shortcode accepts most arguments for `get_post()` and `WP Query`.  See the documentation for [`get_post`](https://codex.wordpress.org/Function_Reference/get_posts) and [`WP Query`](https://codex.wordpress.org/Class_Reference/WP_Query) for more information.
+The `[ucf-post-list]` shortcode accepts most arguments for `get_posts()` and `WP Query`.  See the documentation for [`get_posts`](https://codex.wordpress.org/Function_Reference/get_posts) and [`WP Query`](https://codex.wordpress.org/Class_Reference/WP_Query) for more information.
 
 Note that caching parameters, `fields`, and `suppress_filters` arguments are not supported by the `[ucf-post-list]` shortcode.  In addition, `tax_query`, `date_query` and `meta_query` are not yet supported.
 
