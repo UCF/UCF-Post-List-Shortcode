@@ -99,7 +99,7 @@ if ( !class_exists( 'UCF_Post_List_Config' ) ) {
 
 				'perm' => '',  // (string) - User permission.
 
-    			'post_mime_type' => array(),  // (string/array) - Allowed mime types (for attachments)
+				'post_mime_type' => array(),  // (string/array) - Allowed mime types (for attachments)
 
 				// NOTE: we don't support caching parameters, 'fields', or 'suppress_filters' in this shortcode
 			);
