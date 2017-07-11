@@ -37,19 +37,22 @@ if ( !class_exists( 'UCF_Post_List_Common' ) ) {
 		 * get_posts().
 		 **/
 		public static function prepare_post_list_args( $args ) {
+			// We intentionally remove empty values before passing them to
+		 	// get_posts() to allow WP to set its own defaults as necessary (so
+		 	// that we don't have to add/maintain them in this plugin.)
 			$filtered_args = array_filter( $args, array( 'UCF_Post_List_Common', 'filter_post_list_arg' ) );
+
+			// If Advanced Custom Fields is enabled, provide support for
+			// relationship fields.
 			if ( class_exists( 'ACF' ) ) {
 				$filtered_args = self::filter_acf_relationship_field_meta( $filtered_args );
 			}
+
 			return $filtered_args;
 		}
 
 		/**
 		 * Removes empty arguments while preserving 0 value integers.
-		 *
-		 * We intentionally remove empty values before passing them to
-		 * get_posts() to allow WP to set its own defaults as necessary (so
-		 * that we don't have to add/maintain them in this plugin.)
 		 **/
 		private static function filter_post_list_arg( $arg ) {
 			return !(
@@ -95,7 +98,7 @@ if ( !class_exists( 'UCF_Post_List_Common' ) ) {
 						$meta_value_ids = array_unique( $meta_value_ids );
 
 						// Pre-fetch posts using string comparisons against
-						// serialized metadata for each meta_value post ID
+						// serialized metadata for each post ID in meta_value
 						$reverse_posts = array();
 						if ( $meta_value_ids ) {
 							$reverse_post_types = isset( $args['post_type'] ) ? $args['post_type'] : 'any';
