@@ -7,6 +7,8 @@ if ( !class_exists( 'UCF_Post_List_Common' ) ) {
 
 	class UCF_Post_List_Common {
 		public static function display_post_list( $items, $layout, $title ) {
+			ob_start();
+
 			if ( has_action( 'ucf_post_list_display_' . $layout . '_before' ) ) {
 				do_action( 'ucf_post_list_display_' . $layout . '_before', $items, $title );
 			}
@@ -22,6 +24,8 @@ if ( !class_exists( 'UCF_Post_List_Common' ) ) {
 			if ( has_action( 'ucf_post_list_display_' . $layout . '_after' ) ) {
 				do_action( 'ucf_post_list_display_' . $layout . '_after', $items, $title );
 			}
+
+			return ob_get_clean();
 		}
 
 		public static function get_post_list( $args ) {
@@ -42,6 +46,10 @@ if ( !class_exists( 'UCF_Post_List_Common' ) ) {
 
 		/**
 		 * Removes empty arguments while preserving 0 value integers.
+		 *
+		 * We intentionally remove empty values before passing them to
+		 * get_posts() to allow WP to set its own defaults as necessary (so
+		 * that we don't have to add/maintain them in this plugin.)
 		 **/
 		private static function filter_post_list_arg( $arg ) {
 			return !(
