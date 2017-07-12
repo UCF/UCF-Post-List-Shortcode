@@ -20,6 +20,7 @@ if ( !class_exists( 'UCF_Post_List_Config' ) ) {
 				// get_posts() unique arguments
 				// https://codex.wordpress.org/Function_Reference/get_posts
 
+				'category'       => '',  // alias for cat
 				'numberposts'    => null,  // alias for posts_per_page
 				'include'        => array(),  // alias for post__in
 				'exclude'        => array(),  // alias for post__not_in
