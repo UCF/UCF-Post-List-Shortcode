@@ -73,7 +73,7 @@ gulp.task('watch', function() {
     });
   }
 
-  gulp.watch(config.src.scssPath + '/**/*.scss', ['css']).on('change', browserSync.reload);
+  gulp.watch(config.src.scssPath + '/**/*.scss', ['css']);
   gulp.watch('./**/*.php').on('change', browserSync.reload);
   gulp.watch('readme.txt', ['readme']);
 });

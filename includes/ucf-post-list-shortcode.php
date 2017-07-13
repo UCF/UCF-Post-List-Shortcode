@@ -6,7 +6,7 @@
 if ( !function_exists( 'sc_ucf_post_list' ) ) {
 
 	function sc_ucf_post_list( $atts, $content='' ) {
-		$atts = shortcode_atts( UCF_Post_List_Config::get_option_defaults(), $atts, 'sc_ucf_post_list' );
+		$atts = shortcode_atts( UCF_Post_List_Config::get_option_defaults(), $atts, 'ucf-post-list' );
 		$layout = isset( $atts['layout'] ) ? $atts['layout'] : 'default';
 		$posts = UCF_Post_List_Common::get_post_list( $atts );
 
@@ -28,7 +28,8 @@ if ( ! function_exists( 'ucf_post_list_shortcode_interface' ) ) {
 			'name'    => 'UCF Post List',
 			'desc'    => 'Displays a list of posts. Most WP_Query arguments are supported as shortcode attributes.',
 			'fields'  => array(),
-			'content' => false
+			'content' => false,
+			'preview' => false
 		);
 
 		$shortcodes[] = $settings;
