@@ -80,6 +80,10 @@ if ( !class_exists( 'UCF_Post_List_Config' ) ) {
 					'sc_attr'         => false
 				) ),
 
+				// Custom argument that defines the top-level relationship
+				// between tax_query arguments
+				'tax_relation' => new UCF_Post_List_Option( 'tax_relation' ),
+
 				// Custom argument for ACF relationship fields which defines
 				// the relation between reverse lookup posts
 				'meta_serialized_relation' => new UCF_Post_List_Option( 'meta_serialized_relation' ),
@@ -277,12 +281,11 @@ if ( !class_exists( 'UCF_Post_List_Config' ) ) {
 			// support single-level queries against registered taxonomies.
 			$taxonomies = get_taxonomies();
 			foreach ( $taxonomies as $tax_name ) {
-				if ( !isset( $defaults['tax_' . $tax_name] ) ) {
-					$options['tax_' . $tax_name] = new UCF_Post_List_Option( 'tax_' . $tax_name );
-					$options['tax_' . $tax_name . '__field'] = new UCF_Post_List_Option( 'tax_' . $tax_name. '__field' );
-					$options['tax_' . $tax_name . '__terms'] = new UCF_Post_List_Option( 'tax_' . $tax_name . '__terms', array(
+				if ( !isset( $options['tax_' . $tax_name] ) ) {
+					$options['tax_' . $tax_name] = new UCF_Post_List_Option( 'tax_' . $tax_name, array(
 						'format_callback' => array( 'UCF_Post_List_Config', 'format_option_array_str' )
 					) );
+					$options['tax_' . $tax_name . '__field'] = new UCF_Post_List_Option( 'tax_' . $tax_name. '__field' );
 					$options['tax_' . $tax_name . '__include_children'] = new UCF_Post_List_Option( 'tax_' . $tax_name . '__include_children', array(
 						'format_callback' => array( 'UCF_Post_List_Config', 'format_option_bool_or_null' )
 					) );

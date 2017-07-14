@@ -43,6 +43,9 @@ if ( !class_exists( 'UCF_Post_List_Common' ) ) {
 		 	// that we don't have to add/maintain them in this plugin.)
 			$filtered_args = array_filter( $args, array( 'UCF_Post_List_Common', 'filter_post_list_arg' ) );
 
+			// Handle taxonomy queries
+			$filtered_args = self::filter_taxonomy_post_list_args( $filtered_args );
+
 			// If Advanced Custom Fields is enabled, provide support for
 			// relationship fields.
 			if ( class_exists( 'ACF' ) ) {
@@ -61,6 +64,59 @@ if ( !class_exists( 'UCF_Post_List_Common' ) ) {
 				|| is_null( $arg )
 				|| is_string( $arg ) && empty( $arg )
 			);
+		}
+
+		/**
+		 * Given an array of post list arguments that have already been
+		 * filtered to remove empty non-zero values, this function
+		 * replaces custom taxonomy arguments with a proper tax_query.
+		 **/
+		private static function filter_taxonomy_post_list_args( $args ) {
+			$taxonomies = get_taxonomies();
+			$tax_query = array();
+
+			foreach ( $taxonomies as $tax_name ) {
+				$inner_tax_query = array();
+
+				if ( isset( $args['tax_' . $tax_name] ) ) {
+					$inner_tax_query['taxonomy'] = $tax_name;
+					$inner_tax_query['terms'] = $args['tax_' . $tax_name];
+
+					if ( isset( $args['tax_' . $tax_name . '__field'] ) ) {
+						$inner_tax_query['field'] = $args['tax_' . $tax_name . '__field'];
+					}
+					if ( isset( $args['tax_' . $tax_name . '__include_children'] ) ) {
+						$inner_tax_query['include_children'] = $args['tax_' . $tax_name . '__include_children'];
+					}
+					if ( isset( $args['tax_' . $tax_name . '__operator'] ) ) {
+						$inner_tax_query['operator'] = $args['tax_' . $tax_name . '__operator'];
+					}
+				}
+				unset(
+					$args['tax_' . $tax_name],
+					$args['tax_' . $tax_name . '__field'],
+					$args['tax_' . $tax_name . '__terms'],
+					$args['tax_' . $tax_name . '__include_children'],
+					$args['tax_' . $tax_name . '__operator']
+				);
+
+				if ( !empty( $inner_tax_query ) ) {
+					$tax_query[] = $inner_tax_query;
+				}
+			}
+
+			if ( !empty( $tax_query ) ) {
+				$args['tax_query'] = $tax_query;
+
+				// Apply a 'relation' param.  Only set it if multiple tax
+				// queries are provided.
+				if ( isset( $args['tax_relation'] ) && count( $tax_query ) > 1 ) {
+					$args['tax_query']['relation'] = $args['tax_relation'];
+					unset( $args['tax_relation'] );
+				}
+			}
+
+			return $args;
 		}
 
 		/**
