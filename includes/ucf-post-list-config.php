@@ -148,7 +148,9 @@ if ( !class_exists( 'UCF_Post_List_Config' ) ) {
 					'format_callback' => array( 'UCF_Post_List_Config', 'format_option_str_array' )
 				) ),
 
-				// TODO tax_query
+				// NOTE: tax_query support is added dynamically based on custom
+				// per-taxonomy attributes; see
+				// UCF_Post_List_Common::filter_taxonomy_post_list_args()
 
 				// Search
 				's' => new UCF_Post_List_Option( 's' ),
