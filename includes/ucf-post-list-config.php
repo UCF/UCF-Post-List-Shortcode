@@ -20,6 +20,26 @@ if ( !class_exists( 'UCF_Post_List_Option' ) ) {
 			$this->options_page    = isset( $args['options_page'] ) ? $args['options_page'] : $this->options_page;
 			$this->sc_attr         = isset( $args['sc_attr'] ) ? $args['sc_attr'] : $this->sc_attr;
 		}
+
+		/**
+		 * Returns the default value for the option, with the Options API value
+		 * applied if $apply_configurable_val and $this->options_page are true.
+		 **/
+		function get_default( $apply_configurable_val=true ) {
+			$default = $this->default;
+			if ( $this->options_page && $apply_configurable_val ) {
+				$default = get_option( UCF_Post_List_Config::$option_prefix . $this->option_name, $default );
+			}
+			return $default;
+		}
+
+		/**
+		 * Returns the formatted value, using the function name passed to
+		 * $this->format_callback.
+		 **/
+		function format( $value ) {
+			return call_user_func( $this->format_callback, $value );
+		}
 	}
 
 }
@@ -29,210 +49,7 @@ if ( !class_exists( 'UCF_Post_List_Config' ) ) {
 	class UCF_Post_List_Config {
 		public static
 			$option_prefix = 'ucf_post_list_';
-		private static
-			$options = array(
-				'layout'      => array(
-					'default' => 'default'
-				),
-				'list_title'  => array(),
-				'include_css' => array(
-					'default'         => true,
-					'format_callback' => array( 'UCF_Post_List_Config', 'format_option_boolean' ), // TODO
-					'options_page'    => true,
-					'sc_attr'         => false // TODO apply this somehwere
-				),
 
-				// Custom argument for ACF relationship fields which defines
-				// the relation between reverse lookup posts
-				'meta_serialized_relation' => array(),
-
-				// get_posts() unique arguments
-				// https://codex.wordpress.org/Function_Reference/get_posts
-
-				'category'    => array(),  // alias for cat
-				'numberposts' => array(  // alias for posts_per_page
-					'format_callback' => array( 'UCF_Post_List_Config', 'format_option_int_or_null' ), // TODO
-				),
-				'include'     => array(  // alias for post__in
-					'format_callback' => array( 'UCF_Post_List_Config', 'format_option_int_array' ) // TODO
-				),
-				'exclude'     => array(  // alias for post__not_in
-					'format_callback' => array( 'UCF_Post_List_Config', 'format_option_int_array' )
-				),
-
-				// https://codex.wordpress.org/Class_Reference/WP_Query
-
-				// Author
-				'author'         => array(),
-				'author_name'    => array(),
-				'author__in'     => array(
-					'format_callback' => array( 'UCF_Post_List_Config', 'format_option_int_array' )
-				),
-				'author__not_in' => array(
-					'format_callback' => array( 'UCF_Post_List_Config', 'format_option_int_array' )
-				),
-
-				// Category
-				'cat'              => array(),
-				'category_name'    => array(),
-				'category__and'    => array(
-					'format_callback' => array( 'UCF_Post_List_Config', 'format_option_int_array' )
-				),
-				'category__in'     => array(
-					'format_callback' => array( 'UCF_Post_List_Config', 'format_option_int_array' )
-				),
-				'category__not_in' => array(
-					'format_callback' => array( 'UCF_Post_List_Config', 'format_option_int_array' )
-				),
-
-				// Tag
-				'tag'         => array(),
-				'tag_id'      => array(
-					'format_callback' => array( 'UCF_Post_List_Config', 'format_option_bool_or_null' ) // TODO
-				),
-				'tag__and'    => array(
-					'format_callback' => array( 'UCF_Post_List_Config', 'format_option_int_array' )
-				),
-				'tag__in'     => array(
-					'format_callback' => array( 'UCF_Post_List_Config', 'format_option_int_array' )
-				),
-				'tag__not_in' => array(
-					'format_callback' => array( 'UCF_Post_List_Config', 'format_option_int_array' )
-				),
-				'tag_slug__and' => array(
-					'format_callback' => array( 'UCF_Post_List_Config', 'format_option_str_array' ) // TODO
-				),
-				'tag_slug__in'  => array(
-					'format_callback' => array( 'UCF_Post_List_Config', 'format_option_str_array' )
-				),
-
-				// TODO tax_query
-
-				// Search
-				's' => array(),
-
-				// Post
-				'p'        => array(
-					'format_callback' => array( 'UCF_Post_List_Config', 'format_option_bool_or_null' )
-				),
-				'name'     => array(),
-				'title'    => array(),
-				'page_id'  => array(
-					'format_callback' => array( 'UCF_Post_List_Config', 'format_option_bool_or_null' )
-				),
-				'pagename' => array(),
-				'post_parent'         => array(
-					'format_callback' => array( 'UCF_Post_List_Config', 'format_option_bool_or_null' )
-				),
-				'post_parent__in'     => array(
-					'format_callback' => array( 'UCF_Post_List_Config', 'format_option_int_array' )
-				),
-				'post_parent__not_in' => array(
-					'format_callback' => array( 'UCF_Post_List_Config', 'format_option_int_array' )
-				),
-				'post__in'      => array(
-					'format_callback' => array( 'UCF_Post_List_Config', 'format_option_int_array' )
-				),
-				'post__not_in'  => array(
-					'format_callback' => array( 'UCF_Post_List_Config', 'format_option_int_array' )
-				),
-				'post_name__in' => array(
-					'format_callback' => array( 'UCF_Post_List_Config', 'format_option_str_array' )
-				),
-
-				// Password
-				'has_password'  => array(
-					'format_callback' => array( 'UCF_Post_List_Config', 'format_option_bool_or_null' )
-				),
-				'post_password' => array(),
-
-				// Post Type
-				'post_type' => array(
-					'format_callback' => array( 'UCF_Post_List_Config', 'format_option_str_or_array' )
-				),
-
-				// Post Status
-				'post_status' => array(),
-
-				// Pagination/Offset
-				'nopaging' => array(
-					'format_callback' => array( 'UCF_Post_List_Config', 'format_option_bool_or_null' )
-				),
-				'posts_per_page' => array(
-					'format_callback' => array( 'UCF_Post_List_Config', 'format_option_int_or_null' )
-				),
-				'posts_per_archive_page' => array(
-					'format_callback' => array( 'UCF_Post_List_Config', 'format_option_int_or_null' )
-				),
-				'offset' => array(
-					'format_callback' => array( 'UCF_Post_List_Config', 'format_option_int_or_null' )
-				),
-				'paged'  => array(
-					'format_callback' => array( 'UCF_Post_List_Config', 'format_option_int_or_null' )
-				),
-				'page'   => array(
-					'format_callback' => array( 'UCF_Post_List_Config', 'format_option_int_or_null' )
-				),
-				'ignore_sticky_posts' => array(
-					'format_callback' => array( 'UCF_Post_List_Config', 'format_option_bool_or_null' )
-				),
-
-				// Order
-				'order'   => array(
-					'format_callback' => array( 'UCF_Post_List_Config', 'format_option_str_or_array' )
-				),
-				'orderby' => array(
-					'format_callback' => array( 'UCF_Post_List_Config', 'format_option_array_str' )
-				),
-
-				// Date
-				'year'     => array(
-					'format_callback' => array( 'UCF_Post_List_Config', 'format_option_int_or_null' )
-				),
-				'monthnum' => array(
-					'format_callback' => array( 'UCF_Post_List_Config', 'format_option_int_or_null' )
-				),
-				'w'        => array(
-					'format_callback' => array( 'UCF_Post_List_Config', 'format_option_int_or_null' )
-				),
-				'day'      => array(
-					'format_callback' => array( 'UCF_Post_List_Config', 'format_option_int_or_null' )
-				),
-				'hour'     => array(
-					'format_callback' => array( 'UCF_Post_List_Config', 'format_option_int_or_null' )
-				),
-				'minute'   => array(
-					'format_callback' => array( 'UCF_Post_List_Config', 'format_option_int_or_null' )
-				),
-				'second'   => array(
-					'format_callback' => array( 'UCF_Post_List_Config', 'format_option_int_or_null' )
-				),
-				'm'        => array(
-					'format_callback' => array( 'UCF_Post_List_Config', 'format_option_int_or_null' )
-				),
-
-				// TODO date_query
-
-				// Meta fields
-				'meta_key'       => array(),
-				'meta_value'     => array(),
-				'meta_value_num' => array(
-					'format_callback' => array( 'UCF_Post_List_Config', 'format_option_int_or_null' )
-				),
-				'meta_compare'   => array(),
-
-				// TODO meta_query
-
-				// Permissions
-				'perm' => array(),
-
-				// Mimetypes
-				'post_mime_type' => array(
-					'format_callback' => array( 'UCF_Post_List_Config', 'format_option_str_or_array' )
-				),
-
-				// NOTE: we don't support caching parameters, 'fields', or 'suppress_filters' in this shortcode
-			);
 
 		public static function get_layouts() {
 			$layouts = array(
@@ -242,6 +59,248 @@ if ( !class_exists( 'UCF_Post_List_Config' ) ) {
 			$layouts = apply_filters( self::$option_prefix . 'get_layouts', $layouts );
 
 			return $layouts;
+		}
+
+		/**
+		 * Returns a full list of plugin option objects.  Adds additional
+		 * options on-the-fly based on registered post types and taxonomies.
+		 *
+		 * @return array
+		 **/
+		public static function get_options() {
+			$options = array(
+				'layout'      => new UCF_Post_List_Option( 'layout', array(
+					'default' => 'default'
+				) ),
+				'list_title'  => new UCF_Post_List_Option( 'list_title' ),
+				'include_css' => new UCF_Post_List_Option( 'include_css', array(
+					'default'         => true,
+					'format_callback' => array( 'UCF_Post_List_Config', 'format_option_bool' ),
+					'options_page'    => true,
+					'sc_attr'         => false
+				) ),
+
+				// Custom argument for ACF relationship fields which defines
+				// the relation between reverse lookup posts
+				'meta_serialized_relation' => new UCF_Post_List_Option( 'meta_serialized_relation' ),
+
+				// get_posts() unique arguments
+				// https://codex.wordpress.org/Function_Reference/get_posts
+
+				'category'    => new UCF_Post_List_Option( 'category' ),  // alias for cat
+				'numberposts' => new UCF_Post_List_Option( 'numberposts', array(  // alias for posts_per_page
+					'format_callback' => array( 'UCF_Post_List_Config', 'format_option_int_or_null' ),
+				) ),
+				'include'     => new UCF_Post_List_Option( 'include', array(  // alias for post__in
+					'format_callback' => array( 'UCF_Post_List_Config', 'format_option_int_array' )
+				) ),
+				'exclude'     => new UCF_Post_List_Option( 'exclude', array(  // alias for post__not_in
+					'format_callback' => array( 'UCF_Post_List_Config', 'format_option_int_array' )
+				) ),
+
+				// https://codex.wordpress.org/Class_Reference/WP_Query
+
+				// Author
+				'author'         => new UCF_Post_List_Option( 'author' ),
+				'author_name'    => new UCF_Post_List_Option( 'author_name' ),
+				'author__in'     => new UCF_Post_List_Option( 'author__in', array(
+					'format_callback' => array( 'UCF_Post_List_Config', 'format_option_int_array' )
+				) ),
+				'author__not_in' => new UCF_Post_List_Option( 'author__not_in', array(
+					'format_callback' => array( 'UCF_Post_List_Config', 'format_option_int_array' )
+				) ),
+
+				// Category
+				'cat'              => new UCF_Post_List_Option( 'cat' ),
+				'category_name'    => new UCF_Post_List_Option( 'category_name' ),
+				'category__and'    => new UCF_Post_List_Option( 'category__and', array(
+					'format_callback' => array( 'UCF_Post_List_Config', 'format_option_int_array' )
+				) ),
+				'category__in'     => new UCF_Post_List_Option( 'category__in', array(
+					'format_callback' => array( 'UCF_Post_List_Config', 'format_option_int_array' )
+				) ),
+				'category__not_in' => new UCF_Post_List_Option( 'category__not_in', array(
+					'format_callback' => array( 'UCF_Post_List_Config', 'format_option_int_array' )
+				) ),
+
+				// Tag
+				'tag'         => new UCF_Post_List_Option( 'tag' ),
+				'tag_id'      => new UCF_Post_List_Option( 'tag_id', array(
+					'format_callback' => array( 'UCF_Post_List_Config', 'format_option_int_or_null' )
+				) ),
+				'tag__and'    => new UCF_Post_List_Option( 'tag__and', array(
+					'format_callback' => array( 'UCF_Post_List_Config', 'format_option_int_array' )
+				) ),
+				'tag__in'     => new UCF_Post_List_Option( 'tag__in', array(
+					'format_callback' => array( 'UCF_Post_List_Config', 'format_option_int_array' )
+				) ),
+				'tag__not_in' => new UCF_Post_List_Option( 'tag__not_in', array(
+					'format_callback' => array( 'UCF_Post_List_Config', 'format_option_int_array' )
+				) ),
+				'tag_slug__and' => new UCF_Post_List_Option( 'tag_slug__and', array(
+					'format_callback' => array( 'UCF_Post_List_Config', 'format_option_str_array' )
+				) ),
+				'tag_slug__in'  => new UCF_Post_List_Option( 'tag_slug__in', array(
+					'format_callback' => array( 'UCF_Post_List_Config', 'format_option_str_array' )
+				) ),
+
+				// TODO tax_query
+
+				// Search
+				's' => new UCF_Post_List_Option( 's' ),
+
+				// Post
+				'p'        => new UCF_Post_List_Option( 'p', array(
+					'format_callback' => array( 'UCF_Post_List_Config', 'format_option_bool_or_null' )
+				) ),
+				'name'     => new UCF_Post_List_Option( 'name' ),
+				'title'    => new UCF_Post_List_Option( 'title' ),
+				'page_id'  => new UCF_Post_List_Option( 'page_id', array(
+					'format_callback' => array( 'UCF_Post_List_Config', 'format_option_bool_or_null' )
+				) ),
+				'pagename' => new UCF_Post_List_Option( 'pagename' ),
+				'post_parent'         => new UCF_Post_List_Option( 'post_parent', array(
+					'format_callback' => array( 'UCF_Post_List_Config', 'format_option_bool_or_null' )
+				) ),
+				'post_parent__in'     => new UCF_Post_List_Option( 'post_parent__in', array(
+					'format_callback' => array( 'UCF_Post_List_Config', 'format_option_int_array' )
+				) ),
+				'post_parent__not_in' => new UCF_Post_List_Option( 'post_parent__not_in', array(
+					'format_callback' => array( 'UCF_Post_List_Config', 'format_option_int_array' )
+				) ),
+				'post__in'      => new UCF_Post_List_Option( 'post__in', array(
+					'format_callback' => array( 'UCF_Post_List_Config', 'format_option_int_array' )
+				) ),
+				'post__not_in'  => new UCF_Post_List_Option( 'post__not_in', array(
+					'format_callback' => array( 'UCF_Post_List_Config', 'format_option_int_array' )
+				) ),
+				'post_name__in' => new UCF_Post_List_Option( 'post_name__in', array(
+					'format_callback' => array( 'UCF_Post_List_Config', 'format_option_str_array' )
+				) ),
+
+				// Password
+				'has_password'  => new UCF_Post_List_Option( 'has_password', array(
+					'format_callback' => array( 'UCF_Post_List_Config', 'format_option_bool_or_null' )
+				) ),
+				'post_password' => new UCF_Post_List_Option( 'post_password' ),
+
+				// Post Type
+				'post_type' => new UCF_Post_List_Option( 'post_type', array(
+					'format_callback' => array( 'UCF_Post_List_Config', 'format_option_str_or_array' )
+				) ),
+
+				// Post Status
+				'post_status' => new UCF_Post_List_Option( 'post_status' ),
+
+				// Pagination/Offset
+				'nopaging' => new UCF_Post_List_Option( 'nopaging', array(
+					'format_callback' => array( 'UCF_Post_List_Config', 'format_option_bool_or_null' )
+				) ),
+				'posts_per_page' => new UCF_Post_List_Option( 'posts_per_page', array(
+					'format_callback' => array( 'UCF_Post_List_Config', 'format_option_int_or_null' )
+				) ),
+				'posts_per_archive_page' => new UCF_Post_List_Option( 'posts_per_archive_page', array(
+					'format_callback' => array( 'UCF_Post_List_Config', 'format_option_int_or_null' )
+				) ),
+				'offset' => new UCF_Post_List_Option( 'offset', array(
+					'format_callback' => array( 'UCF_Post_List_Config', 'format_option_int_or_null' )
+				) ),
+				'paged'  => new UCF_Post_List_Option( 'paged', array(
+					'format_callback' => array( 'UCF_Post_List_Config', 'format_option_int_or_null' )
+				) ),
+				'page'   => new UCF_Post_List_Option( 'page', array(
+					'format_callback' => array( 'UCF_Post_List_Config', 'format_option_int_or_null' )
+				) ),
+				'ignore_sticky_posts' => new UCF_Post_List_Option( 'ignore_sticky_posts', array(
+					'format_callback' => array( 'UCF_Post_List_Config', 'format_option_bool_or_null' )
+				) ),
+
+				// Order
+				'order'   => new UCF_Post_List_Option( 'order', array(
+					'format_callback' => array( 'UCF_Post_List_Config', 'format_option_str_or_array' )
+				) ),
+				'orderby' => new UCF_Post_List_Option( 'orderby', array(
+					'format_callback' => array( 'UCF_Post_List_Config', 'format_option_array_str' )
+				) ),
+
+				// Date
+				'year'     => new UCF_Post_List_Option( 'year', array(
+					'format_callback' => array( 'UCF_Post_List_Config', 'format_option_int_or_null' )
+				) ),
+				'monthnum' => new UCF_Post_List_Option( 'monthnum', array(
+					'format_callback' => array( 'UCF_Post_List_Config', 'format_option_int_or_null' )
+				) ),
+				'w'        => new UCF_Post_List_Option( 'w', array(
+					'format_callback' => array( 'UCF_Post_List_Config', 'format_option_int_or_null' )
+				) ),
+				'day'      => new UCF_Post_List_Option( 'day', array(
+					'format_callback' => array( 'UCF_Post_List_Config', 'format_option_int_or_null' )
+				) ),
+				'hour'     => new UCF_Post_List_Option( 'hour', array(
+					'format_callback' => array( 'UCF_Post_List_Config', 'format_option_int_or_null' )
+				) ),
+				'minute'   => new UCF_Post_List_Option( 'minute', array(
+					'format_callback' => array( 'UCF_Post_List_Config', 'format_option_int_or_null' )
+				) ),
+				'second'   => new UCF_Post_List_Option( 'second', array(
+					'format_callback' => array( 'UCF_Post_List_Config', 'format_option_int_or_null' )
+				) ),
+				'm'        => new UCF_Post_List_Option( 'm', array(
+					'format_callback' => array( 'UCF_Post_List_Config', 'format_option_int_or_null' )
+				) ),
+
+				// TODO date_query
+
+				// Meta fields
+				'meta_key'       => new UCF_Post_List_Option( 'meta_key' ),
+				'meta_value'     => new UCF_Post_List_Option( 'meta_value' ),
+				'meta_value_num' => new UCF_Post_List_Option( 'meta_value_num', array(
+					'format_callback' => array( 'UCF_Post_List_Config', 'format_option_num_or_null' )
+				) ),
+				'meta_compare'   => new UCF_Post_List_Option( 'meta_compare' ),
+
+				// TODO meta_query
+
+				// Permissions
+				'perm' => new UCF_Post_List_Option( 'perm' ),
+
+				// Mimetypes
+				'post_mime_type' => new UCF_Post_List_Option( 'post_mime_type', array(
+					'format_callback' => array( 'UCF_Post_List_Config', 'format_option_str_or_array' )
+				) ),
+
+				// NOTE: we don't support caching parameters, 'fields', or 'suppress_filters' in this shortcode
+			);
+
+			// Add defaults for per-taxonomy queries.  While it's impractical
+			// to fully support nested tax_query statements, we can at least
+			// support single-level queries against registered taxonomies.
+			$taxonomies = get_taxonomies();
+			foreach ( $taxonomies as $tax_name ) {
+				if ( !isset( $defaults['tax_' . $tax_name] ) ) {
+					$options['tax_' . $tax_name] = new UCF_Post_List_Option( 'tax_' . $tax_name );
+					$options['tax_' . $tax_name . '__field'] = new UCF_Post_List_Option( 'tax_' . $tax_name. '__field' );
+					$options['tax_' . $tax_name . '__terms'] = new UCF_Post_List_Option( 'tax_' . $tax_name . '__terms', array(
+						'format_callback' => array( 'UCF_Post_List_Config', 'format_option_array_str' )
+					) );
+					$options['tax_' . $tax_name . '__include_children'] = new UCF_Post_List_Option( 'tax_' . $tax_name . '__include_children', array(
+						'format_callback' => array( 'UCF_Post_List_Config', 'format_option_bool_or_null' )
+					) );
+					$options['tax_' . $tax_name . '__operator'] = new UCF_Post_List_Option( 'tax_' . $tax_name . '__operator' );
+				}
+			}
+
+			return $options;
+		}
+
+		/**
+		 * Returns an option object or false if it doesn't exist.
+		 *
+		 * @return UCF_Post_List_Option object
+		 **/
+		public static function get_option( $option_name ) {
+			$options = self::get_options();
+			return isset( $options[$option_name] ) ? $options[$option_name] : false;
 		}
 
 		/**
@@ -255,13 +314,22 @@ if ( !class_exists( 'UCF_Post_List_Config' ) ) {
 		}
 
 		/**
+		 * Returns whether or not an option is a valid shortcode attribute.
+		 *
+		 * @return boolean
+		 **/
+		public static function option_is_sc_attr( $option_obj ) {
+			return $option_obj->sc_attr;
+		}
+
+		/**
 		 * Creates options via the WP Options API that are utilized by the
 		 * plugin.  Intended to be run on plugin activation.
 		 *
 		 * @return void
 		 **/
-		public static function add_options() {
-			$options = array_filter( self::options(), array( 'UCF_Post_List_Config', 'option_is_configurable' ) );
+		public static function add_configurable_options() {
+			$options = array_filter( self::get_options(), array( 'UCF_Post_List_Config', 'option_is_configurable' ) );
 			if ( $options ) {
 				foreach ( $options as $option ) {
 					add_option( self::$option_prefix . $option->option_name, $option->default );
@@ -275,8 +343,8 @@ if ( !class_exists( 'UCF_Post_List_Config' ) ) {
 		 *
 		 * @return void
 		 **/
-		public static function delete_options() {
-			$options = array_filter( self::options(), array( 'UCF_Post_List_Config', 'filter_options_configurable' ) );
+		public static function delete_configurable_options() {
+			$options = array_filter( self::get_options(), array( 'UCF_Post_List_Config', 'option_is_configurable' ) );
 			if ( $options ) {
 				foreach ( $options as $option ) {
 					delete_option( self::$option_prefix . $option->option_name );
@@ -284,210 +352,148 @@ if ( !class_exists( 'UCF_Post_List_Config' ) ) {
 			}
 		}
 
-		public static function normalize_option( $option, $option_name ) {
-			return new UCF_Post_List_Option( $option_name, $option );
-		}
-
 		/**
-		 * Returns a list of default plugin options.  Applies additional option
-		 * defaults on-the-fly based on registered post types and taxonomies.
-		 * Does not apply option value overrides set by the user in plugin
-		 * settings (see self::get_option_defaults() instead.)
-		 *
-		 * Use this method to return option defaults instead of accessing
-		 * self::$option_defaults directly.
-		 *
-		 * @return array
+		 * Returns an array of option name+default key+value pairs for all
+		 * valid shortcode attributes.
 		 **/
-		public static function options() {
-			$optoins = self::$options;
-
-			// Add defaults for per-taxonomy queries.  While it's impractical
-			// to fully support nested tax_query statements, we can at least
-			// support single-level queries against registered taxonomies.
-			$taxonomies = get_taxonomies();
-			foreach ( $taxonomies as $tax_name ) {
-				if ( !isset( $defaults['tax_' . $tax_name] ) ) {
-					$options['tax_' . $tax_name] = array();
-					$options['tax_' . $tax_name . '__field'] = array();
-					$options['tax_' . $tax_name . '__terms'] = array(
-						'format_callback' => array( 'UCF_Post_List_Config', 'format_option_array_str' )
-					);
-					$options['tax_' . $tax_name . '__include_children'] = array(
-						'format_callback' => array( 'UCF_Post_List_Config', 'format_option_bool_or_null' )
-					);
-					$options['tax_' . $tax_name . '__operator'] = array();
+		public static function get_shortcode_atts() {
+			$options = array_filter( self::get_options(), array( 'UCF_Post_List_Config', 'option_is_sc_attr' ) );
+			$sc_atts = array();
+			if ( $options ) {
+				foreach ( $options as $option_name => $option ) {
+					$sc_atts[$option_name] = $option->get_default();
 				}
 			}
-
-			return array_walk( $options, array( 'UCF_Post_List_Config', 'normalize_option' ) );
+			return $sc_atts;
 		}
 
 		/**
-		 * Returns a list of default plugin option values. Applies any
-		 * overridden default values set within the options page.
-		 *
-		 * @return array
+		 * Formats $val as a boolean value.
 		 **/
-		public static function get_option_defaults() {
-			$options = self::options();
-			$configurable_options = array_filter( $options, array( 'UCF_Post_List_Config', 'filter_options_configurable' ) );
-			$defaults = array();
+		public static function format_option_bool( $val ) {
+			return filter_var( $val, FILTER_VALIDATE_BOOLEAN );
+		}
 
-			// Filter out just the option names/default values:
-			foreach ( $options as $option_name => $option ) {
-				$defaults[$option_name] = $option->default;
+		/**
+		 * Formats $val as a boolean value.  Allows null values.
+		 **/
+		public static function format_option_bool_or_null( $val ) {
+			return is_null( $val ) ? $val : filter_var( $val, FILTER_VALIDATE_BOOLEAN );
+		}
+
+
+		/**
+		 * Formats $val as an integer.  Allows null values.
+		 **/
+		public static function format_option_int_or_null( $val ) {
+			return is_null( $val ) ? $val : intval( $val );
+		}
+
+		/**
+		 * Formats $val as an array of integers.
+		 **/
+		public static function format_option_int_array( $val ) {
+			if ( is_string( $val ) ) {
+				return array_map( 'intval', array_filter( explode( ',', $val ), 'is_numeric' ) );
 			}
+			else if ( is_array( $val ) ) {
+				return array_map( 'intval', $val );
+			}
+			else {
+				return array();
+			}
+		}
 
-			// Apply default values configurable within the options page:
-			if ( $configurable_options ) {
-				foreach ( $configurable_options as $option_name => $option ) {
-					$defaults[$option_name] => get_option( self::$option_prefix . $option_name, $option->default );
+		/**
+		 * Formats $val as an array of strings.
+		 **/
+		public static function format_option_str_array( $val ) {
+			if ( is_string( $val ) ) {
+				return array_map( 'sanitize_text_field', explode( ',', $val ) );
+			}
+			else if ( is_array( $val ) ) {
+				return array_map( 'sanitize_text_field', $val );
+			}
+			else {
+				return array();
+			}
+		}
+
+		/**
+		 * Formats $val as a string or array of strings.
+		 **/
+		public static function format_option_str_or_array( $val ) {
+			if ( !is_array( $val ) ) {
+				if ( strpos( $val, ',' ) !== false ) {
+					return array_map( 'sanitize_text_field', explode( ',', $val ) );
+				}
+				else {
+					return sanitize_text_field( $val );
 				}
 			}
-
-			return $defaults;
+			else {
+				return array_map( 'sanitize_text_field', $val );
+			}
 		}
 
 		/**
-		 * Performs typecasting, sanitization, etc on an array of plugin options.
-		 *
-		 * @param array $list | Assoc. array of plugin options, e.g. [ 'option_name' => 'val', ... ]
-		 * @return array
+		 * Formats $val as an array using a custom associative array syntax
+		 * (param="key1=>val1,key2=>val2"), or as a single string value
 		 **/
-		public static function format_options( $list ) {
-			foreach ( $list as $key => $val ) {
-				switch ( $key ) {
-					// Array of integers
-					case 'include':
-					case 'exclude':
-					case 'author__in':
-					case 'author__not_in':
-					case 'category__and':
-					case 'category__in':
-					case 'category__not_in':
-					case 'tag__and':
-					case 'tag__in':
-					case 'tag__not_in':
-					case 'post_parent__in':
-					case 'post_parent__not_in':
-					case 'post__in':
-					case 'post__not_in':
-						$list[$key] = !is_array( $val ) ? array_map( 'intval', array_filter( explode( ',', $val ), 'is_numeric' ) ) : $val;
-						break;
+		public static function format_option_array_str( $val ) {
+			$formatted_val = '';
+			if ( !is_array( $val ) ) {
+				if ( strpos( $val, ',' ) !== false ) {
+					$formatted_val = array();
+					$val_split = explode( ',', $val );
 
-					// Array of strings
-					case 'tag_slug__and':
-					case 'tag_slug__in':
-					case 'post_name__in':
-						$list[$key] = !is_array( $val ) ? array_map( 'sanitize_text_field', explode( ',', $val ) ) : $val;
-						break;
-
-					// Array of strings or string
-					case 'post_type':
-					case 'post_status':
-					case 'order':
-					case 'post_mime_type':
-						if ( !is_array( $val ) ) {
-							if ( strpos( $val, ',' ) !== false ) {
-								$list[$key] = array_map( 'sanitize_text_field', explode( ',', $val ) );
-							}
-							else {
-								$list[$key] = sanitize_text_field( $val );
-							}
+					foreach ( $val_split as $keyval_pair ) {
+						$keyval_split = explode( '=&gt;', $keyval_pair );
+						if ( isset( $keyval_split[0] ) && isset( $keyval_split[1] ) ) {
+							$formatted_val[sanitize_key( trim( $keyval_split[0] ) )] = sanitize_text_field( trim( $keyval_split[1] ) );
 						}
-						else {
-							$list[$key] = array_map( 'sanitize_text_field', $val );
-						}
-						break;
-
-					// Custom associative array syntax (param="key1=>val1,key2=>val2") or a single string value
-					case 'orderby':
-						if ( !is_array( $val ) ) {
-							if ( strpos( $val, ',' ) !== false ) {
-								$list[$key] = array();
-								$val_split = explode( ',', $val );
-
-								foreach ( $val_split as $keyval_pair ) {
-									$keyval_split = explode( '=&gt;', $keyval_pair );
-									if ( isset( $keyval_split[0] ) && isset( $keyval_split[1] ) ) {
-										$list[$key][sanitize_key( trim( $keyval_split[0] ) )] = sanitize_text_field( trim( $keyval_split[1] ) );
-									}
-								}
-							}
-							else {
-								$list[$key] = sanitize_text_field( $val );
-							}
-						}
-						else {
-							$list[$key] = array_map( 'sanitize_text_field', $val );
-						}
-						break;
-
-					// Integer (can be null)
-					case 'numberposts':
-					case 'tag_id':
-					case 'p':
-					case 'page_id':
-					case 'post_parent':
-					case 'posts_per_page':
-					case 'posts_per_archive_page':
-					case 'offset':
-					case 'paged':
-					case 'page':
-					case 'year':
-					case 'monthnum':
-					case 'w':
-					case 'day':
-					case 'hour':
-					case 'minute':
-					case 'second':
-					case 'm':
-						$list[$key] = is_null( $val ) ? $val : intval( $val );
-						break;
-
-					// Number (can be null)
-					case 'meta_value_num':
-						$list[$key] = is_null( $val ) ? $val : $val + 0;
-						break;
-
-					// Boolean (can be null)
-					case 'has_password':
-					case 'nopaging':
-					case 'ignore_sticky_posts':
-						$list[$key] = is_null( $val ) ? $val : filter_var( $val, FILTER_VALIDATE_BOOLEAN );
-						break;
-
-					// Boolean (never null)
-					case 'include_css':
-						$list[$key] = filter_var( $val, FILTER_VALIDATE_BOOLEAN );
-						break;
-
-					// String
-					default:
-						$list[$key] = sanitize_text_field( $val );
-						break;
+					}
+				}
+				else {
+					$formatted_val = sanitize_text_field( $val );
 				}
 			}
-
-			return $list;
+			else {
+				$formatted_val = array_map( 'sanitize_text_field', $val );
+			}
+			return $formatted_val;
 		}
 
 		/**
-		 * Applies formatting to a single option. Intended to be passed to the
-		 * 'option_{$option}' hook.
+		 * Formats $val as a number.  Allows null values.
 		 **/
-		public static function format_option( $value, $option_name ) {
-			$option_formatted = self::format_options( array( $option_name => $value ) );
-			return $option_formatted[$option_name];
+		public static function format_option_num_or_null( $val ) {
+			return is_null( $val ) ? $val : $val + 0;
+		}
+
+		/**
+		 * Applies formatting to a single configurable option. Intended to be
+		 * passed to the 'option_{$option}' hook.
+		 **/
+		public static function format_configurable_option( $value, $option_name ) {
+			$option = self::get_option( $option_name );
+			if ( $option ) {
+				return $option->format( $value );
+			}
+			return false;
 		}
 
 		/**
 		 * Applies formatting to an array of shortcode attributes. Intended to
-		 * be passed to the 'shortcode_atts_sc_ucf_post_list' hook.
+		 * be passed to the 'shortcode_atts_ucf-post-list' hook.
 		 **/
 		public static function format_sc_atts( $out, $pairs, $atts, $shortcode ) {
-			return self::format_options( $out );
+			foreach ( $out as $key=>$val ) {
+				if ( $option = self::get_option( $key ) ) {
+					$out[$key] = $option->format( $val );
+				}
+			}
+			return $out;
 		}
 
 		/**
@@ -496,9 +502,9 @@ if ( !class_exists( 'UCF_Post_List_Config' ) ) {
 		 **/
 		public static function add_option_formatting_filters() {
 			// Options
-			$defaults = self::options();
-			foreach ( $defaults as $option => $default ) {
-				add_filter( 'option_{$option}', array( 'UCF_Post_List_Config', 'format_option' ), 10, 2 );
+			$options = self::get_options();
+			foreach ( $options as $option_name => $option ) {
+				add_filter( 'option_{$option_name}', array( 'UCF_Post_List_Config', 'format_configurable_option' ), 10, 2 );
 			}
 			// Shortcode atts
 			add_filter( 'shortcode_atts_ucf-post-list', array( 'UCF_Post_List_Config', 'format_sc_atts' ), 10, 4 );
@@ -515,13 +521,19 @@ if ( !class_exists( 'UCF_Post_List_Config' ) ) {
 			// Handle $option_name passed in with or without self::$option_prefix applied:
 			$option_name_no_prefix = str_replace( self::$option_prefix, '', $option_name );
 			$option_name           = self::$option_prefix . $option_name_no_prefix;
-			$defaults              = self::get_option_defaults();
+			$option                = self::get_option( $option_name_no_prefix );
 
-			return get_option( $option_name, $defaults[$option_name_no_prefix] );
+			if ( $option ) {
+				return get_option( $option_name, $option->get_default() );
+			}
+			else {
+				return get_option( $option_name );
+			}
 		}
 
 		/**
 		 * Initializes setting registration with the Settings API.
+		 * TODO move field configuration to option obj
 		 **/
 		public static function settings_init() {
 			// Register settings
@@ -551,6 +563,7 @@ if ( !class_exists( 'UCF_Post_List_Config' ) ) {
 
 		/**
 		 * Displays an individual setting's field markup.
+		 * TODO move to option obj?
 		 **/
 		public static function display_settings_field( $args ) {
 			$option_name   = $args['label_for'];
