@@ -3,104 +3,233 @@
  * Handles plugin configuration
  */
 
+if ( !class_exists( 'UCF_Post_List_Option' ) ) {
+
+	class UCF_Post_List_Option {
+		public
+			$option_name,
+			$default = null,  // default value for the option
+			$format_callback = 'sanitize_text_field',  // function that formats the option value
+			$options_page = false,  // whether the option should be configurable via the plugin options page
+			$sc_attr = true;  // whether the option should be a valid shortcode attribute
+
+		function __construct( $option_name, $args=array() ) {
+			$this->option_name     = $option_name;
+			$this->default         = isset( $args['default'] ) ? $args['default'] : $this->default;
+			$this->format_callback = isset( $args['format_callback'] ) ? $args['format_callback'] : $this->format_callback;
+			$this->options_page    = isset( $args['options_page'] ) ? $args['options_page'] : $this->options_page;
+			$this->sc_attr         = isset( $args['sc_attr'] ) ? $args['sc_attr'] : $this->sc_attr;
+		}
+	}
+
+}
+
 if ( !class_exists( 'UCF_Post_List_Config' ) ) {
 
 	class UCF_Post_List_Config {
 		public static
-			$option_prefix = 'ucf_post_list_',
-			$option_defaults = array(
-				'layout'           => 'default',
-				'list_title'       => '',
-				'include_css'      => true,
+			$option_prefix = 'ucf_post_list_';
+		private static
+			$options = array(
+				'layout'      => array(
+					'default' => 'default'
+				),
+				'list_title'  => array(),
+				'include_css' => array(
+					'default'         => true,
+					'format_callback' => array( 'UCF_Post_List_Config', 'format_option_boolean' ), // TODO
+					'options_page'    => true,
+					'sc_attr'         => false // TODO apply this somehwere
+				),
 
 				// Custom argument for ACF relationship fields which defines
 				// the relation between reverse lookup posts
-				'meta_serialized_relation' => '',
+				'meta_serialized_relation' => array(),
 
 				// get_posts() unique arguments
 				// https://codex.wordpress.org/Function_Reference/get_posts
 
-				'category'       => '',  // alias for cat
-				'numberposts'    => null,  // alias for posts_per_page
-				'include'        => array(),  // alias for post__in
-				'exclude'        => array(),  // alias for post__not_in
+				'category'    => array(),  // alias for cat
+				'numberposts' => array(  // alias for posts_per_page
+					'format_callback' => array( 'UCF_Post_List_Config', 'format_option_int_or_null' ), // TODO
+				),
+				'include'     => array(  // alias for post__in
+					'format_callback' => array( 'UCF_Post_List_Config', 'format_option_int_array' ) // TODO
+				),
+				'exclude'     => array(  // alias for post__not_in
+					'format_callback' => array( 'UCF_Post_List_Config', 'format_option_int_array' )
+				),
 
 				// https://codex.wordpress.org/Class_Reference/WP_Query
 
-				'author'         => '',  // (int | string) - use author id or comma-separated list of IDs.
-				'author_name'    => '',  // (string) - use 'user_nicename' - NOT name.
-				'author__in'     => array(),  // (array) - use author id (available since Version 3.7).
-				'author__not_in' => array(),  // (array) - use author id (available since Version 3.7).
+				// Author
+				'author'         => array(),
+				'author_name'    => array(),
+				'author__in'     => array(
+					'format_callback' => array( 'UCF_Post_List_Config', 'format_option_int_array' )
+				),
+				'author__not_in' => array(
+					'format_callback' => array( 'UCF_Post_List_Config', 'format_option_int_array' )
+				),
 
-				'cat'              => '',  // (int) - use category id.
-				'category_name'    => '',  // (string) - use category slug.
-				'category__and'    => array(), // (array) - use category id.
-				'category__in'     => array(), // (array) - use category id.
-				'category__not_in' => array(), // (array) - use category id.
+				// Category
+				'cat'              => array(),
+				'category_name'    => array(),
+				'category__and'    => array(
+					'format_callback' => array( 'UCF_Post_List_Config', 'format_option_int_array' )
+				),
+				'category__in'     => array(
+					'format_callback' => array( 'UCF_Post_List_Config', 'format_option_int_array' )
+				),
+				'category__not_in' => array(
+					'format_callback' => array( 'UCF_Post_List_Config', 'format_option_int_array' )
+				),
 
-				'tag'           => '',  // (string) - use tag slug.
-				'tag_id'        => null,  // (int) - use tag id.
-				'tag__and'      => array(),  // (array) - use tag ids.
-				'tag__in'       => array(),  // (array) - use tag ids.
-				'tag__not_in'   => array(),  // (array) - use tag ids.
-				'tag_slug__and' => array(),  // (array) - use tag slugs.
-				'tag_slug__in'  => array(),  // (array) - use tag slugs.
+				// Tag
+				'tag'         => array(),
+				'tag_id'      => array(
+					'format_callback' => array( 'UCF_Post_List_Config', 'format_option_bool_or_null' ) // TODO
+				),
+				'tag__and'    => array(
+					'format_callback' => array( 'UCF_Post_List_Config', 'format_option_int_array' )
+				),
+				'tag__in'     => array(
+					'format_callback' => array( 'UCF_Post_List_Config', 'format_option_int_array' )
+				),
+				'tag__not_in' => array(
+					'format_callback' => array( 'UCF_Post_List_Config', 'format_option_int_array' )
+				),
+				'tag_slug__and' => array(
+					'format_callback' => array( 'UCF_Post_List_Config', 'format_option_str_array' ) // TODO
+				),
+				'tag_slug__in'  => array(
+					'format_callback' => array( 'UCF_Post_List_Config', 'format_option_str_array' )
+				),
 
 				// TODO tax_query
 
-				's' => '',  // (string) - Search keyword.
+				// Search
+				's' => array(),
 
-				'p'                   => null,  // (int) - use post id. Default post type is post.
-				'name'                => '',  // (string) - use post slug.
-				'title'               => '',  // (string) - use post title (available with Version 4.4).
-				'page_id'             => null,  // (int) - use page id.
-				'pagename'            => '',  // (string) - use page slug.
-				'post_parent'         => null,  // (int) - use page id to return only child pages. Set to 0 to return only top-level entries.
-				'post_parent__in'     => array(),  // (array) - use post ids. Specify posts whose parent is in an array. (available since Version 3.6)
-				'post_parent__not_in' => array(),  // (array) - use post ids. Specify posts whose parent is not in an array. (available since Version 3.6)
-				'post__in'            => array(),  // (array) - use post ids. Specify posts to retrieve. ATTENTION If you use sticky posts, they will be included (prepended!) in the posts you retrieve whether you want it or not. To suppress this behaviour use ignore_sticky_posts.
-				'post__not_in'        => array(),  // (array) - use post ids. Specify post NOT to retrieve. If this is used in the same query as post__in, it will be ignored.
-				'post_name__in'       => array(),  // (array) - use post slugs. Specify posts to retrieve. (available since Version 4.4)
+				// Post
+				'p'        => array(
+					'format_callback' => array( 'UCF_Post_List_Config', 'format_option_bool_or_null' )
+				),
+				'name'     => array(),
+				'title'    => array(),
+				'page_id'  => array(
+					'format_callback' => array( 'UCF_Post_List_Config', 'format_option_bool_or_null' )
+				),
+				'pagename' => array(),
+				'post_parent'         => array(
+					'format_callback' => array( 'UCF_Post_List_Config', 'format_option_bool_or_null' )
+				),
+				'post_parent__in'     => array(
+					'format_callback' => array( 'UCF_Post_List_Config', 'format_option_int_array' )
+				),
+				'post_parent__not_in' => array(
+					'format_callback' => array( 'UCF_Post_List_Config', 'format_option_int_array' )
+				),
+				'post__in'      => array(
+					'format_callback' => array( 'UCF_Post_List_Config', 'format_option_int_array' )
+				),
+				'post__not_in'  => array(
+					'format_callback' => array( 'UCF_Post_List_Config', 'format_option_int_array' )
+				),
+				'post_name__in' => array(
+					'format_callback' => array( 'UCF_Post_List_Config', 'format_option_str_array' )
+				),
 
-				'has_password'  => null,  // (bool) - true for posts with passwords ; false for posts without passwords ; null for all posts with and without passwords (available since Version 3.9).
-				'post_password' => '',  // (string) - show posts with a particular password (available since Version 3.9)
+				// Password
+				'has_password'  => array(
+					'format_callback' => array( 'UCF_Post_List_Config', 'format_option_bool_or_null' )
+				),
+				'post_password' => array(),
 
-				'post_type' => array(),  // (string / array) - use post types. Retrieves posts by Post Types, default value is 'post'. If 'tax_query' is set for a query, the default value becomes 'any'
+				// Post Type
+				'post_type' => array(
+					'format_callback' => array( 'UCF_Post_List_Config', 'format_option_str_or_array' )
+				),
 
-				'post_status' => array(),  // (string / array) - use post status. Retrieves posts by Post Status. Default value is 'publish', but if the user is logged in, 'private' is added. Public custom statuses are also included by default. And if the query is run in an admin context (administration area or AJAX call), protected statuses are added too. By default protected statuses are 'future', 'draft' and 'pending'.
+				// Post Status
+				'post_status' => array(),
 
-				'nopaging'               => null,  // (boolean) - show all posts or use pagination. Default value is 'false', use paging.
-				'posts_per_page'         => null,  // (int) - number of post to show per page (available since Version 2.1, replaced showposts parameter). Use 'posts_per_page'=>-1 to show all posts (the 'offset' parameter is ignored with a -1 value). Set the 'paged' parameter if pagination is off after using this parameter. Note: if the query is in a feed, wordpress overwrites this parameter with the stored 'posts_per_rss' option. To reimpose the limit, try using the 'post_limits' filter, or filter 'pre_option_posts_per_rss' and return -1
-				'posts_per_archive_page' => null,  // (int) - number of posts to show per page - on archive pages only. Over-rides posts_per_page and showposts on pages where is_archive() or is_search() would be true.
-				'offset'                 => null,  // (int) - number of post to displace or pass over. Warning: Setting the offset parameter overrides/ignores the paged parameter and breaks pagination (Click here for a workaround). The 'offset' parameter is ignored when 'posts_per_page'=>-1 (show all posts) is used.
-				'paged'                  => null,  // (int) - number of page. Show the posts that would normally show up just on page X when using the "Older Entries" link.
-				'page'                   => null,  // (int) - number of page for a static front page. Show the posts that would normally show up just on page X of a Static Front Page.
-				'ignore_sticky_posts'    => null,  // (boolean) - ignore post stickiness (available since Version 3.1, replaced caller_get_posts parameter). false (default): move sticky posts to the start of the set. true: do not move sticky posts to the start of the set.
+				// Pagination/Offset
+				'nopaging' => array(
+					'format_callback' => array( 'UCF_Post_List_Config', 'format_option_bool_or_null' )
+				),
+				'posts_per_page' => array(
+					'format_callback' => array( 'UCF_Post_List_Config', 'format_option_int_or_null' )
+				),
+				'posts_per_archive_page' => array(
+					'format_callback' => array( 'UCF_Post_List_Config', 'format_option_int_or_null' )
+				),
+				'offset' => array(
+					'format_callback' => array( 'UCF_Post_List_Config', 'format_option_int_or_null' )
+				),
+				'paged'  => array(
+					'format_callback' => array( 'UCF_Post_List_Config', 'format_option_int_or_null' )
+				),
+				'page'   => array(
+					'format_callback' => array( 'UCF_Post_List_Config', 'format_option_int_or_null' )
+				),
+				'ignore_sticky_posts' => array(
+					'format_callback' => array( 'UCF_Post_List_Config', 'format_option_bool_or_null' )
+				),
 
-				'order'   => array(),  // (string | array) - Designates the ascending or descending order of the 'orderby' parameter. Defaults to 'DESC'. An array can be used for multiple order/orderby sets.
-				'orderby' => array(),  // orderby (string | array) - Sort retrieved posts by parameter. Defaults to 'date (post_date)'. One or more options can be passed.
+				// Order
+				'order'   => array(
+					'format_callback' => array( 'UCF_Post_List_Config', 'format_option_str_or_array' )
+				),
+				'orderby' => array(
+					'format_callback' => array( 'UCF_Post_List_Config', 'format_option_array_str' )
+				),
 
-				'year'     => null,  // (int) - 4 digit year (e.g. 2011).
-				'monthnum' => null,  // (int) - Month number (from 1 to 12).
-				'w'        => null,  // (int) - Week of the year (from 0 to 53). Uses MySQL WEEK command. The mode is dependent on the "start_of_week" option.
-				'day'      => null,  // (int) - Day of the month (from 1 to 31).
-				'hour'     => null,  // (int) - Hour (from 0 to 23).
-				'minute'   => null,  // (int) - Minute (from 0 to 60).
-				'second'   => null,  // (int) - Second (0 to 60).
-				'm'        => null,  // (int) - YearMonth (For e.g.: 201307).
+				// Date
+				'year'     => array(
+					'format_callback' => array( 'UCF_Post_List_Config', 'format_option_int_or_null' )
+				),
+				'monthnum' => array(
+					'format_callback' => array( 'UCF_Post_List_Config', 'format_option_int_or_null' )
+				),
+				'w'        => array(
+					'format_callback' => array( 'UCF_Post_List_Config', 'format_option_int_or_null' )
+				),
+				'day'      => array(
+					'format_callback' => array( 'UCF_Post_List_Config', 'format_option_int_or_null' )
+				),
+				'hour'     => array(
+					'format_callback' => array( 'UCF_Post_List_Config', 'format_option_int_or_null' )
+				),
+				'minute'   => array(
+					'format_callback' => array( 'UCF_Post_List_Config', 'format_option_int_or_null' )
+				),
+				'second'   => array(
+					'format_callback' => array( 'UCF_Post_List_Config', 'format_option_int_or_null' )
+				),
+				'm'        => array(
+					'format_callback' => array( 'UCF_Post_List_Config', 'format_option_int_or_null' )
+				),
 
 				// TODO date_query
 
-				'meta_key'       => '',  // (string) - Custom field key.
-				'meta_value'     => '',  // (string) - Custom field value.
-				'meta_value_num' => null,  // (number) - Custom field value.
-				'meta_compare'   => '',  // (string) - Operator to test the 'meta_value'. Possible values are '=', '!=', '>', '>=', '<', '<=', 'LIKE', 'NOT LIKE', 'IN', 'NOT IN', 'BETWEEN', 'NOT BETWEEN', 'NOT EXISTS', 'REGEXP', 'NOT REGEXP' or 'RLIKE'. Default value is '='.
+				// Meta fields
+				'meta_key'       => array(),
+				'meta_value'     => array(),
+				'meta_value_num' => array(
+					'format_callback' => array( 'UCF_Post_List_Config', 'format_option_int_or_null' )
+				),
+				'meta_compare'   => array(),
 
 				// TODO meta_query
 
-				'perm' => '',  // (string) - User permission.
+				// Permissions
+				'perm' => array(),
 
-				'post_mime_type' => array(),  // (string/array) - Allowed mime types (for attachments)
+				// Mimetypes
+				'post_mime_type' => array(
+					'format_callback' => array( 'UCF_Post_List_Config', 'format_option_str_or_array' )
+				),
 
 				// NOTE: we don't support caching parameters, 'fields', or 'suppress_filters' in this shortcode
 			);
@@ -116,15 +245,28 @@ if ( !class_exists( 'UCF_Post_List_Config' ) ) {
 		}
 
 		/**
+		 * Returns whether or not an option is configurable on the plugin
+		 * options page.
+		 *
+		 * @return boolean
+		 **/
+		public static function option_is_configurable( $option_obj ) {
+			return $option_obj->options_page;
+		}
+
+		/**
 		 * Creates options via the WP Options API that are utilized by the
 		 * plugin.  Intended to be run on plugin activation.
 		 *
 		 * @return void
 		 **/
 		public static function add_options() {
-			$defaults = self::$option_defaults; // don't use self::get_option_defaults() here (default options haven't been set yet)
-
-			add_option( self::$option_prefix . 'include_css', $defaults['include_css'] );
+			$options = array_filter( self::options(), array( 'UCF_Post_List_Config', 'option_is_configurable' ) );
+			if ( $options ) {
+				foreach ( $options as $option ) {
+					add_option( self::$option_prefix . $option->option_name, $option->default );
+				}
+			}
 		}
 
 		/**
@@ -134,25 +276,75 @@ if ( !class_exists( 'UCF_Post_List_Config' ) ) {
 		 * @return void
 		 **/
 		public static function delete_options() {
-			delete_option( self::$option_prefix . 'include_css' );
+			$options = array_filter( self::options(), array( 'UCF_Post_List_Config', 'filter_options_configurable' ) );
+			if ( $options ) {
+				foreach ( $options as $option ) {
+					delete_option( self::$option_prefix . $option->option_name );
+				}
+			}
+		}
+
+		public static function normalize_option( $option, $option_name ) {
+			return new UCF_Post_List_Option( $option_name, $option );
 		}
 
 		/**
-		 * Returns a list of default plugin options. Applies any overridden
-		 * default values set within the options page.
+		 * Returns a list of default plugin options.  Applies additional option
+		 * defaults on-the-fly based on registered post types and taxonomies.
+		 * Does not apply option value overrides set by the user in plugin
+		 * settings (see self::get_option_defaults() instead.)
+		 *
+		 * Use this method to return option defaults instead of accessing
+		 * self::$option_defaults directly.
+		 *
+		 * @return array
+		 **/
+		public static function options() {
+			$optoins = self::$options;
+
+			// Add defaults for per-taxonomy queries.  While it's impractical
+			// to fully support nested tax_query statements, we can at least
+			// support single-level queries against registered taxonomies.
+			$taxonomies = get_taxonomies();
+			foreach ( $taxonomies as $tax_name ) {
+				if ( !isset( $defaults['tax_' . $tax_name] ) ) {
+					$options['tax_' . $tax_name] = array();
+					$options['tax_' . $tax_name . '__field'] = array();
+					$options['tax_' . $tax_name . '__terms'] = array(
+						'format_callback' => array( 'UCF_Post_List_Config', 'format_option_array_str' )
+					);
+					$options['tax_' . $tax_name . '__include_children'] = array(
+						'format_callback' => array( 'UCF_Post_List_Config', 'format_option_bool_or_null' )
+					);
+					$options['tax_' . $tax_name . '__operator'] = array();
+				}
+			}
+
+			return array_walk( $options, array( 'UCF_Post_List_Config', 'normalize_option' ) );
+		}
+
+		/**
+		 * Returns a list of default plugin option values. Applies any
+		 * overridden default values set within the options page.
 		 *
 		 * @return array
 		 **/
 		public static function get_option_defaults() {
-			$defaults = self::$option_defaults;
+			$options = self::options();
+			$configurable_options = array_filter( $options, array( 'UCF_Post_List_Config', 'filter_options_configurable' ) );
+			$defaults = array();
+
+			// Filter out just the option names/default values:
+			foreach ( $options as $option_name => $option ) {
+				$defaults[$option_name] = $option->default;
+			}
 
 			// Apply default values configurable within the options page:
-			$configurable_defaults = array(
-				'include_css' => get_option( self::$option_prefix . 'include_css', $defaults['include_css'] )
-			);
-
-			// Force configurable options to override $defaults, even if they are empty:
-			$defaults = array_merge( $defaults, $configurable_defaults );
+			if ( $configurable_options ) {
+				foreach ( $configurable_options as $option_name => $option ) {
+					$defaults[$option_name] => get_option( self::$option_prefix . $option_name, $option->default );
+				}
+			}
 
 			return $defaults;
 		}
@@ -304,7 +496,7 @@ if ( !class_exists( 'UCF_Post_List_Config' ) ) {
 		 **/
 		public static function add_option_formatting_filters() {
 			// Options
-			$defaults = self::$option_defaults;
+			$defaults = self::options();
 			foreach ( $defaults as $option => $default ) {
 				add_filter( 'option_{$option}', array( 'UCF_Post_List_Config', 'format_option' ), 10, 2 );
 			}
