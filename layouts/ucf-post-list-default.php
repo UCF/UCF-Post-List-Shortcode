@@ -1,7 +1,7 @@
 <?php
 if ( !function_exists( 'ucf_post_list_display_default_before' ) ) {
 
-	function ucf_post_list_display_default_before( $items, $title ) {
+	function ucf_post_list_display_default_before( $posts, $list_title ) {
 		ob_start();
 	?>
 	<div class="ucf-post-list ucf-post-list-default">
@@ -15,11 +15,11 @@ if ( !function_exists( 'ucf_post_list_display_default_before' ) ) {
 
 if ( !function_exists( 'ucf_post_list_display_default_title' ) ) {
 
-	function ucf_post_list_display_default_title( $items, $title ) {
+	function ucf_post_list_display_default_title( $posts, $list_title ) {
 		$formatted_title = '';
 
-		if ( $title ) {
-			$formatted_title = '<h2 class="ucf-post-list-title">' . $title . '</h2>';
+		if ( $list_title ) {
+			$formatted_title = '<h2 class="ucf-post-list-title">' . $list_title . '</h2>';
 		}
 
 		echo $formatted_title;
@@ -31,13 +31,13 @@ if ( !function_exists( 'ucf_post_list_display_default_title' ) ) {
 
 if ( !function_exists( 'ucf_post_list_display_default' ) ) {
 
-	function ucf_post_list_display_default( $items, $title, $show_image, $posts_per_row ) {
-		if ( ! is_array( $items ) && $items !== false ) { $items = array( $items ); }
+	function ucf_post_list_display_default( $posts, $show_image, $posts_per_row, $list_title ) {
+		if ( ! is_array( $posts ) && $posts !== false ) { $posts = array( $posts ); }
 		ob_start();
 	?>
-		<?php if ( $items ): ?>
+		<?php if ( $posts ): ?>
 		<ul class="ucf-post-list-items">
-			<?php foreach ( $items as $item ): ?>
+			<?php foreach ( $posts as $item ): ?>
 			<li class="ucf-post-list-item">
 				<a href="<?php echo get_permalink( $item->ID ); ?>"><?php echo $item->post_title; ?></a>
 			</li>
@@ -56,7 +56,7 @@ if ( !function_exists( 'ucf_post_list_display_default' ) ) {
 
 if ( !function_exists( 'ucf_post_list_display_default_after' ) ) {
 
-	function ucf_post_list_display_default_after( $items, $title ) {
+	function ucf_post_list_display_default_after( $posts, $list_title ) {
 		ob_start();
 	?>
 	</div>

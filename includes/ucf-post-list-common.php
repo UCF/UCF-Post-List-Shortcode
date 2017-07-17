@@ -17,23 +17,23 @@ if ( !class_exists( 'UCF_Post_List_Common' ) ) {
 		 * @param $title string | a title string to display within the post list markup
 		 * @return string | post list HTML string
 		 **/
-		public static function display_post_list( $items, $layout, $title, $show_image, $posts_per_row ) {
+		public static function display_post_list( $posts, $layout, $show_image, $posts_per_row, $list_title ) {
 			ob_start();
 
 			if ( has_action( 'ucf_post_list_display_' . $layout . '_before' ) ) {
-				do_action( 'ucf_post_list_display_' . $layout . '_before', $items, $title );
+				do_action( 'ucf_post_list_display_' . $layout . '_before', $posts, $list_title );
 			}
 
 			if ( has_action( 'ucf_post_list_display_' . $layout . '_title'  ) ) {
-				do_action( 'ucf_post_list_display_' . $layout . '_title', $items, $title );
+				do_action( 'ucf_post_list_display_' . $layout . '_title', $posts, $list_title );
 			}
 
 			if ( has_action( 'ucf_post_list_display_' . $layout  ) ) {
-				do_action( 'ucf_post_list_display_' . $layout, $items, $show_image, $posts_per_row, $title );
+				do_action( 'ucf_post_list_display_' . $layout, $posts, $show_image, $posts_per_row, $list_title );
 			}
 
 			if ( has_action( 'ucf_post_list_display_' . $layout . '_after' ) ) {
-				do_action( 'ucf_post_list_display_' . $layout . '_after', $items, $title );
+				do_action( 'ucf_post_list_display_' . $layout . '_after', $posts, $list_title );
 			}
 
 			return ob_get_clean();

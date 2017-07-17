@@ -3,7 +3,7 @@
  * The default functions for the card layout
  **/
 if ( ! function_exists( 'ucf_post_list_display_card_before' ) ) {
-	function ucf_post_list_display_card_before( $items, $title ) {
+	function ucf_post_list_display_card_before( $posts, $list_title ) {
 		ob_start();
 	?>
 		<div class="ucf-post-list card-layout">
@@ -17,10 +17,10 @@ if ( ! function_exists( 'ucf_post_list_display_card_before' ) ) {
 
 if ( !function_exists( 'ucf_post_list_display_card_title' ) ) {
 
-	function ucf_post_list_display_card_title( $items, $title ) {
+	function ucf_post_list_display_card_title( $posts, $list_title ) {
 
-		if ( $title ) {
-			$formatted_title = '<h2 class="ucf-post-list-title">' . $title . '</h2>';
+		if ( $list_title ) {
+			$formatted_title = '<h2 class="ucf-post-list-title">' . $list_title . '</h2>';
 		}
 
 		echo $formatted_title;
@@ -31,14 +31,14 @@ if ( !function_exists( 'ucf_post_list_display_card_title' ) ) {
 }
 
 if ( ! function_exists( 'ucf_post_list_display_card' ) ) {
-	function ucf_post_list_display_card( $items, $title, $show_image, $posts_per_row ) {
-		if ( ! is_array( $items ) ) { $items = array( $items ); }
+	function ucf_post_list_display_card( $posts, $show_image, $posts_per_row, $list_title ) {
+		if ( ! is_array( $posts ) ) { $posts = array( $posts ); }
 		ob_start();
 ?>
-		<?php if ( $items ): ?>
+		<?php if ( $posts ): ?>
 		<div class="ucf-post-list-card-deck">
 
-		<?php foreach( $items as $index=>$item ) :
+		<?php foreach( $posts as $index=>$item ) :
 			$date = date("M d",strtotime($item->post_date));
 			if( $show_image ) {
 				$item_img = UCF_POST_LIST_Common::get_image_or_fallback( $item );
@@ -74,7 +74,7 @@ if ( ! function_exists( 'ucf_post_list_display_card' ) ) {
 }
 
 if ( ! function_exists( 'ucf_post_list_display_card_after' ) ) {
-	function ucf_post_list_display_card_after( $items, $title ) {
+	function ucf_post_list_display_card_after( $posts, $list_title ) {
 		ob_start();
 	?>
 		</div>

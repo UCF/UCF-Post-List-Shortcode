@@ -102,6 +102,12 @@ if ( !class_exists( 'UCF_Post_List_Config' ) ) {
 					'default' => 'default'
 				) ),
 				'list_title'  => new UCF_Post_List_Option( 'list_title' ),
+				'show_image'  => new UCF_Post_List_Option( 'show_image', array(
+					'default' => true
+				) ),
+				'posts_per_row'  => new UCF_Post_List_Option( 'posts_per_row', array(
+					'default' => null
+				) ),
 				'include_css' => new UCF_Post_List_Option( 'include_css', array(
 					'default'         => true,
 					'format_callback' => array( 'UCF_Post_List_Config', 'format_option_bool' ),
@@ -112,7 +118,7 @@ if ( !class_exists( 'UCF_Post_List_Config' ) ) {
 					'field_type'      => 'checkbox',
 					'field_options_section' => 'ucf_post_list_section_general'
 				) ),
-				'fallback_image' => new UCF_Post_List_Option( 'fallback_image' ), array(
+				'fallback_image' => new UCF_Post_List_Option( 'fallback_image' , array(
 					'default'         => true,
 					'format_callback' => array( 'UCF_Post_List_Config', 'format_option_int_or_null' ),
 					'options_page'    => true,
@@ -121,8 +127,7 @@ if ( !class_exists( 'UCF_Post_List_Config' ) ) {
 					'field_desc'      => '(Optional) Image to display when post does not contain a featured image. Note: Images are only supported with the card layout.',
 					'field_type'      => 'image',
 					'field_options_section' => 'ucf_post_list_section_general'
-
-				),
+				) ),
 
 				// Custom argument that defines the top-level relationship
 				// between tax_query arguments
@@ -679,6 +684,7 @@ if ( !class_exists( 'UCF_Post_List_Config' ) ) {
 
 
 			$options = array_filter( self::get_options(), array( 'UCF_Post_List_Config', 'option_is_configurable' ) );
+
 			if ( $options ) {
 				foreach ( $options as $option ) {
 					if ( $option->field_title && $option->field_options_section ) {
@@ -731,7 +737,7 @@ if ( !class_exists( 'UCF_Post_List_Config' ) ) {
 				?>
 					<img class="<?php echo $option_name; ?>_preview" src="<?php echo wp_get_attachment_url( $current_value ); ?>" height="100" width="100">
 					<input class="<?php echo $option_name; ?>" type="hidden" id="<?php echo $option_name; ?>" name="<?php echo $option_name; ?>" value="<?php echo $current_value; ?>">
-					<a href="#" class="<?php echo $option_name; ?>_upload">Upload</a>
+					<a href="#" class="<?php echo $option_name; ?>_upload button">Upload</a>
 				<?php
 					$markup = ob_get_clean();
 					break;
