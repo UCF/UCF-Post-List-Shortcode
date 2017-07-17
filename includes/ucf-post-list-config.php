@@ -11,6 +11,7 @@ if ( !class_exists( 'UCF_Post_List_Config' ) ) {
 			$option_defaults = array(
 				'layout'           => 'default',
 				'show_image'       => true,
+				'fallback_image'   => null,
 				'posts_per_row'    => 0,
 				'list_title'       => '',
 				'include_css'      => true,
@@ -127,6 +128,7 @@ if ( !class_exists( 'UCF_Post_List_Config' ) ) {
 			$defaults = self::$option_defaults; // don't use self::get_option_defaults() here (default options haven't been set yet)
 
 			add_option( self::$option_prefix . 'include_css', $defaults['include_css'] );
+			add_option( self::$option_prefix . 'fallback_image', $defaults['fallback_image'] );
 		}
 
 		/**
@@ -137,6 +139,7 @@ if ( !class_exists( 'UCF_Post_List_Config' ) ) {
 		 **/
 		public static function delete_options() {
 			delete_option( self::$option_prefix . 'include_css' );
+			delete_option( self::$option_prefix . 'fallback_image' );
 		}
 
 		/**
@@ -150,7 +153,8 @@ if ( !class_exists( 'UCF_Post_List_Config' ) ) {
 
 			// Apply default values configurable within the options page:
 			$configurable_defaults = array(
-				'include_css' => get_option( self::$option_prefix . 'include_css', $defaults['include_css'] )
+				'include_css'    => get_option( self::$option_prefix . 'include_css', $defaults['include_css'] ),
+				'fallback_image' => get_option( self::$option_prefix . 'fallback_image', $defaults['fallback_image'] )
 			);
 
 			// Force configurable options to override $defaults, even if they are empty:
@@ -252,6 +256,7 @@ if ( !class_exists( 'UCF_Post_List_Config' ) ) {
 					case 'hour':
 					case 'minute':
 					case 'second':
+					case 'fallback_image':
 					case 'm':
 						$list[$key] = is_null( $val ) ? $val : intval( $val );
 						break;
@@ -336,6 +341,7 @@ if ( !class_exists( 'UCF_Post_List_Config' ) ) {
 		public static function settings_init() {
 			// Register settings
 			register_setting( 'ucf_post_list', self::$option_prefix . 'include_css' );
+			register_setting( 'ucf_post_list', self::$option_prefix . 'fallback_image' );
 
 			// Register setting sections
 			add_settings_section(
@@ -355,6 +361,19 @@ if ( !class_exists( 'UCF_Post_List_Config' ) ) {
 					'label_for'   => self::$option_prefix . 'include_css',
 					'description' => 'Include the default css stylesheet for post lists within the theme.<br>Leave this checkbox checked unless your theme provides custom styles for post lists.',
 					'type'        => 'checkbox'
+				)
+			);
+
+			add_settings_field(
+				self::$option_prefix . 'fallback_image',
+				'Fallback Image',  // formatted field title
+				array( 'UCF_Post_List_Config', 'display_settings_field' ),  // display callback
+				'ucf_post_list',  // settings page slug
+				'ucf_post_list_section_general',  // option section slug
+				array(  // extra arguments to pass to the callback function
+					'label_for'   => self::$option_prefix . 'fallback_image',
+					'description' => '(Optional) Image to display when post does not contain a feature image. Note: Images are only supported with the card layout.',
+					'type'        => 'image'
 				)
 			);
 		}
@@ -377,6 +396,16 @@ if ( !class_exists( 'UCF_Post_List_Config' ) ) {
 					<p class="description">
 						<?php echo $description; ?>
 					</p>
+				<?php
+					$markup = ob_get_clean();
+					break;
+
+				case 'image':
+					ob_start();
+				?>
+					<img class="<?php echo $option_name; ?>_preview" src="<?php echo wp_get_attachment_url( $current_value ); ?>" height="100" width="100">
+					<input class="<?php echo $option_name; ?>" type="hidden" id="<?php echo $option_name; ?>" name="<?php echo $option_name; ?>" value="<?php echo $current_value; ?>">
+					<a href="#" class="<?php echo $option_name; ?>_upload">Upload</a>
 				<?php
 					$markup = ob_get_clean();
 					break;

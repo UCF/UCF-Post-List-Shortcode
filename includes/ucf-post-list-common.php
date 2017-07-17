@@ -28,6 +28,14 @@ if ( !class_exists( 'UCF_Post_List_Common' ) ) {
 			return ob_get_clean();
 		}
 
+		public static function get_image_or_fallback( $item ) {
+			$item_img = wp_get_attachment_image_src( get_post_thumbnail_id( $item->ID ), 'single-post-thumbnail' )[0];
+			if( $item_img === null ) {
+				$item_img = wp_get_attachment_url( UCF_Post_List_Config::get_option_or_default( 'ucf_post_list_fallback_image' ));
+			}
+			return $item_img;
+		}
+
 		public static function get_post_list( $args ) {
 			$filtered_args = self::prepare_post_list_args( $args );
 			return is_array( $filtered_args ) ? get_posts( $filtered_args ) : false;

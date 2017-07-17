@@ -7,14 +7,20 @@ var gulp = require('gulp'),
     autoprefixer = require('gulp-autoprefixer'),
     cleanCSS = require('gulp-clean-css'),
     readme = require('gulp-readme-to-markdown'),
+    jshint = require('gulp-jshint'),
+    jshintStylish = require('jshint-stylish'),
+    uglify = require('gulp-uglify'),
+    concat = require('gulp-concat'),
     browserSync = require('browser-sync').create();
 
 var configDefault = {
     src: {
-      scssPath: './src/scss'
+      scssPath: './src/scss',
+      jsPath: './src/js'
     },
     dist: {
-      cssPath: './static/css'
+      cssPath: './static/css',
+      jsPath: './static/js'
     }
   },
   config = merge(configDefault, configLocal);
@@ -47,6 +53,27 @@ gulp.task('css-main', function() {
 // All css-related tasks
 gulp.task('css', ['scss-lint', 'css-main']);
 
+// Minify, lint and copy admin js
+gulp.task('js-hint', function() {
+  gulp.src(config.jsPath + '/*.js')
+    .pipe(jshint())
+    .pipe(jshint.reporter('jshint-stylish'))
+    .pipe(jshint.reporter('fail'));
+});
+
+gulp.task('js-admin', function() {
+  var minified = [
+    config.src.jsPath + '/ucf-post-list-admin.js'
+  ];
+
+  gulp.src(minified)
+    .pipe(concat('ucf-post-list-admin.min.js'))
+    .pipe(uglify())
+    .pipe(gulp.dest(config.dist.jsPath));
+});
+
+gulp.task('js', ['js-hint', 'js-admin']);
+
 
 //
 // Readme
@@ -74,9 +101,10 @@ gulp.task('watch', function() {
   }
 
   gulp.watch(config.src.scssPath + '/**/*.scss', ['css']);
+  gulp.watch(config.src.jsPath + './**/*.js').on('change', browserSync.reload);
   gulp.watch('./**/*.php').on('change', browserSync.reload);
   gulp.watch('readme.txt', ['readme']);
 });
 
 // Default task
-gulp.task('default', ['css', 'readme']);
+gulp.task('default', ['css', 'js', 'readme']);

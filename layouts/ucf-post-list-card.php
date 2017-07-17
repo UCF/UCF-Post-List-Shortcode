@@ -41,8 +41,7 @@ if ( ! function_exists( 'ucf_post_list_display_card' ) ) {
 		<?php foreach( $items as $index=>$item ) :
 			$date = date("M d",strtotime($item->post_date));
 			if( $show_image ) {
-				// $item_img = UCF_POST_LIST_Common::get_story_image_or_fallback( $item );
-				$item_img = wp_get_attachment_image_src( get_post_thumbnail_id( $item->ID ), 'single-post-thumbnail' )[0];
+				$item_img = UCF_POST_LIST_Common::get_image_or_fallback( $item );
 			}
 
 			if( $posts_per_row > 0 && $index !== 0 && ( $index % $posts_per_row ) === 0 ) {
@@ -51,7 +50,7 @@ if ( ! function_exists( 'ucf_post_list_display_card' ) ) {
 		?>
 		<div class="ucf-post-list-card">
 			<a href="<?php echo $item->guid; ?>">
-				<?php if( $show_image === true ) : ?>
+				<?php if( $show_image && $item_img ) : ?>
 					<img src="<?php echo $item_img; ?>" class="ucf-post-list-thumbnail-image" alt="<?php echo $item->post_title; ?>">
 				<?php endif; ?>
 				<div class="ucf-post-list-card-block">

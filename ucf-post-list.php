@@ -16,6 +16,7 @@ define( 'UCF_POST_LIST__PLUGIN_FILE', __FILE__ );
 require_once 'includes/ucf-post-list-config.php';
 require_once 'includes/ucf-post-list-common.php';
 require_once 'includes/ucf-post-list-shortcode.php';
+require_once 'admin/ucf-post-list-admin.php';
 
 require_once 'layouts/ucf-post-list-default.php';
 require_once 'layouts/ucf-post-list-card.php';
