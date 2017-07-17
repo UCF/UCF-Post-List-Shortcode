@@ -119,7 +119,7 @@ if ( !class_exists( 'UCF_Post_List_Config' ) ) {
 					'field_options_section' => 'ucf_post_list_section_general'
 				) ),
 				'fallback_image' => new UCF_Post_List_Option( 'fallback_image' , array(
-					'default'         => true,
+					'default'         => null,
 					'format_callback' => array( 'UCF_Post_List_Config', 'format_option_int_or_null' ),
 					'options_page'    => true,
 					'sc_attr'         => false,
