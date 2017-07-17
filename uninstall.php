@@ -10,4 +10,4 @@ if ( !defined( 'WP_UNINSTALL_PLUGIN' ) ) {
 require_once 'includes/ucf-post-list-config.php';
 
 // Delete options
-UCF_Post_List_Config::delete_options();
+UCF_Post_List_Config::delete_configurable_options();

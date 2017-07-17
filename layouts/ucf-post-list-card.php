@@ -31,7 +31,7 @@ if ( !function_exists( 'ucf_post_list_display_card_title' ) ) {
 }
 
 if ( ! function_exists( 'ucf_post_list_display_card' ) ) {
-	function ucf_post_list_display_card( $items, $show_image, $posts_per_row, $title ) {
+	function ucf_post_list_display_card( $items, $title, $show_image, $posts_per_row ) {
 		if ( ! is_array( $items ) ) { $items = array( $items ); }
 		ob_start();
 ?>

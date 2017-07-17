@@ -27,7 +27,7 @@ require_once 'layouts/ucf-post-list-card.php';
  **/
 if ( !function_exists( 'ucf_post_list_plugin_activation' ) ) {
 	function ucf_post_list_plugin_activation() {
-		UCF_Post_List_Config::add_options();
+		UCF_Post_List_Config::add_configurable_options();
 		flush_rewrite_rules();
 	}
 }
