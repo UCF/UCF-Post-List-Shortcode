@@ -8,10 +8,15 @@ if ( !class_exists( 'UCF_Post_List_Option' ) ) {
 	class UCF_Post_List_Option {
 		public
 			$option_name,
-			$default = null,  // default value for the option
+			$default         = null,  // default value for the option
 			$format_callback = 'sanitize_text_field',  // function that formats the option value
-			$options_page = false,  // whether the option should be configurable via the plugin options page
-			$sc_attr = true;  // whether the option should be a valid shortcode attribute
+			$options_page    = false,  // whether the option should be configurable via the plugin options page
+			$sc_attr         = true,  // whether the option should be a valid shortcode attribute
+			$field_title     = null,
+			$field_desc      = null,
+			$field_type      = null,
+			$field_options   = null,
+			$field_options_section = null;
 
 		function __construct( $option_name, $args=array() ) {
 			$this->option_name     = $option_name;
@@ -19,6 +24,11 @@ if ( !class_exists( 'UCF_Post_List_Option' ) ) {
 			$this->format_callback = isset( $args['format_callback'] ) ? $args['format_callback'] : $this->format_callback;
 			$this->options_page    = isset( $args['options_page'] ) ? $args['options_page'] : $this->options_page;
 			$this->sc_attr         = isset( $args['sc_attr'] ) ? $args['sc_attr'] : $this->sc_attr;
+			$this->field_title     = isset( $args['field_title'] ) ? $args['field_title'] : $this->field_title;
+			$this->field_desc      = isset( $args['field_desc'] ) ? $args['field_desc'] : $this->field_desc;
+			$this->field_type      = isset( $args['field_type'] ) ? $args['field_type'] : $this->field_type;
+			$this->field_options   = isset( $args['field_options'] ) ? $args['field_options'] : $this->field_options;
+			$this->field_options_section = isset( $args['field_options_section'] ) ? $args['field_options_section'] : $this->field_options_section;
 		}
 
 		/**
@@ -77,7 +87,11 @@ if ( !class_exists( 'UCF_Post_List_Config' ) ) {
 					'default'         => true,
 					'format_callback' => array( 'UCF_Post_List_Config', 'format_option_bool' ),
 					'options_page'    => true,
-					'sc_attr'         => false
+					'sc_attr'         => false,
+					'field_title'     => 'Include Default CSS',
+					'field_desc'      => 'Include the default css stylesheet for post lists within the theme.<br>Leave this checkbox checked unless your theme provides custom styles for post lists.',
+					'field_type'      => 'checkbox',
+					'field_options_section' => 'ucf_post_list_section_general'
 				) ),
 
 				// Custom argument that defines the top-level relationship
@@ -552,23 +566,29 @@ if ( !class_exists( 'UCF_Post_List_Config' ) ) {
 				'ucf_post_list' // settings page slug
 			);
 
-			add_settings_field(
-				self::$option_prefix . 'include_css',
-				'Include Default CSS',  // formatted field title
-				array( 'UCF_Post_List_Config', 'display_settings_field' ),  // display callback
-				'ucf_post_list',  // settings page slug
-				'ucf_post_list_section_general',  // option section slug
-				array(  // extra arguments to pass to the callback function
-					'label_for'   => self::$option_prefix . 'include_css',
-					'description' => 'Include the default css stylesheet for post lists within the theme.<br>Leave this checkbox checked unless your theme provides custom styles for post lists.',
-					'type'        => 'checkbox'
-				)
-			);
+			$options = array_filter( self::get_options(), array( 'UCF_Post_List_Config', 'option_is_configurable' ) );
+			if ( $options ) {
+				foreach ( $options as $option ) {
+					if ( $option->field_title && $option->field_options_section ) {
+						add_settings_field(
+							self::$option_prefix . $option->option_name,
+							$option->field_title,  // formatted field title
+							array( 'UCF_Post_List_Config', 'display_settings_field' ),  // display callback
+							'ucf_post_list',  // settings page slug
+							$option->field_options_section,  // option section slug
+							array(  // extra arguments to pass to the callback function
+								'label_for'   => self::$option_prefix . $option->option_name,
+								'description' => $option->field_desc ?: '',
+								'type'        => $option->field_type ?: 'text'
+							)
+						);
+					}
+				}
+			}
 		}
 
 		/**
 		 * Displays an individual setting's field markup.
-		 * TODO move to option obj?
 		 **/
 		public static function display_settings_field( $args ) {
 			$option_name   = $args['label_for'];
