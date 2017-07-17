@@ -6,6 +6,17 @@
 if ( !class_exists( 'UCF_Post_List_Common' ) ) {
 
 	class UCF_Post_List_Common {
+
+		/**
+		 * Returns full markup for a list of posts.
+		 *
+		 * @author Jo Dickson
+		 * @since 1.0.0
+		 * @param $items Mixed | array of WP Post objects or false
+		 * @param $layout string | layout name
+		 * @param $title string | a title string to display within the post list markup
+		 * @return string | post list HTML string
+		 **/
 		public static function display_post_list( $items, $layout, $title ) {
 			ob_start();
 
@@ -28,6 +39,15 @@ if ( !class_exists( 'UCF_Post_List_Common' ) ) {
 			return ob_get_clean();
 		}
 
+		/**
+		 * Retrieves a list of WP Post objects, using arguments passed in
+		 * via $args.
+		 *
+		 * @author Jo Dickson
+		 * @since 1.0.0
+		 * @param $args array | array of post query arguments, from post list shortcode
+		 * @return Mixed | array of WP Post objects, or false on failure
+		 **/
 		public static function get_post_list( $args ) {
 			$filtered_args = self::prepare_post_list_args( $args );
 			return is_array( $filtered_args ) ? get_posts( $filtered_args ) : false;
@@ -36,12 +56,17 @@ if ( !class_exists( 'UCF_Post_List_Common' ) ) {
 		/**
 		 * Additional massaging of arguments before passing them to
 		 * get_posts().
+		 *
+		 * @author Jo Dickson
+		 * @since 1.0.0
+		 * @param $args array | array of post query arguments, from post list shortcode
+		 * @return array | array of filtered post query arguments
 		 **/
 		public static function prepare_post_list_args( $args ) {
 			// We intentionally remove empty values before passing them to
 		 	// get_posts() to allow WP to set its own defaults as necessary (so
 		 	// that we don't have to add/maintain them in this plugin.)
-			$filtered_args = array_filter( $args, array( 'UCF_Post_List_Common', 'filter_post_list_arg' ) );
+			$filtered_args = array_filter( $args, array( 'UCF_Post_List_Common', 'not_empty_allow_zero' ) );
 
 			// Handle taxonomy queries
 			$filtered_args = self::filter_taxonomy_post_list_args( $filtered_args );
@@ -56,9 +81,14 @@ if ( !class_exists( 'UCF_Post_List_Common' ) ) {
 		}
 
 		/**
-		 * Removes empty arguments while preserving 0 value integers.
+		 * Returns whether or not the value is empty, while allowing 0 values.
+		 *
+		 * @author Jo Dickson
+		 * @since 1.0.0
+		 * @param $arg Mixed | Any single post list argument
+		 * @return boolean | True if the value is not empty, or False if it is empty
 		 **/
-		private static function filter_post_list_arg( $arg ) {
+		private static function not_empty_allow_zero( $arg ) {
 			return !(
 				is_array( $arg ) && empty( $arg )
 				|| is_null( $arg )
@@ -70,6 +100,11 @@ if ( !class_exists( 'UCF_Post_List_Common' ) ) {
 		 * Given an array of post list arguments that have already been
 		 * filtered to remove empty non-zero values, this function
 		 * replaces custom taxonomy arguments with a proper tax_query.
+		 *
+		 * @author Jo Dickson
+		 * @since 1.0.0
+		 * @param $args array | array of post query arguments, from post list shortcode
+		 * @return array | array of filtered post query arguments
 		 **/
 		private static function filter_taxonomy_post_list_args( $args ) {
 			$taxonomies = get_taxonomies();
@@ -95,7 +130,6 @@ if ( !class_exists( 'UCF_Post_List_Common' ) ) {
 				unset(
 					$args['tax_' . $tax_name],
 					$args['tax_' . $tax_name . '__field'],
-					$args['tax_' . $tax_name . '__terms'],
 					$args['tax_' . $tax_name . '__include_children'],
 					$args['tax_' . $tax_name . '__operator']
 				);
@@ -125,6 +159,11 @@ if ( !class_exists( 'UCF_Post_List_Common' ) ) {
 		 *
 		 * NOTE: this function will need to be updated if meta_query support
 		 * is added to the shortcode
+		 *
+		 * @author Jo Dickson
+		 * @since 1.0.0
+		 * @param $args array | array of post query arguments, from post list shortcode
+		 * @return array | array of filtered post query arguments
 		 **/
 		private static function filter_acf_relationship_field_meta( $args ) {
 			if ( isset( $args['meta_value'] ) && isset( $args['meta_key'] ) ) {

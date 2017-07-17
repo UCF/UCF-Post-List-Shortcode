@@ -34,6 +34,11 @@ if ( !class_exists( 'UCF_Post_List_Option' ) ) {
 		/**
 		 * Returns the default value for the option, with the Options API value
 		 * applied if $apply_configurable_val and $this->options_page are true.
+		 *
+		 * @author Jo Dickson
+		 * @since 1.0.0
+		 * @param $apply_configurable_val boolean | whether to apply the option's value set on the plugin settings page to the returned value
+		 * @return Mixed | the option's default value
 		 **/
 		function get_default( $apply_configurable_val=true ) {
 			$default = $this->default;
@@ -46,6 +51,11 @@ if ( !class_exists( 'UCF_Post_List_Option' ) ) {
 		/**
 		 * Returns the formatted value, using the function name passed to
 		 * $this->format_callback.
+		 *
+		 * @author Jo Dickson
+		 * @since 1.0.0
+		 * @param $value Mixed | option value to apply formatting to
+		 * @return Mixed | option value with formatting applied
 		 **/
 		function format( $value ) {
 			return call_user_func( $this->format_callback, $value );
@@ -61,6 +71,13 @@ if ( !class_exists( 'UCF_Post_List_Config' ) ) {
 			$option_prefix = 'ucf_post_list_';
 
 
+		/**
+		 * Returns the plugin's registered layouts.
+		 *
+		 * @author Jo Dickson
+		 * @since 1.0.0
+		 * @return array | list of layouts
+		 **/
 		public static function get_layouts() {
 			$layouts = array(
 				'default' => 'Default Layout',
@@ -75,7 +92,9 @@ if ( !class_exists( 'UCF_Post_List_Config' ) ) {
 		 * Returns a full list of plugin option objects.  Adds additional
 		 * options on-the-fly based on registered post types and taxonomies.
 		 *
-		 * @return array
+		 * @author Jo Dickson
+		 * @since 1.0.0
+		 * @return array | array of UCF_Post_List_Option objects
 		 **/
 		public static function get_options() {
 			$options = array(
@@ -315,7 +334,10 @@ if ( !class_exists( 'UCF_Post_List_Config' ) ) {
 		/**
 		 * Returns an option object or false if it doesn't exist.
 		 *
-		 * @return UCF_Post_List_Option object
+		 * @author Jo Dickson
+		 * @since 1.0.0
+		 * @param $option_name string | name of the object to return
+		 * @return Mixed | UCF_Post_List_Option object, or False on failure
 		 **/
 		public static function get_option( $option_name ) {
 			$options = self::get_options();
@@ -326,6 +348,9 @@ if ( !class_exists( 'UCF_Post_List_Config' ) ) {
 		 * Returns whether or not an option is configurable on the plugin
 		 * options page.
 		 *
+		 * @author Jo Dickson
+		 * @since 1.0.0
+		 * @param $option_obj object | UCF_Post_List_Option object
 		 * @return boolean
 		 **/
 		public static function option_is_configurable( $option_obj ) {
@@ -335,6 +360,9 @@ if ( !class_exists( 'UCF_Post_List_Config' ) ) {
 		/**
 		 * Returns whether or not an option is a valid shortcode attribute.
 		 *
+		 * @author Jo Dickson
+		 * @since 1.0.0
+		 * @param $option_obj object | UCF_Post_List_Option object
 		 * @return boolean
 		 **/
 		public static function option_is_sc_attr( $option_obj ) {
@@ -345,6 +373,8 @@ if ( !class_exists( 'UCF_Post_List_Config' ) ) {
 		 * Creates options via the WP Options API that are utilized by the
 		 * plugin.  Intended to be run on plugin activation.
 		 *
+		 * @author Jo Dickson
+		 * @since 1.0.0
 		 * @return void
 		 **/
 		public static function add_configurable_options() {
@@ -360,6 +390,8 @@ if ( !class_exists( 'UCF_Post_List_Config' ) ) {
 		 * Deletes options via the WP Options API that are utilized by the
 		 * plugin.  Intended to be run on plugin uninstallation.
 		 *
+		 * @author Jo Dickson
+		 * @since 1.0.0
 		 * @return void
 		 **/
 		public static function delete_configurable_options() {
@@ -374,6 +406,10 @@ if ( !class_exists( 'UCF_Post_List_Config' ) ) {
 		/**
 		 * Returns an array of option name+default key+value pairs for all
 		 * valid shortcode attributes.
+		 *
+		 * @author Jo Dickson
+		 * @since 1.0.0
+		 * @return array | array of valid shortcode attributes
 		 **/
 		public static function get_shortcode_atts() {
 			$options = array_filter( self::get_options(), array( 'UCF_Post_List_Config', 'option_is_sc_attr' ) );
@@ -388,6 +424,11 @@ if ( !class_exists( 'UCF_Post_List_Config' ) ) {
 
 		/**
 		 * Formats $val as a boolean value.
+		 *
+		 * @author Jo Dickson
+		 * @since 1.0.0
+		 * @param $val Mixed | value to apply formatting to
+		 * @return boolean | formatted boolean value
 		 **/
 		public static function format_option_bool( $val ) {
 			return filter_var( $val, FILTER_VALIDATE_BOOLEAN );
@@ -395,14 +436,23 @@ if ( !class_exists( 'UCF_Post_List_Config' ) ) {
 
 		/**
 		 * Formats $val as a boolean value.  Allows null values.
+		 *
+		 * @author Jo Dickson
+		 * @since 1.0.0
+		 * @param $val Mixed | value to apply formatting to
+		 * @return Mixed | formatted boolean value or null
 		 **/
 		public static function format_option_bool_or_null( $val ) {
 			return is_null( $val ) ? $val : filter_var( $val, FILTER_VALIDATE_BOOLEAN );
 		}
 
-
 		/**
 		 * Formats $val as an integer.  Allows null values.
+		 *
+		 * @author Jo Dickson
+		 * @since 1.0.0
+		 * @param $val Mixed | value to apply formatting to
+		 * @return Mixed | formatted integer value or null
 		 **/
 		public static function format_option_int_or_null( $val ) {
 			return is_null( $val ) ? $val : intval( $val );
@@ -410,6 +460,11 @@ if ( !class_exists( 'UCF_Post_List_Config' ) ) {
 
 		/**
 		 * Formats $val as an array of integers.
+		 *
+		 * @author Jo Dickson
+		 * @since 1.0.0
+		 * @param $val Mixed | value to apply formatting to
+		 * @return array | array of integers
 		 **/
 		public static function format_option_int_array( $val ) {
 			if ( is_string( $val ) ) {
@@ -425,6 +480,11 @@ if ( !class_exists( 'UCF_Post_List_Config' ) ) {
 
 		/**
 		 * Formats $val as an array of strings.
+		 *
+		 * @author Jo Dickson
+		 * @since 1.0.0
+		 * @param $val Mixed | value to apply formatting to
+		 * @return array | array of strings
 		 **/
 		public static function format_option_str_array( $val ) {
 			if ( is_string( $val ) ) {
@@ -440,6 +500,11 @@ if ( !class_exists( 'UCF_Post_List_Config' ) ) {
 
 		/**
 		 * Formats $val as a string or array of strings.
+		 *
+		 * @author Jo Dickson
+		 * @since 1.0.0
+		 * @param $val Mixed | value to apply formatting to
+		 * @return Mixed | array of strings, or string
 		 **/
 		public static function format_option_str_or_array( $val ) {
 			if ( !is_array( $val ) ) {
@@ -458,6 +523,11 @@ if ( !class_exists( 'UCF_Post_List_Config' ) ) {
 		/**
 		 * Formats $val as an array using a custom associative array syntax
 		 * (param="key1=>val1,key2=>val2"), or as a single string value
+		 *
+		 * @author Jo Dickson
+		 * @since 1.0.0
+		 * @param $val Mixed | value to apply formatting to
+		 * @return Mixed | array of strings, or string
 		 **/
 		public static function format_option_array_str( $val ) {
 			$formatted_val = '';
@@ -485,6 +555,11 @@ if ( !class_exists( 'UCF_Post_List_Config' ) ) {
 
 		/**
 		 * Formats $val as a number.  Allows null values.
+		 *
+		 * @author Jo Dickson
+		 * @since 1.0.0
+		 * @param $val Mixed | value to apply formatting to
+		 * @return Mixed | formatted number value or null
 		 **/
 		public static function format_option_num_or_null( $val ) {
 			return is_null( $val ) ? $val : $val + 0;
@@ -493,6 +568,12 @@ if ( !class_exists( 'UCF_Post_List_Config' ) ) {
 		/**
 		 * Applies formatting to a single configurable option. Intended to be
 		 * passed to the 'option_{$option}' hook.
+		 *
+		 * @author Jo Dickson
+		 * @since 1.0.0
+		 * @param $value Mixed | value of the option
+		 * @param $option_name string | option name
+		 * @return Mixed | formatted option value, or False on failure
 		 **/
 		public static function format_configurable_option( $value, $option_name ) {
 			$option = self::get_option( $option_name );
@@ -505,6 +586,14 @@ if ( !class_exists( 'UCF_Post_List_Config' ) ) {
 		/**
 		 * Applies formatting to an array of shortcode attributes. Intended to
 		 * be passed to the 'shortcode_atts_ucf-post-list' hook.
+		 *
+		 * @author Jo Dickson
+		 * @since 1.0.0
+		 * @param $out array | The output array of shortcode attributes
+		 * @param $pairs array | The supported attributes and their defaults
+		 * @param $atts array | The user defined shortcode attributes
+		 * @param $shortcode string | The shortcode name
+		 * @return array | The filtered output array of shortcode attributes
 		 **/
 		public static function format_sc_atts( $out, $pairs, $atts, $shortcode ) {
 			foreach ( $out as $key=>$val ) {
@@ -518,6 +607,10 @@ if ( !class_exists( 'UCF_Post_List_Config' ) ) {
 		/**
 		 * Adds filters for shortcode and plugin options that apply our
 		 * formatting rules to attribute/option values.
+		 *
+		 * @author Jo Dickson
+		 * @since 1.0.0
+		 * @return void
 		 **/
 		public static function add_option_formatting_filters() {
 			// Options
@@ -533,8 +626,10 @@ if ( !class_exists( 'UCF_Post_List_Config' ) ) {
 		 * Convenience method for returning an option from the WP Options API
 		 * or a plugin option default.
 		 *
-		 * @param $option_name
-		 * @return mixed
+		 * @author Jo Dickson
+		 * @since 1.0.0
+		 * @param $option_name string | option name
+		 * @return mixed | the option value
 		 **/
 		public static function get_option_or_default( $option_name ) {
 			// Handle $option_name passed in with or without self::$option_prefix applied:
@@ -552,6 +647,10 @@ if ( !class_exists( 'UCF_Post_List_Config' ) ) {
 
 		/**
 		 * Initializes setting registration with the Settings API.
+		 *
+		 * @author Jo Dickson
+		 * @since 1.0.0
+		 * @return void
 		 **/
 		public static function settings_init() {
 			// Register settings
@@ -588,6 +687,11 @@ if ( !class_exists( 'UCF_Post_List_Config' ) ) {
 
 		/**
 		 * Displays an individual setting's field markup.
+		 *
+		 * @author Jo Dickson
+		 * @since 1.0.0
+		 * @param $args array | array of field display arguments
+		 * @return string | field input HTML
 		 **/
 		public static function display_settings_field( $args ) {
 			$option_name   = $args['label_for'];
@@ -640,6 +744,10 @@ if ( !class_exists( 'UCF_Post_List_Config' ) ) {
 
 		/**
 		 * Registers the settings page to display in the WordPress admin.
+		 *
+		 * @author Jo Dickson
+		 * @since 1.0.0
+		 * @return string | The resulting page's hook_suffix
 		 **/
 		public static function add_options_page() {
 			$page_title = 'UCF Post List Settings';
@@ -660,6 +768,10 @@ if ( !class_exists( 'UCF_Post_List_Config' ) ) {
 
 		/**
 		 * Displays the plugin's settings page form.
+		 *
+		 * @author Jo Dickson
+		 * @since 1.0.0
+		 * @return string | options page form HTML
 		 **/
 		public static function options_page_html() {
 			ob_start();
