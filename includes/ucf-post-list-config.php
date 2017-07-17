@@ -552,7 +552,6 @@ if ( !class_exists( 'UCF_Post_List_Config' ) ) {
 
 		/**
 		 * Initializes setting registration with the Settings API.
-		 * TODO move field configuration to option obj
 		 **/
 		public static function settings_init() {
 			// Register settings
