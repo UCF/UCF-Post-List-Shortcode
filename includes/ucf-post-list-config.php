@@ -10,6 +10,8 @@ if ( !class_exists( 'UCF_Post_List_Config' ) ) {
 			$option_prefix = 'ucf_post_list_',
 			$option_defaults = array(
 				'layout'           => 'default',
+				'show_image'       => true,
+				'posts_per_row'    => 0,
 				'list_title'       => '',
 				'include_css'      => true,
 
