@@ -102,6 +102,12 @@ if ( !class_exists( 'UCF_Post_List_Config' ) ) {
 					'default' => 'default'
 				) ),
 				'list_title'  => new UCF_Post_List_Option( 'list_title' ),
+				'show_image'  => new UCF_Post_List_Option( 'show_image', array(
+					'default' => true
+				) ),
+				'posts_per_row'  => new UCF_Post_List_Option( 'posts_per_row', array(
+					'default' => null
+				) ),
 				'include_css' => new UCF_Post_List_Option( 'include_css', array(
 					'default'         => true,
 					'format_callback' => array( 'UCF_Post_List_Config', 'format_option_bool' ),
@@ -110,6 +116,16 @@ if ( !class_exists( 'UCF_Post_List_Config' ) ) {
 					'field_title'     => 'Include Default CSS',
 					'field_desc'      => 'Include the default css stylesheet for post lists within the theme.<br>Leave this checkbox checked unless your theme provides custom styles for post lists.',
 					'field_type'      => 'checkbox',
+					'field_options_section' => 'ucf_post_list_section_general'
+				) ),
+				'fallback_image' => new UCF_Post_List_Option( 'fallback_image' , array(
+					'default'         => null,
+					'format_callback' => array( 'UCF_Post_List_Config', 'format_option_int_or_null' ),
+					'options_page'    => true,
+					'sc_attr'         => false,
+					'field_title'     => 'Fallback Image',
+					'field_desc'      => '(Optional) Image to display when post does not contain a featured image. Note: Images are only supported with the card layout.',
+					'field_type'      => 'image',
 					'field_options_section' => 'ucf_post_list_section_general'
 				) ),
 
@@ -377,6 +393,7 @@ if ( !class_exists( 'UCF_Post_List_Config' ) ) {
 		 * @since 1.0.0
 		 * @return void
 		 **/
+
 		public static function add_configurable_options() {
 			$options = array_filter( self::get_options(), array( 'UCF_Post_List_Config', 'option_is_configurable' ) );
 			if ( $options ) {
@@ -655,6 +672,7 @@ if ( !class_exists( 'UCF_Post_List_Config' ) ) {
 		public static function settings_init() {
 			// Register settings
 			register_setting( 'ucf_post_list', self::$option_prefix . 'include_css' );
+			register_setting( 'ucf_post_list', self::$option_prefix . 'fallback_image' );
 
 			// Register setting sections
 			add_settings_section(
@@ -664,7 +682,9 @@ if ( !class_exists( 'UCF_Post_List_Config' ) ) {
 				'ucf_post_list' // settings page slug
 			);
 
+
 			$options = array_filter( self::get_options(), array( 'UCF_Post_List_Config', 'option_is_configurable' ) );
+
 			if ( $options ) {
 				foreach ( $options as $option ) {
 					if ( $option->field_title && $option->field_options_section ) {
@@ -708,6 +728,16 @@ if ( !class_exists( 'UCF_Post_List_Config' ) ) {
 					<p class="description">
 						<?php echo $description; ?>
 					</p>
+				<?php
+					$markup = ob_get_clean();
+					break;
+
+				case 'image':
+					ob_start();
+				?>
+					<img class="<?php echo $option_name; ?>_preview" src="<?php echo wp_get_attachment_url( $current_value ); ?>" height="100" width="100">
+					<input class="<?php echo $option_name; ?>" type="hidden" id="<?php echo $option_name; ?>" name="<?php echo $option_name; ?>" value="<?php echo $current_value; ?>">
+					<a href="#" class="<?php echo $option_name; ?>_upload button">Upload</a>
 				<?php
 					$markup = ob_get_clean();
 					break;

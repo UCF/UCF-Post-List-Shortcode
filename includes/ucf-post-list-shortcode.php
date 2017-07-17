@@ -17,11 +17,13 @@ if ( !function_exists( 'sc_ucf_post_list' ) ) {
 	function sc_ucf_post_list( $atts, $content='' ) {
 		$atts = shortcode_atts( UCF_Post_List_Config::get_shortcode_atts(), $atts, 'ucf-post-list' );
 		$layout = isset( $atts['layout'] ) ? $atts['layout'] : 'default';
+		$show_image = isset( $atts['show_image'] ) ? filter_var( $atts['show_image'], FILTER_VALIDATE_BOOLEAN) : true;
+		$posts_per_row = isset( $atts['posts_per_row'] ) ? $atts['posts_per_row'] : 0;
 		$posts = UCF_Post_List_Common::get_post_list( $atts );
 
 		ob_start();
 
-		echo UCF_Post_List_Common::display_post_list( $posts, $layout, $atts['list_title'] );
+		echo UCF_Post_List_Common::display_post_list( $posts, $layout, $show_image, $posts_per_row, $atts['list_title'] );
 
 		return ob_get_clean(); // Shortcode must *return*!  Do not echo the result!
 	}
