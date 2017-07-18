@@ -21,7 +21,7 @@ if ( !function_exists( 'sc_ucf_post_list' ) ) {
 
 		ob_start();
 
-		echo UCF_Post_List_Common::display_post_list( $posts, $layout, $atts['list_title'] );
+		echo UCF_Post_List_Common::display_post_list( $posts, $layout, $atts );
 
 		return ob_get_clean(); // Shortcode must *return*!  Do not echo the result!
 	}

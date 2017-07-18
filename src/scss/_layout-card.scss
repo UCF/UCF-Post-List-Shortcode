@@ -1,0 +1,53 @@
+.ucf-post-list.card-layout {
+
+  .ucf-post-list-thumbnail-image {
+    height: auto;
+    max-width: 100%;
+  }
+
+  .ucf-post-list-card-title {
+    font-size: 1rem;
+    font-weight: 500;
+    margin-bottom: 0;
+    padding: .8rem;
+  }
+
+  .ucf-post-list-card-text {
+    color: $gray;
+    font-style: italic;
+    font-weight: normal;
+    padding: 0 .8rem;
+  }
+
+  @media (min-width: 576px) {
+
+    .ucf-post-list-card-deck {
+      display: flex;
+      flex-flow: row wrap;
+
+      .ucf-post-list-card:not(:last-child) {
+        margin-right: 15px;
+      }
+
+      .ucf-post-list-card {
+        display: flex;
+        flex: 1 0 0;
+        flex-direction: column;
+      }
+    }
+  }
+
+  .ucf-post-list-card {
+    background-color: $white;
+    border: 1px solid rgba(0, 0, 0, .125);
+    border-radius: 0;
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 1.5rem;
+    position: relative;
+
+    a {
+      color: $black;
+    }
+  }
+}
