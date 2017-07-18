@@ -101,14 +101,16 @@ if ( !class_exists( 'UCF_Post_List_Config' ) ) {
 				'layout'      => new UCF_Post_List_Option( 'layout', array(
 					'default' => 'default'
 				) ),
-				'list_title'  => new UCF_Post_List_Option( 'list_title' ),
-				'show_image'  => new UCF_Post_List_Option( 'show_image', array(
-					'default' => true
+				'list_title'          => new UCF_Post_List_Option( 'list_title' ),
+				'show_image'          => new UCF_Post_List_Option( 'show_image', array(
+					'default'         => true,
+					'format_callback' => array( 'UCF_Post_List_Config', 'format_option_bool' )
 				) ),
-				'posts_per_row'  => new UCF_Post_List_Option( 'posts_per_row', array(
-					'default' => null
+				'posts_per_row'       => new UCF_Post_List_Option( 'posts_per_row', array(
+					'default'         => 0,
+					'format_callback' => array( 'UCF_Post_List_Config', 'format_option_int' )
 				) ),
-				'include_css' => new UCF_Post_List_Option( 'include_css', array(
+				'include_css'         => new UCF_Post_List_Option( 'include_css', array(
 					'default'         => true,
 					'format_callback' => array( 'UCF_Post_List_Config', 'format_option_bool' ),
 					'options_page'    => true,
@@ -118,7 +120,7 @@ if ( !class_exists( 'UCF_Post_List_Config' ) ) {
 					'field_type'      => 'checkbox',
 					'field_options_section' => 'ucf_post_list_section_general'
 				) ),
-				'fallback_image' => new UCF_Post_List_Option( 'fallback_image' , array(
+				'fallback_image'      => new UCF_Post_List_Option( 'fallback_image' , array(
 					'default'         => null,
 					'format_callback' => array( 'UCF_Post_List_Config', 'format_option_int_or_null' ),
 					'options_page'    => true,

@@ -17,7 +17,7 @@ if ( !class_exists( 'UCF_Post_List_Common' ) ) {
 		 * @param $title string | a title string to display within the post list markup
 		 * @return string | post list HTML string
 		 **/
-		public static function display_post_list( $posts, $layout, $show_image, $posts_per_row, $list_title ) {
+		public static function display_post_list( $posts, $layout, $atts ) {
 			ob_start();
 
 			if ( has_action( 'ucf_post_list_display_' . $layout . '_before' ) ) {
@@ -29,7 +29,7 @@ if ( !class_exists( 'UCF_Post_List_Common' ) ) {
 			}
 
 			if ( has_action( 'ucf_post_list_display_' . $layout  ) ) {
-				do_action( 'ucf_post_list_display_' . $layout, $posts, $show_image, $posts_per_row, $list_title );
+				do_action( 'ucf_post_list_display_' . $layout, $posts, $atts );
 			}
 
 			if ( has_action( 'ucf_post_list_display_' . $layout . '_after' ) ) {
@@ -40,13 +40,12 @@ if ( !class_exists( 'UCF_Post_List_Common' ) ) {
 		}
 
 		/**
-		 * Retrieves a list of WP Post objects, using arguments passed in
-		 * via $args.
+		 * Retrieves the post featured or fallback image
 		 *
 		 * @author RJ Bruneel
 		 * @since 1.0.0
-		 * @param $args object | object containing the WP Post
-		 * @return Mixed | array of WP Post objects, or false on failure
+		 * @param $item object | object containing the WP Post
+		 * @return string | image url
 		 **/
 		public static function get_image_or_fallback( $item ) {
 			$item_img = wp_get_attachment_image_src( get_post_thumbnail_id( $item->ID ), 'single-post-thumbnail' )[0];
