@@ -41,7 +41,7 @@ if ( ! function_exists( 'ucf_post_list_display_card' ) ) {
 		<?php foreach( $posts as $index=>$item ) :
 			$date = date( "M d", strtotime( $item->post_date ) );
 			if( $atts['show_image'] ) {
-				$item_img = UCF_POST_LIST_Common::get_image_or_fallback( $item );
+				$item_img = UCF_Post_List_Common::get_image_or_fallback( $item );
 			}
 
 			if( $atts['posts_per_row'] > 0 && $index !== 0 && ( $index % $atts['posts_per_row'] ) === 0 ) {
