@@ -39,7 +39,7 @@ if ( ! function_exists( 'ucf_post_list_display_card' ) ) {
 		<div class="ucf-post-list-card-deck">
 
 		<?php foreach( $posts as $index=>$item ) :
-			$date = date("M d",strtotime($item->post_date));
+			$date = date( "M d", strtotime( $item->post_date ) );
 			if( $show_image ) {
 				$item_img = UCF_POST_LIST_Common::get_image_or_fallback( $item );
 			}
@@ -49,7 +49,7 @@ if ( ! function_exists( 'ucf_post_list_display_card' ) ) {
 			}
 		?>
 		<div class="ucf-post-list-card">
-			<a href="<?php echo $item->guid; ?>">
+			<a href="<?php echo get_permalink($item->ID); ?>">
 				<?php if( $show_image && $item_img ) : ?>
 					<img src="<?php echo $item_img; ?>" class="ucf-post-list-thumbnail-image" alt="<?php echo $item->post_title; ?>">
 				<?php endif; ?>
