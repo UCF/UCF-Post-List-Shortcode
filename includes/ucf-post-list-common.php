@@ -17,27 +17,45 @@ if ( !class_exists( 'UCF_Post_List_Common' ) ) {
 		 * @param $title string | a title string to display within the post list markup
 		 * @return string | post list HTML string
 		 **/
-		public static function display_post_list( $items, $layout, $title ) {
+		public static function display_post_list( $posts, $layout, $atts ) {
 			ob_start();
 
 			if ( has_action( 'ucf_post_list_display_' . $layout . '_before' ) ) {
-				do_action( 'ucf_post_list_display_' . $layout . '_before', $items, $title );
+				do_action( 'ucf_post_list_display_' . $layout . '_before', $posts, $list_title );
 			}
 
 			if ( has_action( 'ucf_post_list_display_' . $layout . '_title'  ) ) {
-				do_action( 'ucf_post_list_display_' . $layout . '_title', $items, $title );
+				do_action( 'ucf_post_list_display_' . $layout . '_title', $posts, $list_title );
 			}
 
 			if ( has_action( 'ucf_post_list_display_' . $layout  ) ) {
-				do_action( 'ucf_post_list_display_' . $layout, $items, $title );
+				do_action( 'ucf_post_list_display_' . $layout, $posts, $atts );
 			}
 
 			if ( has_action( 'ucf_post_list_display_' . $layout . '_after' ) ) {
-				do_action( 'ucf_post_list_display_' . $layout . '_after', $items, $title );
+				do_action( 'ucf_post_list_display_' . $layout . '_after', $posts, $list_title );
 			}
 
 			return ob_get_clean();
 		}
+
+		/**
+		 * Retrieves the post featured or fallback image
+		 *
+		 * @author RJ Bruneel
+		 * @since 1.0.0
+		 * @param $item object | object containing the WP Post
+		 * @return string | image url
+		 **/
+		public static function get_image_or_fallback( $item ) {
+			$item_img = wp_get_attachment_image_src( get_post_thumbnail_id( $item->ID ), 'single-post-thumbnail' );
+			$item_img = $item_img ? $item_img[0] : null;
+			if( $item_img === null ) {
+				$item_img = wp_get_attachment_url( UCF_Post_List_Config::get_option_or_default( 'ucf_post_list_fallback_image' ));
+			}
+			return $item_img;
+		}
+
 
 		/**
 		 * Retrieves a list of WP Post objects, using arguments passed in
@@ -247,75 +265,6 @@ if ( !class_exists( 'UCF_Post_List_Common' ) ) {
 			return $args;
 		}
 	}
-}
-
-if ( !function_exists( 'ucf_post_list_display_default_before' ) ) {
-
-	function ucf_post_list_display_default_before( $items, $title ) {
-		ob_start();
-	?>
-	<div class="ucf-post-list ucf-post-list-default">
-	<?php
-		echo ob_get_clean();
-	}
-
-	add_action( 'ucf_post_list_display_default_before', 'ucf_post_list_display_default_before', 10, 2 );
-
-}
-
-if ( !function_exists( 'ucf_post_list_display_default_title' ) ) {
-
-	function ucf_post_list_display_default_title( $items, $title ) {
-		$formatted_title = '';
-
-		if ( $title ) {
-			$formatted_title = '<h2 class="ucf-post-list-title">' . $title . '</h2>';
-		}
-
-		echo $formatted_title;
-	}
-
-	add_action( 'ucf_post_list_display_default_title', 'ucf_post_list_display_default_title', 10, 2 );
-
-}
-
-if ( !function_exists( 'ucf_post_list_display_default' ) ) {
-
-	function ucf_post_list_display_default( $items, $title ) {
-		if ( ! is_array( $items ) && $items !== false ) { $items = array( $items ); }
-		ob_start();
-	?>
-		<?php if ( $items ): ?>
-		<ul class="ucf-post-list-items">
-			<?php foreach ( $items as $item ): ?>
-			<li class="ucf-post-list-item">
-				<a href="<?php echo get_permalink( $item->ID ); ?>"><?php echo $item->post_title; ?></a>
-			</li>
-			<?php endforeach; ?>
-		</ul>
-		<?php else: ?>
-		<div class="ucf-post-list-error">No results found.</div>
-		<?php endif; ?>
-	<?php
-		echo ob_get_clean();
-	}
-
-	add_action( 'ucf_post_list_display_default', 'ucf_post_list_display_default', 10, 2 );
-
-}
-
-if ( !function_exists( 'ucf_post_list_display_default_after' ) ) {
-
-	function ucf_post_list_display_default_after( $items, $title ) {
-		ob_start();
-	?>
-	</div>
-	<?php
-		echo ob_get_clean();
-	}
-
-	add_action( 'ucf_post_list_display_default_after', 'ucf_post_list_display_default_after', 10, 2 );
-
 }
 
 if ( ! function_exists( 'ucf_post_list_enqueue_assets' ) ) {
