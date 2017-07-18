@@ -48,7 +48,8 @@ if ( !class_exists( 'UCF_Post_List_Common' ) ) {
 		 * @return string | image url
 		 **/
 		public static function get_image_or_fallback( $item ) {
-			$item_img = wp_get_attachment_image_src( get_post_thumbnail_id( $item->ID ), 'single-post-thumbnail' )[0];
+			$item_img = wp_get_attachment_image_src( get_post_thumbnail_id( $item->ID ), 'single-post-thumbnail' );
+			$item_img = $item_img ? $item_img[0] : null;
 			if( $item_img === null ) {
 				$item_img = wp_get_attachment_url( UCF_Post_List_Config::get_option_or_default( 'ucf_post_list_fallback_image' ));
 			}
