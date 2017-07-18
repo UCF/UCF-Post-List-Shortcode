@@ -31,7 +31,7 @@ if ( !function_exists( 'ucf_post_list_display_default_title' ) ) {
 
 if ( !function_exists( 'ucf_post_list_display_default' ) ) {
 
-	function ucf_post_list_display_default( $posts, $show_image, $posts_per_row, $list_title ) {
+	function ucf_post_list_display_default( $posts, $atts ) {
 		if ( ! is_array( $posts ) && $posts !== false ) { $posts = array( $posts ); }
 		ob_start();
 	?>
@@ -50,7 +50,7 @@ if ( !function_exists( 'ucf_post_list_display_default' ) ) {
 		echo ob_get_clean();
 	}
 
-	add_action( 'ucf_post_list_display_default', 'ucf_post_list_display_default', 10, 4 );
+	add_action( 'ucf_post_list_display_default', 'ucf_post_list_display_default', 10, 2 );
 
 }
 
