@@ -101,6 +101,10 @@ if ( !class_exists( 'UCF_Post_List_Config' ) ) {
 				'layout'      => new UCF_Post_List_Option( 'layout', array(
 					'default' => 'default'
 				) ),
+				'display_search'      => new UCF_Post_List_Option( 'display_search', array(
+					'default' => false,
+					'format_callback' => array( 'UCF_Post_List_Config', 'format_option_bool' )
+				) ),
 				'list_title'          => new UCF_Post_List_Option( 'list_title' ),
 				'show_image'          => new UCF_Post_List_Option( 'show_image', array(
 					'default'         => true,

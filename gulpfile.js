@@ -72,7 +72,18 @@ gulp.task('js-admin', function() {
     .pipe(gulp.dest(config.dist.jsPath));
 });
 
-gulp.task('js', ['js-hint', 'js-admin']);
+gulp.task('js-script', function() {
+  var minified = [
+    config.src.jsPath + '/ucf-post-list.js'
+  ];
+
+  gulp.src(minified)
+    .pipe(concat('ucf-post-list.min.js'))
+    .pipe(uglify())
+    .pipe(gulp.dest(config.dist.jsPath));
+});
+
+gulp.task('js', ['js-hint', 'js-script', 'js-admin']);
 
 
 //
@@ -101,7 +112,7 @@ gulp.task('watch', function() {
   }
 
   gulp.watch(config.src.scssPath + '/**/*.scss', ['css']);
-  gulp.watch(config.src.jsPath + './**/*.js').on('change', browserSync.reload);
+  gulp.watch(config.src.jsPath + '/**/*.js', ['js']).on('change', browserSync.reload);
   gulp.watch('./**/*.php').on('change', browserSync.reload);
   gulp.watch('readme.txt', ['readme']);
 });

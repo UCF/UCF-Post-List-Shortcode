@@ -17,11 +17,20 @@ if ( !function_exists( 'sc_ucf_post_list' ) ) {
 	function sc_ucf_post_list( $atts, $content='' ) {
 		$atts = shortcode_atts( UCF_Post_List_Config::get_shortcode_atts(), $atts, 'ucf-post-list' );
 		$layout = isset( $atts['layout'] ) ? $atts['layout'] : 'default';
+		$display_search = isset( $atts['display_search'] ) ? $atts['display_search'] : false;
 		$posts = UCF_Post_List_Common::get_post_list( $atts );
 
 		ob_start();
 
+		echo '<div class="post-type-search">';
+
+		if($display_search) {
+			echo UCF_Post_List_Common::display_search( $posts );
+		}
+
 		echo UCF_Post_List_Common::display_post_list( $posts, $layout, $atts );
+
+		echo '</div>';
 
 		return ob_get_clean(); // Shortcode must *return*!  Do not echo the result!
 	}

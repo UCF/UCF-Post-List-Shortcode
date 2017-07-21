@@ -10,11 +10,83 @@ if ( !class_exists( 'UCF_Post_List_Common' ) ) {
 		/**
 		 * Returns full markup for a list of posts.
 		 *
+		 * @author RJ Bruneel
+		 * @since 1.0.2
+		 * @param $posts Mixed | array of WP Post objects or false
+		 * @return string | post list HTML string
+		 **/
+		public static function display_search( $posts ) {
+
+			$column_width = 'col-md-4';
+			$column_count = '3';
+
+			// Get search data
+			foreach( $posts as $post ) {
+				$post_search_data = array( strtolower( $post->post_title ) );
+				foreach( wp_get_object_terms( $post->ID, 'post_tag' ) as $term ) {
+					$post_search_data[] = strtolower( $term->name );
+				}
+				$search_data[] = array( $post->ID => $post_search_data );
+			}
+
+			ob_start();
+
+			?>
+			<script type="text/javascript">
+				if(typeof PostTypeSearchDataManager != 'undefined') {
+					PostTypeSearchDataManager.register(new PostTypeSearchData(
+						<?php echo json_encode( $column_count ); ?>,
+						<?php echo json_encode( $column_width ); ?>,
+						<?php echo json_encode( $search_data ); ?>
+					));
+				}
+			</script>
+			<?
+
+			$alphas = range('A', 'Z');
+			?>
+			<div class="post-type-search-header">
+				<form class="post-type-search-form" action="." method="get">
+					<label class="sr-only">Search</label>
+					<input type="text" class="form-control" placeholder="Search by name or keyword">
+				</form>
+			</div>
+
+			<div class="post-type-search-sorting horizontal-scroll-container sorting-filter">
+				<ul class="sorting-filter-list horizontal-scroll list-inline">
+					<li class="horizontal-scroll-item list-inline-item">
+						<a class="horizontal-scroll-toggle left disabled" href="#"><span class="fa fa-chevron-left"></span></a>
+					</li>
+					<li class="horizontal-scroll-item list-inline-item">
+						<a class="sorting-filter sorting-filter-all" href="#">All</a>
+					</li>
+					<?php foreach( $alphas as $alpha ) : ?>
+						<li class="horizontal-scroll-item list-inline-item">
+							<a class="sorting-filter" href="#<?php echo strtolower($alpha); ?>"><?php echo $alpha; ?></a>
+						</li>
+					<?php endforeach; ?>
+					<li class="horizontal-scroll-item list-inline-item">
+						<a class="horizontal-scroll-toggle right disabled" href="#"><span class="fa fa-chevron-right"></span></a>
+					</li>
+				</ul>
+			</div>
+
+			<div class="post-type-search-results"></div>
+			<div class="post-type-search-alpha"></div>
+
+			<?php
+			return ob_get_clean();
+		}
+
+
+		/**
+		 * Returns full markup for a list of posts.
+		 *
 		 * @author Jo Dickson
 		 * @since 1.0.0
-		 * @param $items Mixed | array of WP Post objects or false
+		 * @param $posts Mixed | array of WP Post objects or false
 		 * @param $layout string | layout name
-		 * @param $title string | a title string to display within the post list markup
+		 * @param $atts array | array of options
 		 * @return string | post list HTML string
 		 **/
 		public static function display_post_list( $posts, $layout, $atts ) {
@@ -276,6 +348,8 @@ if ( ! function_exists( 'ucf_post_list_enqueue_assets' ) ) {
 		if ( $include_css ) {
 			wp_enqueue_style( 'ucf_post_list_css', plugins_url( 'static/css/ucf-post-list.min.css', UCF_POST_LIST__PLUGIN_FILE ), $css_deps, false, 'screen' );
 		}
+
+		wp_enqueue_script( 'ucf-post-list', plugins_url( 'static/js/ucf-post-list.min.js', UCF_POST_LIST__PLUGIN_FILE ), array(), null, false );
 	}
 
 	add_action( 'wp_enqueue_scripts', 'ucf_post_list_enqueue_assets' );
