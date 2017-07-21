@@ -12,42 +12,41 @@ var PostTypeSearchData = function(column_count, column_width, data) {
 
 var PostTypeSearch = function ($) {
   $('.post-type-search')
-    .each(function(post_type_search_index, post_type_search) {
-        post_type_search     = $(post_type_search);
-        var form             = post_type_search.find('.post-type-search-form');
-        var field            = form.find('input[type="text"]');
-        var results          = post_type_search.find('.post-type-search-results');
-        var by_term          = post_type_search.find('.post-type-search-term');
-        var by_alpha         = post_type_search.find('.post-type-search-alpha');
-        var sorting          = post_type_search.find('.post-type-search-sorting');
-        var sorting_filters  = sorting.find('.sorting-filter');
+    .each(function (post_type_search_index, post_type_search) {
+      post_type_search = $(post_type_search);
+      var form = post_type_search.find('.post-type-search-form');
+      var field = form.find('input[type="text"]');
+      var results = post_type_search.find('.post-type-search-results');
+      var by_term = post_type_search.find('.post-type-search-term');
+      var by_alpha = post_type_search.find('.post-type-search-alpha');
+      var sorting = post_type_search.find('.post-type-search-sorting');
+      var sorting_filters = sorting.find('.sorting-filter');
 
-        var post_type_search_data  = null;
-        var search_data_set        = null;
-        var column_count           = null;
-        var column_width           = null;
+      var post_type_search_data = null;
+      var search_data_set = null;
+      var column_count = null;
+      var column_width = null;
 
-        var typing_timer = null;
-        var typing_delay = 300; // milliseconds
+      var typing_timer = null;
+      var typing_delay = 300; // milliseconds
 
-        var prev_post_id_sum = null; // Sum of result post IDs. Used to cache results
+      var prev_post_id_sum = null; // Sum of result post IDs. Used to cache results
 
-        var MINIMUM_SEARCH_MATCH_LENGTH = 2;
+      var MINIMUM_SEARCH_MATCH_LENGTH = 2;
 
       // Get the post data for this search
       post_type_search_data = PostTypeSearchDataManager.searches[post_type_search_index];
-      if(typeof post_type_search_data === 'undefined') { // Search data missing
+      if (typeof post_type_search_data === 'undefined') { // Search data missing
         return false;
       }
 
       search_data_set = post_type_search_data.data;
-      column_count    = post_type_search_data.column_count;
-      column_width    = post_type_search_data.column_width;
+      column_count = post_type_search_data.column_count;
+      column_width = post_type_search_data.column_width;
 
-      if(column_count === 0 || column_width === '') { // Invalid dimensions
+      if (column_count === 0 || column_width === '') { // Invalid dimensions
         return false;
       }
-
 
       // Hide individual result sections by alpha
       by_alpha.find('.post-type-search-section').hide();
@@ -56,7 +55,7 @@ var PostTypeSearch = function ($) {
       // Sorting toggle
       function activateSectionBySortingFilter($filterLink) {
         if ($filterLink.hasClass('sorting-filter-all')) {
-          by_alpha.fadeOut('fast', function() {
+          by_alpha.fadeOut('fast', function () {
             by_term.fadeIn();
             sorting.find('.active').removeClass('active');
             post_type_search.find('.post-type-search-section.active')
@@ -66,7 +65,7 @@ var PostTypeSearch = function ($) {
           });
         }
         else {
-          by_term.fadeOut('fast', function() {
+          by_term.fadeOut('fast', function () {
             by_alpha.fadeIn();
             sorting.find('.active').removeClass('active');
             post_type_search.find('.post-type-search-section.active')
@@ -82,8 +81,9 @@ var PostTypeSearch = function ($) {
 
       // Check for location hash on page load
       if (window.location.hash) {
-        var hash = window.location.hash;
-        var $link = $('.sorting-filter[href="'+ hash.toLowerCase() +'"]:eq(0)');
+        var hash = window.location.hash,
+          $link = $('.sorting-filter[href="' + hash.toLowerCase() + '"]:eq(0)');
+
         if ($link.length) {
           activateSectionBySortingFilter($link);
         }
@@ -95,7 +95,7 @@ var PostTypeSearch = function ($) {
         activateSectionBySortingFilter(sorting_filters.filter('.sorting-filter-all'));
       }
 
-      sorting_filters.on('click', function(e) {
+      sorting_filters.on('click', function (e) {
         e.preventDefault();
 
         var $link = $(this);
@@ -109,18 +109,18 @@ var PostTypeSearch = function ($) {
 
       // Search form
       form
-        .submit(function(event) {
+        .submit(function (event) {
           // Don't allow the form to be submitted
           event.preventDefault();
           perform_search(field.val());
         });
       field
-        .keyup(function() {
+        .keyup(function () {
           // Use a timer to determine when the user is done typing
           if (typing_timer !== null) {
             clearTimeout(typing_timer);
           }
-          typing_timer = setTimeout(function() {form.trigger('submit');}, typing_delay);
+          typing_timer = setTimeout(function () { form.trigger('submit'); }, typing_delay);
         });
 
       function display_search_message(message) {
@@ -130,13 +130,13 @@ var PostTypeSearch = function ($) {
       }
 
       function perform_search(search_term) {
-        var matches           = [],
-          elements            = [],
+        var matches = [],
+          elements = [],
           elements_per_column = null,
-          columns             = [],
-          post_id_sum         = 0;
+          columns = [],
+          post_id_sum = 0;
 
-        if(search_term.length < MINIMUM_SEARCH_MATCH_LENGTH) {
+        if (search_term.length < MINIMUM_SEARCH_MATCH_LENGTH) {
           results.empty();
           results.hide();
           prev_post_id_sum = null;
@@ -145,10 +145,10 @@ var PostTypeSearch = function ($) {
         // This is gross, but post data has to be grouped and looped through
         // this way to maintain the order set in the shortcode, and we still
         // need reliable access to post_id. See shortcodes.php.
-        $.each(search_data_set, function(order_key, post_obj) {
-          $.each(post_obj, function(post_id, post_data) {
-            $.each(post_data, function(term_key, term) {
-              if(term.indexOf(search_term.toLowerCase()) !== -1) {
+        $.each(search_data_set, function (order_key, post_obj) {
+          $.each(post_obj, function (post_id, post_data) {
+            $.each(post_data, function (term_key, term) {
+              if (term.indexOf(search_term.toLowerCase()) !== -1) {
                 matches.push(post_id);
                 return false;
               }

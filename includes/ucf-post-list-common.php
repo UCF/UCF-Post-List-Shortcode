@@ -52,7 +52,7 @@ if ( !class_exists( 'UCF_Post_List_Common' ) ) {
 				</form>
 			</div>
 
-			<div class="post-type-search-sorting horizontal-scroll-container sorting-filter">
+			<div class="post-type-search-sorting horizontal-scroll-container">
 				<ul class="sorting-filter-list horizontal-scroll list-inline">
 					<li class="horizontal-scroll-item list-inline-item">
 						<a class="horizontal-scroll-toggle left disabled" href="#"><span class="fa fa-chevron-left"></span></a>
