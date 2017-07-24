@@ -21,11 +21,11 @@ if ( !class_exists( 'UCF_Post_List_Common' ) ) {
 			ob_start();
 
 			if ( has_action( 'ucf_post_list_display_' . $layout . '_before' ) ) {
-				do_action( 'ucf_post_list_display_' . $layout . '_before', $posts, $list_title );
+				do_action( 'ucf_post_list_display_' . $layout . '_before', $posts, $atts['list_title'] );
 			}
 
 			if ( has_action( 'ucf_post_list_display_' . $layout . '_title'  ) ) {
-				do_action( 'ucf_post_list_display_' . $layout . '_title', $posts, $list_title );
+				do_action( 'ucf_post_list_display_' . $layout . '_title', $posts, $atts['list_title'] );
 			}
 
 			if ( has_action( 'ucf_post_list_display_' . $layout  ) ) {
@@ -33,7 +33,7 @@ if ( !class_exists( 'UCF_Post_List_Common' ) ) {
 			}
 
 			if ( has_action( 'ucf_post_list_display_' . $layout . '_after' ) ) {
-				do_action( 'ucf_post_list_display_' . $layout . '_after', $posts, $list_title );
+				do_action( 'ucf_post_list_display_' . $layout . '_after', $posts, $atts['list_title'] );
 			}
 
 			return ob_get_clean();
@@ -48,7 +48,8 @@ if ( !class_exists( 'UCF_Post_List_Common' ) ) {
 		 * @return string | image url
 		 **/
 		public static function get_image_or_fallback( $item ) {
-			$item_img = wp_get_attachment_image_src( get_post_thumbnail_id( $item->ID ), 'single-post-thumbnail' )[0];
+			$item_img = wp_get_attachment_image_src( get_post_thumbnail_id( $item->ID ), 'single-post-thumbnail' );
+			$item_img = $item_img ? $item_img[0] : null;
 			if( $item_img === null ) {
 				$item_img = wp_get_attachment_url( UCF_Post_List_Config::get_option_or_default( 'ucf_post_list_fallback_image' ));
 			}

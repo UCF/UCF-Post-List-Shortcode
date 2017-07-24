@@ -478,6 +478,18 @@ if ( !class_exists( 'UCF_Post_List_Config' ) ) {
 		}
 
 		/**
+		 * Formats $val as an integer.  Allows null values.
+		 *
+		 * @author RJ Bruneel
+		 * @since 1.0.0
+		 * @param $val Mixed | value to apply formatting to
+		 * @return int | formatted integer value or 0
+		 **/
+		public static function format_option_int( $val ) {
+			return is_null( $val ) ? 0 : intval( $val );
+		}
+
+		/**
 		 * Formats $val as an array of integers.
 		 *
 		 * @author Jo Dickson
@@ -672,9 +684,6 @@ if ( !class_exists( 'UCF_Post_List_Config' ) ) {
 		 * @return void
 		 **/
 		public static function settings_init() {
-			// Register settings
-			register_setting( 'ucf_post_list', self::$option_prefix . 'include_css' );
-			register_setting( 'ucf_post_list', self::$option_prefix . 'fallback_image' );
 
 			// Register setting sections
 			add_settings_section(
@@ -684,11 +693,14 @@ if ( !class_exists( 'UCF_Post_List_Config' ) ) {
 				'ucf_post_list' // settings page slug
 			);
 
-
 			$options = array_filter( self::get_options(), array( 'UCF_Post_List_Config', 'option_is_configurable' ) );
 
 			if ( $options ) {
 				foreach ( $options as $option ) {
+					// Register setting
+					register_setting( 'ucf_post_list', self::$option_prefix . $option->option_name );
+
+					// Add individual setting field
 					if ( $option->field_title && $option->field_options_section ) {
 						add_settings_field(
 							self::$option_prefix . $option->option_name,

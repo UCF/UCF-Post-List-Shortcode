@@ -18,6 +18,7 @@ if ( ! function_exists( 'ucf_post_list_display_card_before' ) ) {
 if ( !function_exists( 'ucf_post_list_display_card_title' ) ) {
 
 	function ucf_post_list_display_card_title( $posts, $list_title ) {
+		$formatted_title = '';
 
 		if ( $list_title ) {
 			$formatted_title = '<h2 class="ucf-post-list-title">' . $list_title . '</h2>';

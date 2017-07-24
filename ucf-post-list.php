@@ -2,7 +2,7 @@
 /*
 Plugin Name: UCF Post List Shortcode
 Description: Provides a shortcode for displaying lists of posts.
-Version: 0.0.0
+Version: 1.0.0
 Author: UCF Web Communications
 License: GPL3
 */
