@@ -16,6 +16,7 @@
     max-width: 60px;
 
     @media (min-width: 576px) {
+      flex: 0 0 80px;
       max-width: 80px;
     }
 
