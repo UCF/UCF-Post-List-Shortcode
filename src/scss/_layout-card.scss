@@ -1,25 +1,33 @@
 .ucf-post-list.card-layout {
-
   .ucf-post-list-thumbnail-image {
     height: auto;
     max-width: 100%;
   }
 
   .ucf-post-list-card-title {
-    font-size: 1rem;
+    font-size: .9rem;
     font-weight: 500;
     margin-bottom: 0;
     padding: .8rem;
+
+    @media (min-width: 1200px) {
+      font-size: 1rem;
+    }
   }
 
   .ucf-post-list-card-text {
     color: $gray;
+    font-size: .75rem;
     font-style: italic;
     font-weight: normal;
     padding: 0 .8rem;
+
+    @media (min-width: 1200px) {
+      font-size: .9rem;
+    }
   }
 
-  @media (min-width: 576px) {
+  @media (min-width: 768px) {
 
     .ucf-post-list-card-deck {
       display: flex;
