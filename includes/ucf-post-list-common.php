@@ -21,11 +21,11 @@ if ( !class_exists( 'UCF_Post_List_Common' ) ) {
 			ob_start();
 
 			if ( has_action( 'ucf_post_list_display_' . $layout . '_before' ) ) {
-				do_action( 'ucf_post_list_display_' . $layout . '_before', $posts, $list_title );
+				do_action( 'ucf_post_list_display_' . $layout . '_before', $posts, $atts['list_title'] );
 			}
 
 			if ( has_action( 'ucf_post_list_display_' . $layout . '_title'  ) ) {
-				do_action( 'ucf_post_list_display_' . $layout . '_title', $posts, $list_title );
+				do_action( 'ucf_post_list_display_' . $layout . '_title', $posts, $atts['list_title'] );
 			}
 
 			if ( has_action( 'ucf_post_list_display_' . $layout  ) ) {
@@ -33,7 +33,7 @@ if ( !class_exists( 'UCF_Post_List_Common' ) ) {
 			}
 
 			if ( has_action( 'ucf_post_list_display_' . $layout . '_after' ) ) {
-				do_action( 'ucf_post_list_display_' . $layout . '_after', $posts, $list_title );
+				do_action( 'ucf_post_list_display_' . $layout . '_after', $posts, $atts['list_title'] );
 			}
 
 			return ob_get_clean();
