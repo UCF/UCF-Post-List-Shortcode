@@ -18,6 +18,7 @@ if ( ! function_exists( 'ucf_post_list_display_card_before' ) ) {
 if ( !function_exists( 'ucf_post_list_display_card_title' ) ) {
 
 	function ucf_post_list_display_card_title( $posts, $list_title ) {
+		$formatted_title = '';
 
 		if ( $list_title ) {
 			$formatted_title = '<h2 class="ucf-post-list-title">' . $list_title . '</h2>';
@@ -49,7 +50,7 @@ if ( ! function_exists( 'ucf_post_list_display_card' ) ) {
 			}
 		?>
 		<div class="ucf-post-list-card">
-			<a href="<?php echo get_permalink($item->ID); ?>">
+			<a class="ucf-post-list-card-link" href="<?php echo get_permalink( $item->ID ); ?>">
 				<?php if( $atts['show_image'] && $item_img ) : ?>
 					<img src="<?php echo $item_img; ?>" class="ucf-post-list-thumbnail-image" alt="<?php echo $item->post_title; ?>">
 				<?php endif; ?>
