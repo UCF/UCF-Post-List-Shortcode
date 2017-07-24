@@ -50,7 +50,7 @@ if ( ! function_exists( 'ucf_post_list_display_card' ) ) {
 			}
 		?>
 		<div class="ucf-post-list-card">
-			<a href="<?php echo get_permalink($item->ID); ?>">
+			<a class="ucf-post-list-card-link" href="<?php echo get_permalink($item->ID); ?>">
 				<?php if( $atts['show_image'] && $item_img ) : ?>
 					<img src="<?php echo $item_img; ?>" class="ucf-post-list-thumbnail-image" alt="<?php echo $item->post_title; ?>">
 				<?php endif; ?>
