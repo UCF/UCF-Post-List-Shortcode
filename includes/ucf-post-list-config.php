@@ -478,6 +478,18 @@ if ( !class_exists( 'UCF_Post_List_Config' ) ) {
 		}
 
 		/**
+		 * Formats $val as an integer.  Allows null values.
+		 *
+		 * @author RJ Bruneel
+		 * @since 1.0.0
+		 * @param $val Mixed | value to apply formatting to
+		 * @return int | formatted integer value or 0
+		 **/
+		public static function format_option_int( $val ) {
+			return is_null( $val ) ? 0 : intval( $val );
+		}
+
+		/**
 		 * Formats $val as an array of integers.
 		 *
 		 * @author Jo Dickson
