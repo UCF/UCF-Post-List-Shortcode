@@ -1,35 +1,71 @@
 .ucf-post-list.card-layout {
+  .ucf-post-list-card-link {
+    @media (max-width: 767px) {
+      display: flex;
+      flex-direction: row;
+    }
+  }
 
   .ucf-post-list-thumbnail-image {
+    align-self: start;
+    display: flex;
+    flex: 0 0 60px;
     height: auto;
-    max-width: 100%;
+    margin-bottom: .8rem;
+    margin-left: .8rem;
+    margin-top: .8rem;
+    max-width: 60px;
+
+    @media (min-width: 576px) {
+      flex: 0 0 80px;
+      max-width: 80px;
+    }
+
+    @media (min-width: 768px) {
+      flex: 0 0 100%;
+      margin: 0;
+      max-width: 100%;
+      width: 100%;
+    }
   }
 
   .ucf-post-list-card-title {
-    font-size: 1rem;
+    font-size: .9rem;
     font-weight: 500;
     margin-bottom: 0;
     padding: .8rem;
+
+    @media (min-width: 1200px) {
+      font-size: 1rem;
+    }
   }
 
   .ucf-post-list-card-text {
     color: $gray;
+    font-size: .75rem;
     font-style: italic;
     font-weight: normal;
     padding: 0 .8rem;
+
+    @media (min-width: 1200px) {
+      font-size: .9rem;
+    }
   }
 
-  @media (min-width: 576px) {
-
-    .ucf-post-list-card-deck {
+  .ucf-post-list-card-deck {
+    @media (min-width: 768px) {
       display: flex;
       flex-flow: row wrap;
+    }
 
-      .ucf-post-list-card:not(:last-child) {
+    .ucf-post-list-card:not(:last-child) {
+      @media (min-width: 768px) {
         margin-right: 15px;
       }
+    }
 
-      .ucf-post-list-card {
+    .ucf-post-list-card {
+      @media (min-width: 768px) {
         display: flex;
         flex: 1 0 0;
         flex-direction: column;
