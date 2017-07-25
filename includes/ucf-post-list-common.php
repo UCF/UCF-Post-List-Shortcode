@@ -72,7 +72,30 @@ if ( !class_exists( 'UCF_Post_List_Common' ) ) {
 			</div>
 
 			<div class="post-type-search-results"></div>
-			<div class="post-type-search-alpha"></div>
+
+			<?php $last = null; ?>
+			<div class="post-type-search-alpha">
+				<?php foreach( $posts as $index=>$post ) : ?>
+					<?php
+					$current = strtolower( get_post_meta( $posts[$index]->ID, 'person_orderby_name' )[0][0] );
+					if( $current !== $last ) :
+					?>
+						<?php if( $index > 0 ) : ?>
+								</ul>
+							</div>
+						<?php endif; ?>
+						<div class="post-type-search-section" id="<?php echo $current; ?>">
+							<h2><?php echo strtoupper( $current ); ?></h2>
+							<ul class="picture-picture-list">
+					<?php
+					endif;
+					$last = $current;
+					?>
+					<li><a href="<?php echo get_permalink( $post ); ?>"><?php echo $post->post_title;?></a></li>
+				<?php endforeach; ?>
+					</ul>
+				</div>
+			</div>
 
 			<?php
 			return ob_get_clean();
