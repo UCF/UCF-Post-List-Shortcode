@@ -39,7 +39,7 @@ if ( ! function_exists( 'ucf_post_list_display_card' ) ) {
 		<?php if ( $posts ): ?>
 			<?php
 			if ( $atts['display_search'] ) {
-				echo UCF_Post_List_Common::display_post_search( $posts, $atts['search_layout'], $atts );
+				echo UCF_Post_List_Common::display_post_search( $posts, $atts );
 			}
 			?>
 

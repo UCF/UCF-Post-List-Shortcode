@@ -15,19 +15,23 @@ if ( !class_exists( 'UCF_Post_List_Common' ) ) {
 		 * @param $posts Mixed | array of WP Post objects or false
 		 * @return string | post list HTML string
 		 **/
-		public static function display_post_search( $posts, $layout, $atts ) {
+		public static function display_post_search( $posts, $atts ) {
 			ob_start();
 
-			if ( has_action( 'ucf_post_list_search_' . $layout . '_before' ) ) {
-				do_action( 'ucf_post_list_search_' . $layout . '_before', $posts, $atts );
+			if ( has_action( 'ucf_post_list_search_before' ) ) {
+				do_action( 'ucf_post_list_search_before', $posts, $atts );
 			}
 
-			if ( has_action( 'ucf_post_list_search_' . $layout  ) ) {
-				do_action( 'ucf_post_list_search_' . $layout, $posts, $atts );
+			if ( has_action( 'ucf_post_list_search' ) ) {
+				do_action( 'ucf_post_list_search', $posts, $atts );
 			}
 
-			if ( has_action( 'ucf_post_list_search_' . $layout . '_after' ) ) {
-				do_action( 'ucf_post_list_search_' . $layout . '_after', $posts, $atts );
+			if ( has_action( 'ucf_post_list_search_script'  ) ) {
+				do_action( 'ucf_post_list_search_script', $posts, $atts );
+			}
+
+			if ( has_action( 'ucf_post_list_search_after' ) ) {
+				do_action( 'ucf_post_list_search_after', $posts, $atts );
 			}
 
 			return ob_get_clean();

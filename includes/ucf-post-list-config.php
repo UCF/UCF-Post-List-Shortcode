@@ -119,9 +119,6 @@ if ( !class_exists( 'UCF_Post_List_Config' ) ) {
 				'layout'      => new UCF_Post_List_Option( 'layout', array(
 					'default' => 'default'
 				) ),
-				'search_layout' => new UCF_Post_List_Option( 'search_layout', array(
-					'default' => 'default'
-				) ),
 				'display_search'      => new UCF_Post_List_Option( 'display_search', array(
 					'default' => false,
 					'format_callback' => array( 'UCF_Post_List_Config', 'format_option_bool' )
