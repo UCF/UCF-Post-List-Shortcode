@@ -22,15 +22,7 @@ if ( !function_exists( 'ucf_post_list_search_default' ) ) {
 		// TODO update this--might need a different set of layout hooks for search stuff
 	?>
 		<?php if ( $posts ): ?>
-			<ul class="ucf-post-search-items">
-				<?php foreach ( $posts as $item ): ?>
-				<li class="ucf-post-search-item">
-					<a href="<?php echo get_permalink( $item->ID ); ?>"><?php echo $item->post_title; ?></a>
-				</li>
-				<?php endforeach; ?>
-			</ul>
-		<?php else: ?>
-		<div class="ucf-post-search-error">No results found.</div>
+			TODO
 		<?php endif; ?>
 	<?php
 		echo ob_get_clean();

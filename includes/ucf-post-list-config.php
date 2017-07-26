@@ -145,6 +145,26 @@ if ( !class_exists( 'UCF_Post_List_Config' ) ) {
 					'field_type'      => 'checkbox',
 					'field_options_section' => 'ucf_post_list_section_general'
 				) ),
+				'include_js'          => new UCF_Post_List_Option( 'include_js', array(
+					'default'         => true,
+					'format_callback' => array( 'UCF_Post_List_Config', 'format_option_bool' ),
+					'options_page'    => true,
+					'sc_attr'         => false,
+					'field_title'     => 'Include Default JavaScript',
+					'field_desc'      => 'Include the default JavaScript for post list searching within the theme.<br>Leave this checkbox checked unless your theme provides scripts that handle this already.',
+					'field_type'      => 'checkbox',
+					'field_options_section' => 'ucf_post_list_section_general'
+				) ),
+				'include_js_libs'     => new UCF_Post_List_Option( 'include_js_libs', array(
+					'default'         => true,
+					'format_callback' => array( 'UCF_Post_List_Config', 'format_option_bool' ),
+					'options_page'    => true,
+					'sc_attr'         => false,
+					'field_title'     => 'Include Typeahead, Handlebars JS',
+					'field_desc'      => 'Include the Typeahead and Handlebars JavaScript for post list searching within the theme.<br>Leave this checkbox checked unless your theme provides these scripts already.',
+					'field_type'      => 'checkbox',
+					'field_options_section' => 'ucf_post_list_section_general'
+				) ),
 				'fallback_image'      => new UCF_Post_List_Option( 'fallback_image' , array(
 					'default'         => null,
 					'format_callback' => array( 'UCF_Post_List_Config', 'format_option_int_or_null' ),

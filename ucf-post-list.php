@@ -12,6 +12,8 @@ if ( ! defined( 'WPINC' ) ) {
 
 
 define( 'UCF_POST_LIST__PLUGIN_FILE', __FILE__ );
+define( 'UCF_POST_LIST__TYPEAHEAD', 'https://cdnjs.cloudflare.com/ajax/libs/corejs-typeahead/1.0.1/typeahead.bundle.min.js' );
+define( 'UCF_POST_LIST__HANDLEBARS', 'https://cdnjs.cloudflare.com/ajax/libs/handlebars.js/4.0.6/handlebars.min.js' );
 
 require_once 'includes/ucf-post-list-config.php';
 require_once 'includes/ucf-post-list-common.php';
