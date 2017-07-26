@@ -37,36 +37,43 @@ if ( ! function_exists( 'ucf_post_list_display_card' ) ) {
 		ob_start();
 ?>
 		<?php if ( $posts ): ?>
-		<div class="ucf-post-list-card-deck">
-
-		<?php foreach( $posts as $index=>$item ) :
-			$date = date( "M d", strtotime( $item->post_date ) );
-			if( $atts['show_image'] ) {
-				$item_img = UCF_Post_List_Common::get_image_or_fallback( $item );
+			<?php
+			if ( $atts['display_search'] ) {
+				echo UCF_Post_List_Common::display_post_search( $posts, $atts['search_layout'], $atts );
 			}
+			?>
 
-			if( $atts['posts_per_row'] > 0 && $index !== 0 && ( $index % $atts['posts_per_row'] ) === 0 ) {
-				echo '</div><div class="ucf-post-list-card-deck">';
-			}
-		?>
-		<div class="ucf-post-list-card">
-			<a class="ucf-post-list-card-link" href="<?php echo get_permalink( $item->ID ); ?>">
-				<?php if( $atts['show_image'] && $item_img ) : ?>
-					<img src="<?php echo $item_img; ?>" class="ucf-post-list-thumbnail-image" alt="<?php echo $item->post_title; ?>">
-				<?php endif; ?>
-				<div class="ucf-post-list-card-block">
-					<h3 class="ucf-post-list-card-title"><?php echo $item->post_title; ?></h3>
-					<p class="ucf-post-list-card-text"><?php echo $date; ?></p>
+			<div class="ucf-post-list-card-deck">
+
+			<?php
+			foreach( $posts as $index=>$item ) :
+				$date = date( "M d", strtotime( $item->post_date ) );
+				if( $atts['show_image'] ) {
+					$item_img = UCF_Post_List_Common::get_image_or_fallback( $item );
+				}
+
+				if( $atts['posts_per_row'] > 0 && $index !== 0 && ( $index % $atts['posts_per_row'] ) === 0 ) {
+					echo '</div><div class="ucf-post-list-card-deck">';
+				}
+			?>
+				<div class="ucf-post-list-card">
+					<a class="ucf-post-list-card-link" href="<?php echo get_permalink( $item->ID ); ?>">
+						<?php if( $atts['show_image'] && $item_img ) : ?>
+							<img src="<?php echo $item_img; ?>" class="ucf-post-list-thumbnail-image" alt="<?php echo $item->post_title; ?>">
+						<?php endif; ?>
+						<div class="ucf-post-list-card-block">
+							<h3 class="ucf-post-list-card-title"><?php echo $item->post_title; ?></h3>
+							<p class="ucf-post-list-card-text"><?php echo $date; ?></p>
+						</div>
+					</a>
 				</div>
-			</a>
-		</div>
-		<?php endforeach; ?>
+			<?php endforeach; ?>
+
+			</div>
 
 		<?php else: ?>
-		<div class="ucf-post-list-error">No results found.</div>
+			<div class="ucf-post-list-error">No results found.</div>
 		<?php endif;
-
-		echo '</div>';
 
 		echo ob_get_clean();
 	}

@@ -81,9 +81,27 @@ if ( !class_exists( 'UCF_Post_List_Config' ) ) {
 		public static function get_layouts() {
 			$layouts = array(
 				'default' => 'Default Layout',
+				'card'    => 'Card Layout'
 			);
 
 			$layouts = apply_filters( self::$option_prefix . 'get_layouts', $layouts );
+
+			return $layouts;
+		}
+
+		/**
+		 * Returns the plugin's registered search layouts.
+		 *
+		 * @author Jo Dickson
+		 * @since 1.0.0
+		 * @return array | list of layouts
+		 **/
+		public static function get_search_layouts() {
+			$layouts = array(
+				'default' => 'Default Layout',
+			);
+
+			$layouts = apply_filters( self::$option_prefix . 'get_search_layouts', $layouts );
 
 			return $layouts;
 		}
@@ -99,6 +117,9 @@ if ( !class_exists( 'UCF_Post_List_Config' ) ) {
 		public static function get_options() {
 			$options = array(
 				'layout'      => new UCF_Post_List_Option( 'layout', array(
+					'default' => 'default'
+				) ),
+				'search_layout' => new UCF_Post_List_Option( 'search_layout', array(
 					'default' => 'default'
 				) ),
 				'display_search'      => new UCF_Post_List_Option( 'display_search', array(

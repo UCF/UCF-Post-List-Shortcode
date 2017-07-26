@@ -8,96 +8,28 @@ if ( !class_exists( 'UCF_Post_List_Common' ) ) {
 	class UCF_Post_List_Common {
 
 		/**
-		 * Returns full markup for a list of posts.
+		 * Returns full markup for a post list search.
 		 *
-		 * @author RJ Bruneel
-		 * @since 1.0.2
+		 * @author RJ Bruneel, Jo Dickson
+		 * @since 1.0.0
 		 * @param $posts Mixed | array of WP Post objects or false
 		 * @return string | post list HTML string
 		 **/
-		public static function display_search( $posts ) {
-
-			$column_width = 'col-md-4';
-			$column_count = '3';
-
-			// Get search data
-			foreach( $posts as $post ) {
-				$post_search_data = array( strtolower( $post->post_title ) );
-				foreach( wp_get_object_terms( $post->ID, 'post_tag' ) as $term ) {
-					$post_search_data[] = strtolower( $term->name );
-				}
-				$search_data[] = array( $post->ID => $post_search_data );
-			}
-
+		public static function display_post_search( $posts, $layout, $atts ) {
 			ob_start();
 
-			?>
-			<script type="text/javascript">
-				if(typeof PostTypeSearchDataManager != 'undefined') {
-					PostTypeSearchDataManager.register(new PostTypeSearchData(
-						<?php echo json_encode( $column_count ); ?>,
-						<?php echo json_encode( $column_width ); ?>,
-						<?php echo json_encode( $search_data ); ?>
-					));
-				}
-			</script>
-			<?
+			if ( has_action( 'ucf_post_list_search_' . $layout . '_before' ) ) {
+				do_action( 'ucf_post_list_search_' . $layout . '_before', $posts, $atts );
+			}
 
-			$alphas = range('A', 'Z');
-			?>
-			<div class="post-type-search-header">
-				<form class="post-type-search-form" action="." method="get">
-					<label class="sr-only">Search</label>
-					<input type="text" class="form-control" placeholder="Search by name or keyword">
-				</form>
-			</div>
+			if ( has_action( 'ucf_post_list_search_' . $layout  ) ) {
+				do_action( 'ucf_post_list_search_' . $layout, $posts, $atts );
+			}
 
-			<div class="post-type-search-sorting horizontal-scroll-container">
-				<ul class="sorting-filter-list horizontal-scroll list-inline">
-					<li class="horizontal-scroll-item list-inline-item">
-						<a class="horizontal-scroll-toggle left disabled" href="#"><span class="fa fa-chevron-left"></span></a>
-					</li>
-					<li class="horizontal-scroll-item list-inline-item">
-						<a class="sorting-filter sorting-filter-all" href="#">All</a>
-					</li>
-					<?php foreach( $alphas as $alpha ) : ?>
-						<li class="horizontal-scroll-item list-inline-item">
-							<a class="sorting-filter" href="#<?php echo strtolower($alpha); ?>"><?php echo $alpha; ?></a>
-						</li>
-					<?php endforeach; ?>
-					<li class="horizontal-scroll-item list-inline-item">
-						<a class="horizontal-scroll-toggle right disabled" href="#"><span class="fa fa-chevron-right"></span></a>
-					</li>
-				</ul>
-			</div>
+			if ( has_action( 'ucf_post_list_search_' . $layout . '_after' ) ) {
+				do_action( 'ucf_post_list_search_' . $layout . '_after', $posts, $atts );
+			}
 
-			<div class="post-type-search-results"></div>
-
-			<?php $last = null; ?>
-			<div class="post-type-search-alpha">
-				<?php foreach( $posts as $index=>$post ) : ?>
-					<?php
-					$current = strtolower( get_post_meta( $posts[$index]->ID, 'person_orderby_name' )[0][0] );
-					if( $current !== $last ) :
-					?>
-						<?php if( $index > 0 ) : ?>
-								</ul>
-							</div>
-						<?php endif; ?>
-						<div class="post-type-search-section" id="<?php echo $current; ?>">
-							<h2><?php echo strtoupper( $current ); ?></h2>
-							<ul class="picture-picture-list">
-					<?php
-					endif;
-					$last = $current;
-					?>
-					<li><a href="<?php echo get_permalink( $post ); ?>"><?php echo $post->post_title;?></a></li>
-				<?php endforeach; ?>
-					</ul>
-				</div>
-			</div>
-
-			<?php
 			return ob_get_clean();
 		}
 

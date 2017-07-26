@@ -36,17 +36,20 @@ if ( !function_exists( 'ucf_post_list_display_default' ) ) {
 		ob_start();
 	?>
 		<?php if ( $posts ): ?>
-			<div class="post-type-search-term">
-				<ul class="ucf-post-list-items">
-					<?php foreach ( $posts as $item ): ?>
-					<li class="ucf-post-list-item" data-post-id="<?php echo $item->ID; ?>">
-						<a href="<?php echo get_permalink( $item->ID ); ?>"><?php echo $item->post_title; ?></a>
-					</li>
-					<?php endforeach; ?>
-				</ul>
-			</div>
+			<?php
+			if ( $atts['display_search'] ) {
+				echo UCF_Post_List_Common::display_post_search( $posts, $atts['search_layout'], $atts );
+			}
+			?>
+			<ul class="ucf-post-list-items">
+				<?php foreach ( $posts as $item ): ?>
+				<li class="ucf-post-list-item">
+					<a href="<?php echo get_permalink( $item->ID ); ?>"><?php echo $item->post_title; ?></a>
+				</li>
+				<?php endforeach; ?>
+			</ul>
 		<?php else: ?>
-		<div class="ucf-post-list-error">No results found.</div>
+			<div class="ucf-post-list-error">No results found.</div>
 		<?php endif; ?>
 	<?php
 		echo ob_get_clean();
