@@ -3,10 +3,10 @@
  * The default functions for the card layout
  **/
 if ( ! function_exists( 'ucf_post_list_display_card_before' ) ) {
-	function ucf_post_list_display_card_before( $posts, $list_title ) {
+	function ucf_post_list_display_card_before( $posts, $atts ) {
 		ob_start();
 	?>
-		<div class="ucf-post-list card-layout">
+		<div class="ucf-post-list card-layout" id="post-list-<?php echo $atts['list_id']; ?>">
 	<?php
 		echo ob_get_clean();
 	}
@@ -17,10 +17,10 @@ if ( ! function_exists( 'ucf_post_list_display_card_before' ) ) {
 
 if ( !function_exists( 'ucf_post_list_display_card_title' ) ) {
 
-	function ucf_post_list_display_card_title( $posts, $list_title ) {
+	function ucf_post_list_display_card_title( $posts, $atts ) {
 		$formatted_title = '';
 
-		if ( $list_title ) {
+		if ( $list_title = $atts['list_title'] ) {
 			$formatted_title = '<h2 class="ucf-post-list-title">' . $list_title . '</h2>';
 		}
 
@@ -82,7 +82,7 @@ if ( ! function_exists( 'ucf_post_list_display_card' ) ) {
 }
 
 if ( ! function_exists( 'ucf_post_list_display_card_after' ) ) {
-	function ucf_post_list_display_card_after( $posts, $list_title ) {
+	function ucf_post_list_display_card_after( $posts, $atts ) {
 		ob_start();
 	?>
 		</div>

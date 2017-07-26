@@ -48,11 +48,11 @@ if ( !class_exists( 'UCF_Post_List_Common' ) ) {
 			ob_start();
 
 			if ( has_action( 'ucf_post_list_display_' . $layout . '_before' ) ) {
-				do_action( 'ucf_post_list_display_' . $layout . '_before', $posts, $atts['list_title'] );
+				do_action( 'ucf_post_list_display_' . $layout . '_before', $posts, $atts );
 			}
 
 			if ( has_action( 'ucf_post_list_display_' . $layout . '_title'  ) ) {
-				do_action( 'ucf_post_list_display_' . $layout . '_title', $posts, $atts['list_title'] );
+				do_action( 'ucf_post_list_display_' . $layout . '_title', $posts, $atts );
 			}
 
 			if ( has_action( 'ucf_post_list_display_' . $layout  ) ) {
@@ -60,7 +60,7 @@ if ( !class_exists( 'UCF_Post_List_Common' ) ) {
 			}
 
 			if ( has_action( 'ucf_post_list_display_' . $layout . '_after' ) ) {
-				do_action( 'ucf_post_list_display_' . $layout . '_after', $posts, $atts['list_title'] );
+				do_action( 'ucf_post_list_display_' . $layout . '_after', $posts, $atts );
 			}
 
 			return ob_get_clean();
@@ -310,8 +310,8 @@ if ( ! function_exists( 'ucf_post_list_enqueue_assets' ) ) {
 		$js_deps = apply_filters( 'ucf_post_list_js_deps', $include_js_libs ? array( 'ucf-post-list-typeahead-js', 'ucf-post-list-handlebars-js' ) : array() );
 
 		if ( $include_js_libs ) {
-			wp_enqueue_script( 'ucf-post-list-typeahead-js', UCF_POST_LIST__TYPEAHEAD, null, null, true );
-			wp_enqueue_script( 'ucf-post-list-handlebars-js', UCF_POST_LIST__HANDLEBARS, null, null, true );
+			wp_enqueue_script( 'ucf-post-list-typeahead-js', UCF_POST_LIST__TYPEAHEAD, null, null, false );
+			wp_enqueue_script( 'ucf-post-list-handlebars-js', UCF_POST_LIST__HANDLEBARS, null, null, false );
 		}
 		if ( $include_js ) {
 			wp_enqueue_script( 'ucf-post-list-js', plugins_url( 'static/js/ucf-post-list.min.js', UCF_POST_LIST__PLUGIN_FILE ), $js_deps, null, false );
