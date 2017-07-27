@@ -95,7 +95,7 @@ n/a
 
 == Installation Requirements ==
 
-None
+jQuery must be included in the document head when using post list searches with Typeahead.js and Handlebars.
 
 
 == Development & Contributing ==
