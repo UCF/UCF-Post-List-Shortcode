@@ -16,6 +16,94 @@ if ( !class_exists( 'UCF_Post_List_Common' ) ) {
 		 * @return string | post list HTML string
 		 **/
 		public static function display_post_search( $posts, $atts ) {
+			$typeahead_settings = array(
+				'localdata'  => self::get_post_search_localdata( $posts ),
+				'classnames' => '{}',
+				'limit'      => 5,
+				'templates'  => '{}'
+			);
+
+			/**
+			 * Returns a local dataset for Bloodhound to search against.
+			 * Override this hook to add terms, meta values, etc by which a post can be
+			 * searched against.
+			 *
+			 * @author Jo Dickson
+			 * @since 1.0.0
+			 * @param $localdata string | stringified JSON array of searchable post data
+			 * @param $posts array | array of WP Post objects
+			 * @param $atts array | array of shortcode attributes
+			**/
+			if ( has_filter( 'ucf_post_list_search_localdata' ) ) {
+				$typeahead_settings['localdata'] = apply_filters(
+					'ucf_post_list_search_localdata',
+					$typeahead_settings['localdata'],
+					$posts,
+					$atts
+				);
+			}
+
+			/**
+			 * Returns a classNames option object for the typeahead.
+			 * Override this hook to modify the default classes assigned to
+			 * elements in the typeahead.
+			 * https://github.com/corejavascript/typeahead.js/blob/master/doc/jquery_typeahead.md#class-names
+			 *
+			 * @author Jo Dickson
+			 * @since 1.0.0
+			 * @param $classnames string | stringified JSON object of classNames settings
+			 * @param $posts array | array of WP Post objects
+			 * @param $atts array | array of shortcode attributes
+			**/
+			if ( has_filter( 'ucf_post_list_search_classnames' ) ) {
+				$typeahead_settings['classnames'] = apply_filters(
+					'ucf_post_list_search_classnames',
+					$typeahead_settings['classnames'],
+					$posts,
+					$atts
+				);
+			}
+
+			/**
+			 * Returns a maximum number of results to return for the
+			 * typeahead's dataset.
+			 *
+			 * @author Jo Dickson
+			 * @since 1.0.0
+			 * @param $limit int | Max number of search results to return
+			 * @param $posts array | array of WP Post objects
+			 * @param $atts array | array of shortcode attributes
+			**/
+			if ( has_filter( 'ucf_post_list_search_limit' ) ) {
+				$typeahead_settings['limit'] = apply_filters(
+					'ucf_post_list_search_limit',
+					$typeahead_settings['limit'],
+					$posts,
+					$atts
+				);
+			}
+
+			/**
+			 * Returns a templates option object for the typeahead's dataset.
+			 * Override this hook to modify the default templates for the
+			 * typeahead.
+			 * https://github.com/corejavascript/typeahead.js/blob/master/doc/jquery_typeahead.md#datasets
+			 *
+			 * @author Jo Dickson
+			 * @since 1.0.0
+			 * @param $templates string | stringified JSON object of templates settings
+			 * @param $posts array | array of WP Post objects
+			 * @param $atts array | array of shortcode attributes
+			**/
+			if ( has_filter( 'ucf_post_list_search_templates' ) ) {
+				$typeahead_settings['templates'] = apply_filters(
+					'ucf_post_list_search_templates',
+					$typeahead_settings['templates'],
+					$posts,
+					$atts
+				);
+			}
+
 			ob_start();
 
 			if ( has_action( 'ucf_post_list_search_before' ) ) {
@@ -27,7 +115,7 @@ if ( !class_exists( 'UCF_Post_List_Common' ) ) {
 			}
 
 			if ( has_action( 'ucf_post_list_search_script'  ) ) {
-				do_action( 'ucf_post_list_search_script', $posts, $atts );
+				do_action( 'ucf_post_list_search_script', $posts, $atts, $typeahead_settings );
 			}
 
 			if ( has_action( 'ucf_post_list_search_after' ) ) {
@@ -294,6 +382,29 @@ if ( !class_exists( 'UCF_Post_List_Common' ) ) {
 			}
 
 			return $args;
+		}
+
+		/**
+		 * Returns default localdata for post list search typeahead datasets.
+		 *
+		 * @author Jo Dickson
+		 * @since 1.0.0
+		 * @param $posts Mixed | array of WP Post objects or false
+		 * @return string | stringified JSON object of typeahead data
+		 **/
+		public static function get_post_search_localdata( $posts ) {
+			if ( ! is_array( $posts ) && $posts !== false ) { $posts = array( $posts ); }
+
+			$retval = array();
+			foreach ( $posts as $post ) {
+				$retval[] = array(
+					'title'   => $post->post_title,
+					'link'    => get_permalink( $post->ID ),
+					'matches' => array( $post->post_title )
+				);
+			}
+
+			return json_encode( $retval );
 		}
 	}
 }
