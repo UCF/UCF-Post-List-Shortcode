@@ -32,41 +32,76 @@ if ( !function_exists( 'ucf_post_list_search' ) ) {
 
 }
 
+if ( !function_exists( 'ucf_post_list_search_localdata' ) ) {
+
+	function ucf_post_list_search_get_localdata( $posts, $atts ) {
+		if ( ! is_array( $posts ) && $posts !== false ) { $posts = array( $posts ); }
+
+		$retval = array();
+		foreach ( $posts as $post ) {
+			$retval[] = array(
+				'title'   => $post->post_title,
+				'link'    => get_permalink( $post->ID ),
+				'matches' => array( $post->post_title )
+			);
+		}
+
+		return json_encode( $retval );
+	}
+
+	add_filter( 'ucf_post_list_search_localdata', 'ucf_post_list_search_get_localdata', 10, 2 );
+}
+
 if ( !function_exists( 'ucf_post_list_search_script' ) ) {
 
 	function ucf_post_list_search_script( $posts, $atts ) {
 		if ( ! is_array( $posts ) && $posts !== false ) { $posts = array( $posts ); }
 		ob_start();
-	?>
-		<?php if ( $posts ): ?>
-			<?php
-			// TODO add post permalinks
-			// TODO make searchable strings for each post an array
-			$search_data = json_encode( array_map( function( $post ) {
-				return $post->post_title;
-			}, $posts ) );
-			?>
-			<script>
-			(function() {
-				// TODO add selection onclick event to navigate to post permalink
-				var typeaheadSource = new Bloodhound({
-					datumTokenizer: Bloodhound.tokenizers.whitespace,
-					queryTokenizer: Bloodhound.tokenizers.whitespace,
-					local: <?php echo $search_data; ?>
-				});
 
-				$('#post-list-search-<?php echo $atts['list_id']; ?> .typeahead').typeahead({
-					hint: true,
-					highlight: true,
-					minLength: 2
+		if ( $posts ):
+
+			/**
+			 * Returns a local dataset for Bloodhound to search against.
+			 * Override this hook to add terms, meta values, etc by which a post can be
+			 * searched against.
+			 *
+			 * @author Jo Dickson
+			 * @since 1.0.0
+			 * @param $posts array | array of WP Post objects
+			 * @param $atts array | array of shortcode attributes
+			 * @return string | JSON-encoded array of searchable post data
+			**/
+			$search_data = apply_filters( 'ucf_post_list_search_localdata', $posts, $atts ) ?: '[]';
+	?>
+		<script>
+		(function() {
+			var typeaheadSource = new Bloodhound({
+				datumTokenizer: function(datum) {
+					return Bloodhound.tokenizers.whitespace(datum.title);
 				},
-				{
-					source: typeaheadSource
-				});
-			}());
-			</script>
-		<?php endif; ?>
+				queryTokenizer: Bloodhound.tokenizers.whitespace,
+				local: <?php echo $search_data; ?>
+			});
+
+			$('#post-list-search-<?php echo $atts['list_id']; ?> .typeahead').typeahead(
+			{
+				hint: false,
+				highlight: true,
+				minLength: 2
+			},
+			{
+				source: typeaheadSource,
+				displayKey: function(obj) {
+					return obj.title
+				}
+			}).on('typeahead:selected', function(event, obj) {
+				window.location = obj.link;
+			});
+		}());
+		</script>
 	<?php
+		endif;
+
 		echo ob_get_clean();
 	}
 
