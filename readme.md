@@ -39,10 +39,19 @@ The name of the layout to use to display the list of posts.  Defaults to "defaul
 Heading text to display above the list of posts.  No heading is displayed by default.
 
 `show_image`
-Whether or not an image for the post should be displayed.  Only applicable on layouts that support images.
+True/false; whether or not an image for the post should be displayed.  Only applicable on layouts that support images.
 
 `posts_per_row`
 The number of posts to display per row within the chosen layout.  Only applicable on layouts that support column-based post lists.
+
+`display_search`
+True/false; whether or not a search field that searches the list of posts should be displayed.  Defaults to "false".
+
+`search_placeholder`
+The placeholder text to display in the search field (when `display_search` is enabled).
+
+`list_id`
+A unique identifier to assign to the post list.  Useful for creating specialized post lists with custom styling or functionality.  Defaults to a randomized numeric string.
 
 
 `tax_relation`
@@ -88,7 +97,7 @@ n/a
 
 ## Installation Requirements ##
 
-None
+jQuery must be included in the document head when using post list searches with Typeahead.js and Handlebars.
 
 
 ## Development & Contributing ##
