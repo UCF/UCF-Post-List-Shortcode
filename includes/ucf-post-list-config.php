@@ -81,6 +81,7 @@ if ( !class_exists( 'UCF_Post_List_Config' ) ) {
 		public static function get_layouts() {
 			$layouts = array(
 				'default' => 'Default Layout',
+				'card'    => 'Card Layout'
 			);
 
 			$layouts = apply_filters( self::$option_prefix . 'get_layouts', $layouts );
@@ -101,6 +102,13 @@ if ( !class_exists( 'UCF_Post_List_Config' ) ) {
 				'layout'      => new UCF_Post_List_Option( 'layout', array(
 					'default' => 'default'
 				) ),
+				'display_search'      => new UCF_Post_List_Option( 'display_search', array(
+					'default' => false,
+					'format_callback' => array( 'UCF_Post_List_Config', 'format_option_bool' )
+				) ),
+				'search_placeholder'  => new UCF_Post_List_Option( 'search_placeholder', array(
+					'default' => 'Search'
+				) ),
 				'list_title'          => new UCF_Post_List_Option( 'list_title' ),
 				'show_image'          => new UCF_Post_List_Option( 'show_image', array(
 					'default'         => true,
@@ -110,6 +118,9 @@ if ( !class_exists( 'UCF_Post_List_Config' ) ) {
 					'default'         => 0,
 					'format_callback' => array( 'UCF_Post_List_Config', 'format_option_int' )
 				) ),
+				'list_id'             => new UCF_Post_List_Option( 'list_id', array(
+					'default'         => strval( random_int( 0, 999999 ) )  // Some arbitrary unique value. Can't use wp_rand here (function not defined yet?)
+				) ),
 				'include_css'         => new UCF_Post_List_Option( 'include_css', array(
 					'default'         => true,
 					'format_callback' => array( 'UCF_Post_List_Config', 'format_option_bool' ),
@@ -117,6 +128,26 @@ if ( !class_exists( 'UCF_Post_List_Config' ) ) {
 					'sc_attr'         => false,
 					'field_title'     => 'Include Default CSS',
 					'field_desc'      => 'Include the default css stylesheet for post lists within the theme.<br>Leave this checkbox checked unless your theme provides custom styles for post lists.',
+					'field_type'      => 'checkbox',
+					'field_options_section' => 'ucf_post_list_section_general'
+				) ),
+				'include_js'          => new UCF_Post_List_Option( 'include_js', array(
+					'default'         => true,
+					'format_callback' => array( 'UCF_Post_List_Config', 'format_option_bool' ),
+					'options_page'    => true,
+					'sc_attr'         => false,
+					'field_title'     => 'Include Default JavaScript',
+					'field_desc'      => 'Include the default JavaScript for post list searching within the theme.<br>Leave this checkbox checked unless your theme provides scripts that handle this already.',
+					'field_type'      => 'checkbox',
+					'field_options_section' => 'ucf_post_list_section_general'
+				) ),
+				'include_js_libs'     => new UCF_Post_List_Option( 'include_js_libs', array(
+					'default'         => true,
+					'format_callback' => array( 'UCF_Post_List_Config', 'format_option_bool' ),
+					'options_page'    => true,
+					'sc_attr'         => false,
+					'field_title'     => 'Include Typeahead, Handlebars JS',
+					'field_desc'      => 'Include the Typeahead and Handlebars JavaScript for post list searching within the theme.<br>Leave this checkbox checked unless your theme provides these scripts already.',
 					'field_type'      => 'checkbox',
 					'field_options_section' => 'ucf_post_list_section_general'
 				) ),

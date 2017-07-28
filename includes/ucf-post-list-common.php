@@ -12,20 +12,128 @@ if ( !class_exists( 'UCF_Post_List_Common' ) ) {
 		 *
 		 * @author Jo Dickson
 		 * @since 1.0.0
-		 * @param $items Mixed | array of WP Post objects or false
+		 * @param $posts Mixed | array of WP Post objects or false
 		 * @param $layout string | layout name
-		 * @param $title string | a title string to display within the post list markup
+		 * @param $atts array | array of options
 		 * @return string | post list HTML string
 		 **/
 		public static function display_post_list( $posts, $layout, $atts ) {
+			$typeahead_settings = array(
+				'localdata'  => self::get_post_search_localdata( $posts ),
+				'classnames' => '{}',
+				'limit'      => 5,
+				'templates'  => '{}'
+			);
+
+			/**
+			 * Returns a local dataset for Bloodhound to search against.
+			 * Override this hook to add terms, meta values, etc by which a post can be
+			 * searched against.
+			 *
+			 * @author Jo Dickson
+			 * @since 1.0.0
+			 * @param $localdata string | stringified JSON array of searchable post data
+			 * @param $posts array | array of WP Post objects
+			 * @param $atts array | array of shortcode attributes
+			**/
+			if ( has_filter( 'ucf_post_list_search_localdata' ) ) {
+				$typeahead_settings['localdata'] = apply_filters(
+					'ucf_post_list_search_localdata',
+					$typeahead_settings['localdata'],
+					$posts,
+					$atts
+				);
+			}
+
+			/**
+			 * Returns a classNames option object for the typeahead.
+			 * Override this hook to modify the default classes assigned to
+			 * elements in the typeahead.
+			 * https://github.com/corejavascript/typeahead.js/blob/master/doc/jquery_typeahead.md#class-names
+			 *
+			 * @author Jo Dickson
+			 * @since 1.0.0
+			 * @param $classnames string | stringified JSON object of classNames settings
+			 * @param $posts array | array of WP Post objects
+			 * @param $atts array | array of shortcode attributes
+			**/
+			if ( has_filter( 'ucf_post_list_search_classnames' ) ) {
+				$typeahead_settings['classnames'] = apply_filters(
+					'ucf_post_list_search_classnames',
+					$typeahead_settings['classnames'],
+					$posts,
+					$atts
+				);
+			}
+
+			/**
+			 * Returns a maximum number of results to return for the
+			 * typeahead's dataset.
+			 *
+			 * @author Jo Dickson
+			 * @since 1.0.0
+			 * @param $limit int | Max number of search results to return
+			 * @param $posts array | array of WP Post objects
+			 * @param $atts array | array of shortcode attributes
+			**/
+			if ( has_filter( 'ucf_post_list_search_limit' ) ) {
+				$typeahead_settings['limit'] = apply_filters(
+					'ucf_post_list_search_limit',
+					$typeahead_settings['limit'],
+					$posts,
+					$atts
+				);
+			}
+
+			/**
+			 * Returns a templates option object for the typeahead's dataset.
+			 * Override this hook to modify the default templates for the
+			 * typeahead.
+			 * https://github.com/corejavascript/typeahead.js/blob/master/doc/jquery_typeahead.md#datasets
+			 *
+			 * @author Jo Dickson
+			 * @since 1.0.0
+			 * @param $templates string | stringified JSON object of templates settings
+			 * @param $posts array | array of WP Post objects
+			 * @param $atts array | array of shortcode attributes
+			**/
+			if ( has_filter( 'ucf_post_list_search_templates' ) ) {
+				$typeahead_settings['templates'] = apply_filters(
+					'ucf_post_list_search_templates',
+					$typeahead_settings['templates'],
+					$posts,
+					$atts
+				);
+			}
+
 			ob_start();
 
 			if ( has_action( 'ucf_post_list_display_' . $layout . '_before' ) ) {
-				do_action( 'ucf_post_list_display_' . $layout . '_before', $posts, $atts['list_title'] );
+				do_action( 'ucf_post_list_display_' . $layout . '_before', $posts, $atts );
 			}
 
 			if ( has_action( 'ucf_post_list_display_' . $layout . '_title'  ) ) {
-				do_action( 'ucf_post_list_display_' . $layout . '_title', $posts, $atts['list_title'] );
+				do_action( 'ucf_post_list_display_' . $layout . '_title', $posts, $atts );
+			}
+
+			if ( $atts['display_search'] ) {
+
+				if ( has_action( 'ucf_post_list_search_before' ) ) {
+					do_action( 'ucf_post_list_search_before', $posts, $atts );
+				}
+
+				if ( has_action( 'ucf_post_list_search' ) ) {
+					do_action( 'ucf_post_list_search', $posts, $atts );
+				}
+
+				if ( has_action( 'ucf_post_list_search_script' ) ) {
+					do_action( 'ucf_post_list_search_script', $posts, $atts, $typeahead_settings );
+				}
+
+				if ( has_action( 'ucf_post_list_search_after' ) ) {
+					do_action( 'ucf_post_list_search_after', $posts, $atts );
+				}
+
 			}
 
 			if ( has_action( 'ucf_post_list_display_' . $layout  ) ) {
@@ -33,7 +141,7 @@ if ( !class_exists( 'UCF_Post_List_Common' ) ) {
 			}
 
 			if ( has_action( 'ucf_post_list_display_' . $layout . '_after' ) ) {
-				do_action( 'ucf_post_list_display_' . $layout . '_after', $posts, $atts['list_title'] );
+				do_action( 'ucf_post_list_display_' . $layout . '_after', $posts, $atts );
 			}
 
 			return ob_get_clean();
@@ -264,6 +372,33 @@ if ( !class_exists( 'UCF_Post_List_Common' ) ) {
 
 			return $args;
 		}
+
+		/**
+		 * Returns default localdata for post list search typeahead datasets.
+		 *
+		 * @author Jo Dickson
+		 * @since 1.0.0
+		 * @param $posts Mixed | array of WP Post objects or false
+		 * @return string | stringified JSON object of typeahead data
+		 **/
+		public static function get_post_search_localdata( $posts ) {
+			if ( ! is_array( $posts ) && $posts !== false ) { $posts = array( $posts ); }
+
+			$retval = array();
+			if ( $posts ) {
+				foreach ( $posts as $post ) {
+					$retval[] = array(
+						'id'      => $post->ID,
+						'title'   => $post->post_title,
+						'display' => $post->post_title,
+						'link'    => get_permalink( $post->ID ),
+						'matches' => array( $post->post_title )
+					);
+				}
+			}
+
+			return json_encode( $retval );
+		}
 	}
 }
 
@@ -275,6 +410,19 @@ if ( ! function_exists( 'ucf_post_list_enqueue_assets' ) ) {
 
 		if ( $include_css ) {
 			wp_enqueue_style( 'ucf_post_list_css', plugins_url( 'static/css/ucf-post-list.min.css', UCF_POST_LIST__PLUGIN_FILE ), $css_deps, false, 'screen' );
+		}
+
+		// JS
+		$include_js_libs = UCF_Post_List_Config::get_option_or_default( 'include_js_libs' );
+		$include_js = UCF_Post_List_Config::get_option_or_default( 'include_js' );
+		$js_deps = apply_filters( 'ucf_post_list_js_deps', $include_js_libs ? array( 'ucf-post-list-typeahead-js', 'ucf-post-list-handlebars-js' ) : array() );
+
+		if ( $include_js_libs ) {
+			wp_enqueue_script( 'ucf-post-list-typeahead-js', UCF_POST_LIST__TYPEAHEAD, null, null, false );
+			wp_enqueue_script( 'ucf-post-list-handlebars-js', UCF_POST_LIST__HANDLEBARS, null, null, false );
+		}
+		if ( $include_js ) {
+			wp_enqueue_script( 'ucf-post-list-js', plugins_url( 'static/js/ucf-post-list.min.js', UCF_POST_LIST__PLUGIN_FILE ), $js_deps, null, false );
 		}
 	}
 

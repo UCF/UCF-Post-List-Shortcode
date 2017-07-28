@@ -1,0 +1,18 @@
+.ucf-post-search {
+  .tt-menu {
+    background-color: #fff;
+    border: 1px solid #eee;
+  }
+
+  .tt-suggestion {
+    padding: .25em 1em;
+
+    &:hover {
+      cursor: pointer;
+    }
+  }
+
+  .tt-cursor {
+    background-color: #eee;
+  }
+}
