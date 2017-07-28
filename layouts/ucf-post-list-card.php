@@ -1,7 +1,9 @@
 <?php
+
 /**
  * The default functions for the card layout
  **/
+
 if ( ! function_exists( 'ucf_post_list_display_card_before' ) ) {
 	function ucf_post_list_display_card_before( $posts, $atts ) {
 		ob_start();
@@ -37,12 +39,6 @@ if ( ! function_exists( 'ucf_post_list_display_card' ) ) {
 		ob_start();
 ?>
 		<?php if ( $posts ): ?>
-			<?php
-			if ( $atts['display_search'] ) {
-				echo UCF_Post_List_Common::display_post_search( $posts, $atts );
-			}
-			?>
-
 			<div class="ucf-post-list-card-deck">
 
 			<?php
@@ -92,3 +88,4 @@ if ( ! function_exists( 'ucf_post_list_display_card_after' ) ) {
 
 	add_action( 'ucf_post_list_display_card_after', 'ucf_post_list_display_card_after', 10, 2 );
 }
+

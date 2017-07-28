@@ -8,14 +8,16 @@ if ( !class_exists( 'UCF_Post_List_Common' ) ) {
 	class UCF_Post_List_Common {
 
 		/**
-		 * Returns full markup for a post list search.
+		 * Returns full markup for a list of posts.
 		 *
-		 * @author RJ Bruneel, Jo Dickson
+		 * @author Jo Dickson
 		 * @since 1.0.0
 		 * @param $posts Mixed | array of WP Post objects or false
+		 * @param $layout string | layout name
+		 * @param $atts array | array of options
 		 * @return string | post list HTML string
 		 **/
-		public static function display_post_search( $posts, $atts ) {
+		public static function display_post_list( $posts, $layout, $atts ) {
 			$typeahead_settings = array(
 				'localdata'  => self::get_post_search_localdata( $posts ),
 				'classnames' => '{}',
@@ -106,45 +108,32 @@ if ( !class_exists( 'UCF_Post_List_Common' ) ) {
 
 			ob_start();
 
-			if ( has_action( 'ucf_post_list_search_before' ) ) {
-				do_action( 'ucf_post_list_search_before', $posts, $atts );
-			}
-
-			if ( has_action( 'ucf_post_list_search' ) ) {
-				do_action( 'ucf_post_list_search', $posts, $atts );
-			}
-
-			if ( has_action( 'ucf_post_list_search_script'  ) ) {
-				do_action( 'ucf_post_list_search_script', $posts, $atts, $typeahead_settings );
-			}
-
-			if ( has_action( 'ucf_post_list_search_after' ) ) {
-				do_action( 'ucf_post_list_search_after', $posts, $atts );
-			}
-
-			return ob_get_clean();
-		}
-
-
-		/**
-		 * Returns full markup for a list of posts.
-		 *
-		 * @author Jo Dickson
-		 * @since 1.0.0
-		 * @param $posts Mixed | array of WP Post objects or false
-		 * @param $layout string | layout name
-		 * @param $atts array | array of options
-		 * @return string | post list HTML string
-		 **/
-		public static function display_post_list( $posts, $layout, $atts ) {
-			ob_start();
-
 			if ( has_action( 'ucf_post_list_display_' . $layout . '_before' ) ) {
 				do_action( 'ucf_post_list_display_' . $layout . '_before', $posts, $atts );
 			}
 
 			if ( has_action( 'ucf_post_list_display_' . $layout . '_title'  ) ) {
 				do_action( 'ucf_post_list_display_' . $layout . '_title', $posts, $atts );
+			}
+
+			if ( $atts['display_search'] ) {
+
+				if ( has_action( 'ucf_post_list_search_before' ) ) {
+					do_action( 'ucf_post_list_search_before', $posts, $atts );
+				}
+
+				if ( has_action( 'ucf_post_list_search' ) ) {
+					do_action( 'ucf_post_list_search', $posts, $atts );
+				}
+
+				if ( has_action( 'ucf_post_list_search_script' ) ) {
+					do_action( 'ucf_post_list_search_script', $posts, $atts, $typeahead_settings );
+				}
+
+				if ( has_action( 'ucf_post_list_search_after' ) ) {
+					do_action( 'ucf_post_list_search_after', $posts, $atts );
+				}
+
 			}
 
 			if ( has_action( 'ucf_post_list_display_' . $layout  ) ) {
@@ -396,14 +385,16 @@ if ( !class_exists( 'UCF_Post_List_Common' ) ) {
 			if ( ! is_array( $posts ) && $posts !== false ) { $posts = array( $posts ); }
 
 			$retval = array();
-			foreach ( $posts as $post ) {
-				$retval[] = array(
-					'id'      => $post->ID,
-					'title'   => $post->post_title,
-					'display' => $post->post_title,
-					'link'    => get_permalink( $post->ID ),
-					'matches' => array( $post->post_title )
-				);
+			if ( $posts ) {
+				foreach ( $posts as $post ) {
+					$retval[] = array(
+						'id'      => $post->ID,
+						'title'   => $post->post_title,
+						'display' => $post->post_title,
+						'link'    => get_permalink( $post->ID ),
+						'matches' => array( $post->post_title )
+					);
+				}
 			}
 
 			return json_encode( $retval );

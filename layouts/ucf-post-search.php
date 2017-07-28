@@ -1,4 +1,5 @@
 <?php
+
 if ( !function_exists( 'ucf_post_list_search_before' ) ) {
 
 	function ucf_post_list_search_before( $posts, $atts ) {
@@ -40,37 +41,15 @@ if ( !function_exists( 'ucf_post_list_search_script' ) ) {
 		if ( $posts ):
 	?>
 		<script>
-		(function() {
-			var typeaheadSource = new Bloodhound({
-				datumTokenizer: function(datum) {
-					var retval = [];
-					for (var i=0; i<datum.matches.length; i++) {
-						retval = retval.concat(Bloodhound.tokenizers.whitespace(datum.matches[i]));
-					}
-					return retval;
-				},
-				queryTokenizer: Bloodhound.tokenizers.whitespace,
-				local: <?php echo $typeahead_settings['localdata']; ?>
-			});
-
-			$('#post-list-search-<?php echo $atts['list_id']; ?> .typeahead').typeahead(
-			{
-				hint: false,
-				highlight: true,
-				minLength: 2,
-				classNames: <?php echo $typeahead_settings['classnames']; ?>
-			},
-			{
-				source: typeaheadSource,
-				limit: <?php echo $typeahead_settings['limit']; ?>,
-				displayKey: function(obj) {
-					return obj.display;
-				},
-				templates: <?php echo $typeahead_settings['templates']; ?>
-			}).on('typeahead:selected', function(event, obj) {
-				window.location = obj.link;
-			});
-		}());
+		(function($) {
+			$('#post-list-search-<?php echo $atts['list_id']; ?> .typeahead')
+				.UCFPostListSearch({
+					localdata: <?php echo $typeahead_settings['localdata']; ?>,
+					classnames: <?php echo $typeahead_settings['classnames']; ?>,
+					limit: <?php echo $typeahead_settings['limit']; ?>,
+					templates: <?php echo $typeahead_settings['templates']; ?>
+				});
+		}(jQuery));
 		</script>
 	<?php
 		endif;

@@ -1,29 +1,30 @@
-var gulp = require('gulp'),
-    configLocal = require('./gulp-config.json'),
-    merge = require('merge'),
-    sass = require('gulp-sass'),
-    rename = require('gulp-rename'),
-    scsslint = require('gulp-scss-lint'),
+var browserSync = require('browser-sync').create(),
+    gulp = require('gulp'),
     autoprefixer = require('gulp-autoprefixer'),
     cleanCSS = require('gulp-clean-css'),
-    readme = require('gulp-readme-to-markdown'),
-    jshint = require('gulp-jshint'),
-    jshintStylish = require('jshint-stylish'),
+    include = require('gulp-include'),
+    eslint = require('gulp-eslint'),
+    isFixed = require('gulp-eslint-if-fixed'),
+    babel = require('gulp-babel'),
+    rename = require('gulp-rename'),
+    sass = require('gulp-sass'),
+    scsslint = require('gulp-scss-lint'),
     uglify = require('gulp-uglify'),
-    concat = require('gulp-concat'),
-    browserSync = require('browser-sync').create();
+    merge = require('merge'),
+    readme = require('gulp-readme-to-markdown');
 
-var configDefault = {
-    src: {
-      scssPath: './src/scss',
-      jsPath: './src/js'
+var configLocal = require('./gulp-config.json'),
+    configDefault = {
+      src: {
+        scssPath: './src/scss',
+        jsPath: './src/js'
+      },
+      dist: {
+        cssPath: './static/css',
+        jsPath: './static/js'
+      }
     },
-    dist: {
-      cssPath: './static/css',
-      jsPath: './static/js'
-    }
-  },
-  config = merge(configDefault, configLocal);
+    config = merge(configDefault, configLocal);
 
 
 //
@@ -53,37 +54,41 @@ gulp.task('css-main', function() {
 // All css-related tasks
 gulp.task('css', ['scss-lint', 'css-main']);
 
-// Minify, lint and copy admin js
-gulp.task('js-hint', function() {
-  gulp.src(config.jsPath + '/*.js')
-    .pipe(jshint())
-    .pipe(jshint.reporter('jshint-stylish'))
-    .pipe(jshint.reporter('fail'));
+// Run eshint on js files in src.jsPath. Do not perform linting
+// on vendor js files.
+gulp.task('es-lint', function() {
+  return gulp.src([config.src.jsPath + '/*.js'])
+    .pipe(eslint({ fix: true }))
+    .pipe(eslint.format())
+    .pipe(isFixed(config.src.jsPath));
 });
 
 gulp.task('js-admin', function() {
-  var minified = [
-    config.src.jsPath + '/ucf-post-list-admin.js'
-  ];
-
-  gulp.src(minified)
-    .pipe(concat('ucf-post-list-admin.min.js'))
+  gulp.src(config.src.jsPath + '/ucf-post-list-admin.js')
+    .pipe(include({
+      includePaths: [config.packagesPath, config.src.jsPath]
+    }))
+      .on('error', console.log)
+    .pipe(babel())
     .pipe(uglify())
+    .pipe(rename('ucf-post-list-admin.min.js'))
     .pipe(gulp.dest(config.dist.jsPath));
 });
 
-gulp.task('js-script', function() {
-  var minified = [
-    config.src.jsPath + '/ucf-post-list.js'
-  ];
-
-  gulp.src(minified)
-    .pipe(concat('ucf-post-list.min.js'))
+// Process main plugin js file
+gulp.task('js-build', function() {
+  return gulp.src(config.src.jsPath + '/ucf-post-list.js')
+    .pipe(include({
+      includePaths: [config.packagesPath, config.src.jsPath]
+    }))
+      .on('error', console.log)
+    .pipe(babel())
     .pipe(uglify())
+    .pipe(rename('ucf-post-list.min.js'))
     .pipe(gulp.dest(config.dist.jsPath));
 });
 
-gulp.task('js', ['js-hint', 'js-script', 'js-admin']);
+gulp.task('js', ['es-lint', 'js-build', 'js-admin']);
 
 
 //

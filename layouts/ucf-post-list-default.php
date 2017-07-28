@@ -1,4 +1,9 @@
 <?php
+
+/**
+ * List layout
+ **/
+
 if ( !function_exists( 'ucf_post_list_display_default_before' ) ) {
 
 	function ucf_post_list_display_default_before( $posts, $atts ) {
@@ -36,11 +41,6 @@ if ( !function_exists( 'ucf_post_list_display_default' ) ) {
 		ob_start();
 	?>
 		<?php if ( $posts ): ?>
-			<?php
-			if ( $atts['display_search'] ) {
-				echo UCF_Post_List_Common::display_post_search( $posts, $atts );
-			}
-			?>
 			<ul class="ucf-post-list-items">
 				<?php foreach ( $posts as $item ): ?>
 				<li class="ucf-post-list-item">
