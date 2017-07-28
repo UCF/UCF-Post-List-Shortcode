@@ -90,23 +90,6 @@ if ( !class_exists( 'UCF_Post_List_Config' ) ) {
 		}
 
 		/**
-		 * Returns the plugin's registered search layouts.
-		 *
-		 * @author Jo Dickson
-		 * @since 1.0.0
-		 * @return array | list of layouts
-		 **/
-		public static function get_search_layouts() {
-			$layouts = array(
-				'default' => 'Default Layout',
-			);
-
-			$layouts = apply_filters( self::$option_prefix . 'get_search_layouts', $layouts );
-
-			return $layouts;
-		}
-
-		/**
 		 * Returns a full list of plugin option objects.  Adds additional
 		 * options on-the-fly based on registered post types and taxonomies.
 		 *
@@ -122,6 +105,9 @@ if ( !class_exists( 'UCF_Post_List_Config' ) ) {
 				'display_search'      => new UCF_Post_List_Option( 'display_search', array(
 					'default' => false,
 					'format_callback' => array( 'UCF_Post_List_Config', 'format_option_bool' )
+				) ),
+				'search_placeholder'  => new UCF_Post_List_Option( 'search_placeholder', array(
+					'default' => 'Search'
 				) ),
 				'list_title'          => new UCF_Post_List_Option( 'list_title' ),
 				'show_image'          => new UCF_Post_List_Option( 'show_image', array(

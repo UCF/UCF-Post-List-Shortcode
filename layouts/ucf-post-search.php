@@ -21,7 +21,7 @@ if ( !function_exists( 'ucf_post_list_search' ) ) {
 	?>
 		<?php if ( $posts ): ?>
 			<div class="ucf-post-search-form" id="post-list-search-<?php echo $atts['list_id']; ?>" data-id="post-list-<?php echo $atts['list_id']; ?>">
-				<input class="typeahead" type="text" placeholder="Search">
+				<input class="typeahead" type="text" placeholder="<?php echo $atts['search_placeholder']; ?>">
 			</div>
 		<?php endif; ?>
 	<?php
@@ -37,14 +37,17 @@ if ( !function_exists( 'ucf_post_list_search_script' ) ) {
 	function ucf_post_list_search_script( $posts, $atts, $typeahead_settings ) {
 		if ( ! is_array( $posts ) && $posts !== false ) { $posts = array( $posts ); }
 		ob_start();
-
 		if ( $posts ):
 	?>
 		<script>
 		(function() {
 			var typeaheadSource = new Bloodhound({
 				datumTokenizer: function(datum) {
-					return Bloodhound.tokenizers.whitespace(datum.matches);
+					var retval = [];
+					for (var i=0; i<datum.matches.length; i++) {
+						retval = retval.concat(Bloodhound.tokenizers.whitespace(datum.matches[i]));
+					}
+					return retval;
 				},
 				queryTokenizer: Bloodhound.tokenizers.whitespace,
 				local: <?php echo $typeahead_settings['localdata']; ?>
@@ -61,7 +64,7 @@ if ( !function_exists( 'ucf_post_list_search_script' ) ) {
 				source: typeaheadSource,
 				limit: <?php echo $typeahead_settings['limit']; ?>,
 				displayKey: function(obj) {
-					return obj.title
+					return obj.display;
 				},
 				templates: <?php echo $typeahead_settings['templates']; ?>
 			}).on('typeahead:selected', function(event, obj) {

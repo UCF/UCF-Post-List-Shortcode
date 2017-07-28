@@ -398,7 +398,9 @@ if ( !class_exists( 'UCF_Post_List_Common' ) ) {
 			$retval = array();
 			foreach ( $posts as $post ) {
 				$retval[] = array(
+					'id'      => $post->ID,
 					'title'   => $post->post_title,
+					'display' => $post->post_title,
 					'link'    => get_permalink( $post->ID ),
 					'matches' => array( $post->post_title )
 				);
