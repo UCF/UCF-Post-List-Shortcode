@@ -1,9 +1,4 @@
 <?php
-
-/**
- * List layout
- **/
-
 if ( !function_exists( 'ucf_post_list_display_default_before' ) ) {
 
 	function ucf_post_list_display_default_before( $posts, $atts ) {
