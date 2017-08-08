@@ -83,6 +83,9 @@ In addition, "date_query" and "meta_query" are not yet supported.
 
 ## Changelog ##
 
+### 2.0.0 ###
+* Updated layout hooks to use filters instead of actions for greater flexibility.  Layout hooks now have default values.  Note that these changes are incompatible with layout hooks available in v1.0.0 of the plugin.
+
 ### 1.0.0 ###
 * Initial release
 
