@@ -83,9 +83,6 @@ In addition, "date_query" and "meta_query" are not yet supported.
 
 ## Changelog ##
 
-### 1.0.1 ###
-* Bug Fix with posts_per_row attribute
-
 ### 1.0.0 ###
 * Initial release
 

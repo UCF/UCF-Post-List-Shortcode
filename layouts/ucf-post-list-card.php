@@ -5,36 +5,36 @@
  **/
 
 if ( ! function_exists( 'ucf_post_list_display_card_before' ) ) {
-	function ucf_post_list_display_card_before( $posts, $atts ) {
+	function ucf_post_list_display_card_before( $content, $posts, $atts ) {
 		ob_start();
 	?>
 		<div class="ucf-post-list card-layout" id="post-list-<?php echo $atts['list_id']; ?>">
 	<?php
-		echo ob_get_clean();
+		return ob_get_clean();
 	}
 
-	add_action( 'ucf_post_list_display_card_before', 'ucf_post_list_display_card_before', 10, 2 );
+	add_filter( 'ucf_post_list_display_card_before', 'ucf_post_list_display_card_before', 10, 3 );
 }
 
 
 if ( !function_exists( 'ucf_post_list_display_card_title' ) ) {
 
-	function ucf_post_list_display_card_title( $posts, $atts ) {
+	function ucf_post_list_display_card_title( $content, $posts, $atts ) {
 		$formatted_title = '';
 
 		if ( $list_title = $atts['list_title'] ) {
 			$formatted_title = '<h2 class="ucf-post-list-title">' . $list_title . '</h2>';
 		}
 
-		echo $formatted_title;
+		return $formatted_title;
 	}
 
-	add_action( 'ucf_post_list_display_card_title', 'ucf_post_list_display_card_title', 10, 2 );
+	add_filter( 'ucf_post_list_display_card_title', 'ucf_post_list_display_card_title', 10, 3 );
 
 }
 
 if ( ! function_exists( 'ucf_post_list_display_card' ) ) {
-	function ucf_post_list_display_card( $posts, $atts ) {
+	function ucf_post_list_display_card( $content, $posts, $atts ) {
 		if ( $posts && ! is_array( $posts ) ) { $posts = array( $posts ); }
 		ob_start();
 ?>
@@ -71,21 +71,21 @@ if ( ! function_exists( 'ucf_post_list_display_card' ) ) {
 			<div class="ucf-post-list-error">No results found.</div>
 		<?php endif;
 
-		echo ob_get_clean();
+		return ob_get_clean();
 	}
 
-	add_action( 'ucf_post_list_display_card', 'ucf_post_list_display_card', 10, 2 );
+	add_filter( 'ucf_post_list_display_card', 'ucf_post_list_display_card', 10, 3 );
 }
 
 if ( ! function_exists( 'ucf_post_list_display_card_after' ) ) {
-	function ucf_post_list_display_card_after( $posts, $atts ) {
+	function ucf_post_list_display_card_after( $content, $posts, $atts ) {
 		ob_start();
 	?>
 		</div>
 	<?php
-		echo ob_get_clean();
+		return ob_get_clean();
 	}
 
-	add_action( 'ucf_post_list_display_card_after', 'ucf_post_list_display_card_after', 10, 2 );
+	add_filter( 'ucf_post_list_display_card_after', 'ucf_post_list_display_card_after', 10, 3 );
 }
 
