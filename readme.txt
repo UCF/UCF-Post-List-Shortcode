@@ -3,7 +3,7 @@ Contributors: ucfwebcom
 Tags: ucf, shortcode, posts, wp_query, get_posts
 Requires at least: 4.7.3
 Tested up to: 4.7.3
-Stable tag: 1.0.1
+Stable tag: 2.0.0
 License: GPLv3 or later
 License URI: http://www.gnu.org/copyleft/gpl-3.0.html
 
@@ -89,6 +89,9 @@ In addition, "date_query" and "meta_query" are not yet supported.
 
 
 == Changelog ==
+
+= 2.0.0 =
+* Updated layout hooks to use filters instead of actions for greater flexibility.  Layout hooks now have default values.  Note that these changes are incompatible with layout hooks available in v1.0.0 of the plugin.
 
 = 1.0.0 =
 * Initial release
