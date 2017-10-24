@@ -81,7 +81,8 @@ if ( !class_exists( 'UCF_Post_List_Config' ) ) {
 		public static function get_layouts() {
 			$layouts = array(
 				'default' => 'Default Layout',
-				'card'    => 'Card Layout'
+				'card'    => 'Card Layout',
+				'count'   => 'List Count Layout'
 			);
 
 			$layouts = apply_filters( self::$option_prefix . 'get_layouts', $layouts );
