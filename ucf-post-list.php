@@ -22,6 +22,7 @@ require_once 'admin/ucf-post-list-admin.php';
 
 require_once 'layouts/ucf-post-list-default.php';
 require_once 'layouts/ucf-post-list-card.php';
+require_once 'layouts/ucf-post-list-count.php';
 require_once 'layouts/ucf-post-search.php';
 
 

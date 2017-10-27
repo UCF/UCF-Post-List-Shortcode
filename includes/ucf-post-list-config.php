@@ -81,7 +81,8 @@ if ( !class_exists( 'UCF_Post_List_Config' ) ) {
 		public static function get_layouts() {
 			$layouts = array(
 				'default' => 'Default Layout',
-				'card'    => 'Card Layout'
+				'card'    => 'Card Layout',
+				'count'   => 'List Count Layout'
 			);
 
 			$layouts = apply_filters( self::$option_prefix . 'get_layouts', $layouts );
@@ -367,7 +368,7 @@ if ( !class_exists( 'UCF_Post_List_Config' ) ) {
 			foreach ( $taxonomies as $tax_name ) {
 				if ( !isset( $options['tax_' . $tax_name] ) ) {
 					$options['tax_' . $tax_name] = new UCF_Post_List_Option( 'tax_' . $tax_name, array(
-						'format_callback' => array( 'UCF_Post_List_Config', 'format_option_array_str' )
+						'format_callback' => array( 'UCF_Post_List_Config', 'format_option_str_or_array' )
 					) );
 					$options['tax_' . $tax_name . '__field'] = new UCF_Post_List_Option( 'tax_' . $tax_name. '__field' );
 					$options['tax_' . $tax_name . '__include_children'] = new UCF_Post_List_Option( 'tax_' . $tax_name . '__include_children', array(
