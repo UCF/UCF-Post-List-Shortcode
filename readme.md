@@ -83,7 +83,15 @@ In addition, "date_query" and "meta_query" are not yet supported.
 
 ## Changelog ##
 
+### 2.0.1 ###
+Enhancements
+* Added 'count' layout, which displays the total number of requested posts
+
+Bug fixes
+* Fixed a formatting issue that prevented multiple taxonomy term values from being passed to the `tax_TAXSLUG` attribute
+
 ### 2.0.0 ###
+Enhancements
 * Updated layout hooks to use filters instead of actions for greater flexibility.  Layout hooks now have default values.  Note that these changes are incompatible with layout hooks available in v1.0.0 of the plugin.
 
 ### 1.0.0 ###
