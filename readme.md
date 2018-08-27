@@ -83,6 +83,10 @@ In addition, "date_query" and "meta_query" are not yet supported.
 
 ## Changelog ##
 
+### 2.0.2 ###
+Bug Fixes:
+* Updated formatting callback for post_parent from a boolean to integer.
+
 ### 2.0.1 ###
 Enhancements
 * Added 'count' layout, which displays the total number of requested posts

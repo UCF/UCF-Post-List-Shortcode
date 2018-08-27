@@ -2,8 +2,8 @@
 Contributors: ucfwebcom
 Tags: ucf, shortcode, posts, wp_query, get_posts
 Requires at least: 4.7.3
-Tested up to: 4.7.3
-Stable tag: 2.0.1
+Tested up to: 4.9.8
+Stable tag: 2.0.2
 License: GPLv3 or later
 License URI: http://www.gnu.org/copyleft/gpl-3.0.html
 
@@ -89,6 +89,10 @@ In addition, "date_query" and "meta_query" are not yet supported.
 
 
 == Changelog ==
+
+= 2.0.2 =
+Bug Fixes:
+* Updated formatting callback for post_parent from a boolean to integer.
 
 = 2.0.1 =
 Enhancements
