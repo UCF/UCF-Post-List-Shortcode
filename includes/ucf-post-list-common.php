@@ -172,22 +172,61 @@ if ( !class_exists( 'UCF_Post_List_Common' ) ) {
 		}
 
 		/**
+		 * Retrieves the attachment ID for the given post, or the ID of
+		 * the plugin's fallback image.
+		 *
+		 * @author Jo Dickson
+		 * @since 2.0.3
+		 * @param object $item | WP_Post object
+		 * @return mixed | Attachment ID int, or false on failure
+		 */
+		public static function get_image_id_or_fallback( $item ) {
+			$id = get_post_thumbnail_id( $item->ID );
+			if ( ! $id ) {
+				$id = UCF_Post_List_Config::get_option_or_default( 'ucf_post_list_fallback_image' );
+			}
+			return is_numeric( $id ) ? intval( $id ) : false;
+		}
+
+		/**
 		 * Retrieves the post featured or fallback image
 		 *
 		 * @author RJ Bruneel
 		 * @since 1.0.0
-		 * @param $item object | object containing the WP Post
+		 * @param object $item | object containing the WP Post
+		 * @param mixed $size | image size (accepts any valid image size, or an array of width and height values in pixels, in that order)
 		 * @return string | image url
 		 **/
-		public static function get_image_or_fallback( $item ) {
-			$item_img = wp_get_attachment_image_src( get_post_thumbnail_id( $item->ID ), 'single-post-thumbnail' );
-			$item_img = $item_img ? $item_img[0] : null;
-			if( $item_img === null ) {
-				$item_img = wp_get_attachment_url( UCF_Post_List_Config::get_option_or_default( 'ucf_post_list_fallback_image' ));
+		public static function get_image_or_fallback( $item, $size='large' ) {
+			$img    = null;
+			$img_id = self::get_image_id_or_fallback( $item );
+
+			if ( $img_id !== intval( UCF_Post_List_Config::get_option_or_default( 'ucf_post_list_fallback_image' ) ) ) {
+				$img = wp_get_attachment_image_src( $img_id, $size );
+				$img = $img ? $img[0] : null;
 			}
-			return $item_img;
+
+			if ( $img === null ) {
+				$img = wp_get_attachment_url( $img_id );
+			}
+
+			return $img;
 		}
 
+		/**
+		 * Retreives a srcset attribute for a post's image, or the srcset
+		 * for the plugin's fallback image.
+		 *
+		 * @author Jo Dickson
+		 * @since 2.0.3
+		 * @param object $item | WP_Post object
+		 * @param mixed $size | image size (accepts any valid image size, or an array of width and height values in pixels, in that order)
+		 * @return string | srcset attribute string
+		 */
+		public static function get_image_srcset( $item, $size='large' ) {
+			$img_id = self::get_image_id_or_fallback( $item );
+			return wp_get_attachment_image_srcset( $img_id, $size ) ?: '';
+		}
 
 		/**
 		 * Retrieves a list of WP Post objects, using arguments passed in
