@@ -249,7 +249,7 @@ if ( !class_exists( 'UCF_Post_List_Config' ) ) {
 				) ),
 				'pagename' => new UCF_Post_List_Option( 'pagename' ),
 				'post_parent'         => new UCF_Post_List_Option( 'post_parent', array(
-					'format_callback' => array( 'UCF_Post_List_Config', 'format_option_bool_or_null' )
+					'format_callback' => array( 'UCF_Post_List_Config', 'format_option_int_or_null' )
 				) ),
 				'post_parent__in'     => new UCF_Post_List_Option( 'post_parent__in', array(
 					'format_callback' => array( 'UCF_Post_List_Config', 'format_option_int_array' )
