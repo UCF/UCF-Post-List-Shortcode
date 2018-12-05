@@ -3,7 +3,7 @@ Contributors: ucfwebcom
 Tags: ucf, shortcode, posts, wp_query, get_posts
 Requires at least: 4.7.3
 Tested up to: 4.7.3
-Stable tag: 2.0.1
+Stable tag: 2.0.3
 License: GPLv3 or later
 License URI: http://www.gnu.org/copyleft/gpl-3.0.html
 
@@ -89,6 +89,19 @@ In addition, "date_query" and "meta_query" are not yet supported.
 
 
 == Changelog ==
+
+= 2.0.3 =
+Enhancements
+* Added new `$size` attr to `UCF_Post_List_Common::get_image_or_fallback`, which allows you to specify the image size to retrieve.  This defaults to `large` to accommodate for sites that depend on the function previously (incorrectly) returning full-sized images, while still avoiding returning _huge_ images at least.
+* Added `UCF_Post_List_Common::get_image_srcset`, which returns a srcset attribute to use for post list layouts that support thumbnails.  The srcset generated will still depend on the uploaded image size not being enormous, but should still help reduce requested filesizes overall, particularly for mobile devices.
+* Updated the `card` layout to use a srcset attribute.
+
+Other
+* Fixed typo for `tax_TAXSLUG__field` param in readme
+
+= 2.0.2 =
+Bug fixes
+* Updated formatting callback for `post_parent` param from a boolean to integer.
 
 = 2.0.1 =
 Enhancements
