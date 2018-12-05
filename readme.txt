@@ -2,7 +2,7 @@
 Contributors: ucfwebcom
 Tags: ucf, shortcode, posts, wp_query, get_posts
 Requires at least: 4.7.3
-Tested up to: 4.7.3
+Tested up to: 4.9.8
 Stable tag: 2.0.3
 License: GPLv3 or later
 License URI: http://www.gnu.org/copyleft/gpl-3.0.html
