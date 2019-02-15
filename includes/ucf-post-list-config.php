@@ -470,6 +470,7 @@ if ( !class_exists( 'UCF_Post_List_Config' ) ) {
 					$sc_atts[$option_name] = $option->get_default();
 				}
 			}
+			$sc_atts = apply_filters( self::$option_prefix . 'get_sc_atts', $sc_atts );
 			return $sc_atts;
 		}
 
