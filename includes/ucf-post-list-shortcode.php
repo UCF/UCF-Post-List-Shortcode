@@ -15,7 +15,8 @@ if ( !function_exists( 'sc_ucf_post_list' ) ) {
 	 * @return string | post list HTML markup
 	 **/
 	function sc_ucf_post_list( $atts, $content='' ) {
-		$atts = shortcode_atts( UCF_Post_List_Config::get_shortcode_atts(), $atts, 'ucf-post-list' );
+		$layout = isset( $atts['layout'] ) ? $atts['layout'] : 'default';
+		$atts = shortcode_atts( UCF_Post_List_Config::get_shortcode_atts( $layout ), $atts, 'ucf-post-list' );
 		$posts = UCF_Post_List_Common::get_post_list( $atts );
 
 		ob_start();

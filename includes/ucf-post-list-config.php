@@ -460,9 +460,10 @@ if ( !class_exists( 'UCF_Post_List_Config' ) ) {
 		 *
 		 * @author Jo Dickson
 		 * @since 1.0.0
+		 * @param string $layout Name of the layout requested for the shortcode
 		 * @return array | array of valid shortcode attributes
 		 **/
-		public static function get_shortcode_atts() {
+		public static function get_shortcode_atts( $layout ) {
 			$options = array_filter( self::get_options(), array( 'UCF_Post_List_Config', 'option_is_sc_attr' ) );
 			$sc_atts = array();
 			if ( $options ) {
@@ -470,6 +471,7 @@ if ( !class_exists( 'UCF_Post_List_Config' ) ) {
 					$sc_atts[$option_name] = $option->get_default();
 				}
 			}
+			$sc_atts = apply_filters( self::$option_prefix . 'get_sc_atts', $sc_atts, $layout );
 			return $sc_atts;
 		}
 
