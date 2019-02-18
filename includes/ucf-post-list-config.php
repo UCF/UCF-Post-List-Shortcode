@@ -460,6 +460,7 @@ if ( !class_exists( 'UCF_Post_List_Config' ) ) {
 		 *
 		 * @author Jo Dickson
 		 * @since 1.0.0
+		 * @param string $layout Name of the layout requested for the shortcode
 		 * @return array | array of valid shortcode attributes
 		 **/
 		public static function get_shortcode_atts( $layout ) {
