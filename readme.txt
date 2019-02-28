@@ -90,6 +90,14 @@ In addition, "date_query" and "meta_query" are not yet supported.
 
 == Changelog ==
 
+= 2.0.5 =
+Bug fix
+Updated random_int to rand for backwards compatibility
+
+= 2.0.4 =
+Enhancements
+* Adds the option to apply filters to the shortcode attributes that are available per layout.
+
 = 2.0.3 =
 Enhancements
 * Added new `$size` attr to `UCF_Post_List_Common::get_image_or_fallback`, which allows you to specify the image size to retrieve.  This defaults to `large` to accommodate for sites that depend on the function previously (incorrectly) returning full-sized images, while still avoiding returning _huge_ images at least.
