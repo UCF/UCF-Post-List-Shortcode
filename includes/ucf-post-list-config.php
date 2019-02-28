@@ -120,7 +120,7 @@ if ( !class_exists( 'UCF_Post_List_Config' ) ) {
 					'format_callback' => array( 'UCF_Post_List_Config', 'format_option_int' )
 				) ),
 				'list_id'             => new UCF_Post_List_Option( 'list_id', array(
-					'default'         => strval( random_int( 0, 999999 ) )  // Some arbitrary unique value. Can't use wp_rand here (function not defined yet?)
+					'default'         => strval( rand( 0, 999999 ) )  // Some arbitrary unique value. Can't use wp_rand here (function not defined yet?)
 				) ),
 				'include_css'         => new UCF_Post_List_Option( 'include_css', array(
 					'default'         => true,
