@@ -83,6 +83,10 @@ In addition, "date_query" and "meta_query" are not yet supported.
 
 ## Changelog ##
 
+### 2.0.5 ###
+Bug fix
+Updated random_int to rand for backwards compatibility
+
 ### 2.0.4 ###
 Enhancements
 * Adds the option to apply filters to the shortcode attributes that are available per layout.
