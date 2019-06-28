@@ -83,6 +83,10 @@ In addition, "date_query" and "meta_query" are not yet supported.
 
 ## Changelog ##
 
+### 2.0.6 ###
+Bug fix
+* Updated version and added Github Plugin URI
+
 ### 2.0.5 ###
 Bug fix
 Updated random_int to rand for backwards compatibility
