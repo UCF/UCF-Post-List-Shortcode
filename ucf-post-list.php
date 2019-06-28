@@ -2,14 +2,15 @@
 /*
 Plugin Name: UCF Post List Shortcode
 Description: Provides a shortcode for displaying lists of posts.
-Version: 2.0.4
+Version: 2.0.6
 Author: UCF Web Communications
 License: GPL3
+Github Plugin URI: UCF/UCF-Post-List-Shortcode
 */
+
 if ( ! defined( 'WPINC' ) ) {
 	die;
 }
-
 
 define( 'UCF_POST_LIST__PLUGIN_FILE', __FILE__ );
 define( 'UCF_POST_LIST__TYPEAHEAD', 'https://cdnjs.cloudflare.com/ajax/libs/corejs-typeahead/1.0.1/typeahead.bundle.min.js' );
