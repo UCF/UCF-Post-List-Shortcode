@@ -21,7 +21,7 @@ if ( !function_exists( 'ucf_post_list_search' ) ) {
 		ob_start();
 	?>
 		<?php if ( $posts ): ?>
-			<div class="ucf-post-search-form" id="post-list-search-<?php echo $atts['list_id']; ?>" data-id="post-list-<?php echo $atts['list_id']; ?>">
+			<div class="ucf-post-search-form" data-id="post-list-<?php echo $atts['list_id']; ?>">
 				<input class="typeahead" type="text" placeholder="<?php echo $atts['search_placeholder']; ?>">
 			</div>
 		<?php endif; ?>
@@ -39,13 +39,25 @@ if ( !function_exists( 'ucf_post_list_search_script' ) ) {
 		if ( ! is_array( $posts ) && $posts !== false ) { $posts = array( $posts ); }
 		ob_start();
 		if ( $posts ):
+
+			// Enqueue JS
+			$include_js_libs = UCF_Post_List_Config::get_option_or_default( 'include_js_libs' );
+			$include_js = UCF_Post_List_Config::get_option_or_default( 'include_js' );
+
+			if ( $include_js_libs ) {
+				wp_enqueue_script( 'ucf-post-list-typeahead-js' );
+				wp_enqueue_script( 'ucf-post-list-handlebars-js' );
+			}
+			if ( $include_js ) {
+				wp_enqueue_script( 'ucf-post-list-js' );
+			}
 	?>
 		<script class="post-list-search-settings" data-list-id="post-list-<?php echo $atts['list_id']; ?>" type="application/json">
 		{
-			localdata: <?php echo $typeahead_settings['localdata']; ?>,
-			classnames: <?php echo $typeahead_settings['classnames']; ?>,
-			limit: <?php echo $typeahead_settings['limit']; ?>,
-			templates: <?php echo $typeahead_settings['templates']; ?>
+			"localdata": <?php echo $typeahead_settings['localdata']; ?>,
+			"classnames": <?php echo $typeahead_settings['classnames']; ?>,
+			"limit": <?php echo $typeahead_settings['limit']; ?>,
+			"templates": <?php echo $typeahead_settings['templates']; ?>
 		}
 		</script>
 	<?php

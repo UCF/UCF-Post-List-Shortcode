@@ -478,17 +478,17 @@ if ( ! function_exists( 'ucf_post_list_enqueue_assets' ) ) {
 			wp_enqueue_style( 'ucf_post_list_css', plugins_url( 'static/css/ucf-post-list.min.css', UCF_POST_LIST__PLUGIN_FILE ), $css_deps, $version, 'screen' );
 		}
 
-		// JS
+		// JS - enqueue late in shortcode output
 		$include_js_libs = UCF_Post_List_Config::get_option_or_default( 'include_js_libs' );
 		$include_js = UCF_Post_List_Config::get_option_or_default( 'include_js' );
 		$js_deps = apply_filters( 'ucf_post_list_js_deps', $include_js_libs ? array( 'ucf-post-list-typeahead-js', 'ucf-post-list-handlebars-js' ) : array() );
 
 		if ( $include_js_libs ) {
-			wp_enqueue_script( 'ucf-post-list-typeahead-js', UCF_POST_LIST__TYPEAHEAD, null, null, false );
-			wp_enqueue_script( 'ucf-post-list-handlebars-js', UCF_POST_LIST__HANDLEBARS, null, null, false );
+			wp_register_script( 'ucf-post-list-typeahead-js', UCF_POST_LIST__TYPEAHEAD, null, null, true );
+			wp_register_script( 'ucf-post-list-handlebars-js', UCF_POST_LIST__HANDLEBARS, null, null, true );
 		}
 		if ( $include_js ) {
-			wp_enqueue_script( 'ucf-post-list-js', plugins_url( 'static/js/ucf-post-list.min.js', UCF_POST_LIST__PLUGIN_FILE ), $js_deps, $version, false );
+			wp_register_script( 'ucf-post-list-js', plugins_url( 'static/js/ucf-post-list.min.js', UCF_POST_LIST__PLUGIN_FILE ), $js_deps, $version, true );
 		}
 	}
 
