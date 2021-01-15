@@ -54,10 +54,10 @@ if ( !function_exists( 'ucf_post_list_search_script' ) ) {
 	?>
 		<script class="post-list-search-settings" data-list-id="post-list-<?php echo $atts['list_id']; ?>" type="application/json">
 		{
-			"localdata": <?php echo $typeahead_settings['localdata']; ?>,
-			"classnames": <?php echo $typeahead_settings['classnames']; ?>,
-			"limit": <?php echo $typeahead_settings['limit']; ?>,
-			"templates": <?php echo $typeahead_settings['templates']; ?>
+			"localdata": <?php echo json_decode( json_encode( $typeahead_settings['localdata'] ) ); ?>,
+			"classnames": <?php echo json_decode( json_encode( $typeahead_settings['classnames'] ) ); ?>,
+			"limit": <?php echo json_decode( json_encode( $typeahead_settings['limit'] ) ); ?>,
+			"templates": <?php echo json_decode( json_encode( $typeahead_settings['templates'] ) ); ?>
 		}
 		</script>
 	<?php
