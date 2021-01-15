@@ -14,7 +14,7 @@
     }, options);
 
     const typeaheadSource = new Bloodhound({
-      datumTokenizer(datum) {
+      datumTokenizer: function (datum) {
         let retval = [];
         for (let i = 0; i < datum.matches.length; i++) {
           retval = retval.concat(Bloodhound.tokenizers.whitespace(datum.matches[i]));
@@ -35,13 +35,13 @@
       {
         source: typeaheadSource,
         limit: settings.limit,
-        displayKey(obj) {
+        displayKey: function (obj) {
           return obj.display;
         },
         templates: settings.templates
       }).on('typeahead:selected', (event, obj) => {
-        window.location = obj.link;
-      });
+      window.location = obj.link;
+    });
 
     return this;
 
