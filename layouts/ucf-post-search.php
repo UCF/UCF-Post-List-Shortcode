@@ -51,13 +51,21 @@ if ( !function_exists( 'ucf_post_list_search_script' ) ) {
 			if ( $include_js ) {
 				wp_enqueue_script( 'ucf-post-list-js' );
 			}
+
+			// TODO: the JSON below should be replaced with a direct
+			// json_encode() echo.
+			// Doing this requires ensuring that our hooks for each
+			// typeahead setting return valid JSON (particularly, object keys
+			// MUST be wrapped in double quotes).
+			// See `ucf_post_list_search_localdata`, `ucf_post_list_search_classnames`,
+			// `ucf_post_list_search_limit`, and `ucf_post_list_search_templates`.
 	?>
 		<script class="post-list-search-settings" data-list-id="post-list-<?php echo $atts['list_id']; ?>" type="application/json">
 		{
-			"localdata": <?php echo json_decode( json_encode( $typeahead_settings['localdata'] ) ); ?>,
-			"classnames": <?php echo json_decode( json_encode( $typeahead_settings['classnames'] ) ); ?>,
-			"limit": <?php echo json_decode( json_encode( $typeahead_settings['limit'] ) ); ?>,
-			"templates": <?php echo json_decode( json_encode( $typeahead_settings['templates'] ) ); ?>
+			"localdata": <?php echo $typeahead_settings['localdata']; ?>,
+			"classnames": <?php echo $typeahead_settings['classnames']; ?>,
+			"limit": <?php echo $typeahead_settings['limit']; ?>,
+			"templates": <?php echo $typeahead_settings['templates']; ?>
 		}
 		</script>
 	<?php
