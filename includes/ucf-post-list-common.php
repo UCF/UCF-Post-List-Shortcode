@@ -109,63 +109,39 @@ if ( !class_exists( 'UCF_Post_List_Common' ) ) {
 			ob_start();
 
 			// Post List Before
-			$layout_before = ucf_post_list_display_default_before( '', $posts, $atts );
-			if ( has_filter( 'ucf_post_list_display_' . $layout . '_before' ) ) {
-				$layout_before = apply_filters( 'ucf_post_list_display_' . $layout . '_before', $layout_before, $posts, $atts );
-			}
+			$layout_before = apply_filters( 'ucf_post_list_display_' . $layout . '_before', '', $posts, $atts );
 			echo $layout_before;
 
 			// Post List Title
-			$layout_title = ucf_post_list_display_default_title( '', $posts, $atts );
-			if ( has_filter( 'ucf_post_list_display_' . $layout . '_title' ) ) {
-				$layout_title = apply_filters( 'ucf_post_list_display_' . $layout . '_title', $layout_before, $posts, $atts );
-			}
+			$layout_title = apply_filters( 'ucf_post_list_display_' . $layout . '_title', '', $posts, $atts );
 			echo $layout_title;
 
 			if ( $atts['display_search'] ) {
 
 				// Search Before
-				$search_before = ucf_post_list_search_before( '', $posts, $atts );
-				if ( has_filter( 'ucf_post_list_search_before' ) ) {
-					$search_before = apply_filters( 'ucf_post_list_search_before', $search_before, $posts, $atts );
-				}
+				$search_before = apply_filters( 'ucf_post_list_search_before', '', $posts, $atts );
 				echo $search_before;
 
 				// Search Content
-				$search_content = ucf_post_list_search( '', $posts, $atts );
-				if ( has_filter( 'ucf_post_list_search' ) ) {
-					$search_content = apply_filters( 'ucf_post_list_search', $search_content, $posts, $atts );
-				}
+				$search_content = apply_filters( 'ucf_post_list_search', '', $posts, $atts );
 				echo $search_content;
 
 				// Search Script
-				$search_script = ucf_post_list_search_script( '', $posts, $atts, $typeahead_settings );
-				if ( has_filter( 'ucf_post_list_search_script' ) ) {
-					$search_script = apply_filters( 'ucf_post_list_search_script', $search_script, $posts, $atts, $typeahead_settings );
-				}
+				$search_script = apply_filters( 'ucf_post_list_search_script', '', $posts, $atts, $typeahead_settings );
 				echo $search_script;
 
 				// Search After
-				$search_after = ucf_post_list_search_after( '', $posts, $atts );
-				if ( has_filter( 'ucf_post_list_search_after' ) ) {
-					$search_after = apply_filters( 'ucf_post_list_search_after', $search_after, $posts, $atts );
-				}
+				$search_after = apply_filters( 'ucf_post_list_search_after', '', $posts, $atts );
 				echo $search_after;
 
 			}
 
 			// Post List Content/Loop
-			$layout_content = ucf_post_list_display_default( '', $posts, $atts );
-			if ( has_filter( 'ucf_post_list_display_' . $layout ) ) {
-				$layout_content = apply_filters( 'ucf_post_list_display_' . $layout, $layout_content, $posts, $atts );
-			}
+			$layout_content = apply_filters( 'ucf_post_list_display_' . $layout, $layout_content, $posts, $atts );
 			echo $layout_content;
 
 			// Post List After
-			$layout_after = ucf_post_list_display_default_after( '', $posts, $atts );
-			if ( has_filter( 'ucf_post_list_display_' . $layout . '_after' ) ) {
-				$layout_after = apply_filters( 'ucf_post_list_display_' . $layout . '_after', $layout_after, $posts, $atts );
-			}
+			$layout_after = apply_filters( 'ucf_post_list_display_' . $layout . '_after', $layout_after, $posts, $atts );
 			echo $layout_after;
 
 			return ob_get_clean();
@@ -478,17 +454,17 @@ if ( ! function_exists( 'ucf_post_list_enqueue_assets' ) ) {
 			wp_enqueue_style( 'ucf_post_list_css', plugins_url( 'static/css/ucf-post-list.min.css', UCF_POST_LIST__PLUGIN_FILE ), $css_deps, $version, 'screen' );
 		}
 
-		// JS
+		// JS - enqueue late in shortcode output
 		$include_js_libs = UCF_Post_List_Config::get_option_or_default( 'include_js_libs' );
 		$include_js = UCF_Post_List_Config::get_option_or_default( 'include_js' );
 		$js_deps = apply_filters( 'ucf_post_list_js_deps', $include_js_libs ? array( 'ucf-post-list-typeahead-js', 'ucf-post-list-handlebars-js' ) : array() );
 
 		if ( $include_js_libs ) {
-			wp_enqueue_script( 'ucf-post-list-typeahead-js', UCF_POST_LIST__TYPEAHEAD, null, null, false );
-			wp_enqueue_script( 'ucf-post-list-handlebars-js', UCF_POST_LIST__HANDLEBARS, null, null, false );
+			wp_register_script( 'ucf-post-list-typeahead-js', UCF_POST_LIST__TYPEAHEAD, null, null, true );
+			wp_register_script( 'ucf-post-list-handlebars-js', UCF_POST_LIST__HANDLEBARS, null, null, true );
 		}
 		if ( $include_js ) {
-			wp_enqueue_script( 'ucf-post-list-js', plugins_url( 'static/js/ucf-post-list.min.js', UCF_POST_LIST__PLUGIN_FILE ), $js_deps, $version, false );
+			wp_register_script( 'ucf-post-list-js', plugins_url( 'static/js/ucf-post-list.min.js', UCF_POST_LIST__PLUGIN_FILE ), $js_deps, $version, true );
 		}
 	}
 
