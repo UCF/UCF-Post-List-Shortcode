@@ -137,11 +137,11 @@ if ( !class_exists( 'UCF_Post_List_Common' ) ) {
 			}
 
 			// Post List Content/Loop
-			$layout_content = apply_filters( 'ucf_post_list_display_' . $layout, $layout_content, $posts, $atts );
+			$layout_content = apply_filters( 'ucf_post_list_display_' . $layout, '', $posts, $atts );
 			echo $layout_content;
 
 			// Post List After
-			$layout_after = apply_filters( 'ucf_post_list_display_' . $layout . '_after', $layout_after, $posts, $atts );
+			$layout_after = apply_filters( 'ucf_post_list_display_' . $layout . '_after', '', $posts, $atts );
 			echo $layout_after;
 
 			return ob_get_clean();
