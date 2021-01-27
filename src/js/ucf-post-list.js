@@ -47,19 +47,4 @@
 
   };
 
-
-  $('.ucf-post-search-form').each(function () {
-    const $this = $(this);
-    const $typeahead = $this.find('.typeahead').first();
-    const $args = $(`.post-list-search-settings[data-list-id="${$this.data('id')}"]`).first();
-    let args = {};
-
-    if ($args) {
-      args = JSON.parse($args.html());
-    }
-    if ($typeahead) {
-      $typeahead.UCFPostListSearch(args);
-    }
-  });
-
 }(jQuery));

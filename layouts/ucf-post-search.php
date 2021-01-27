@@ -37,41 +37,49 @@ if ( !function_exists( 'ucf_post_list_search_script' ) ) {
 
 	function ucf_post_list_search_script( $content, $posts, $atts, $typeahead_settings ) {
 		if ( ! is_array( $posts ) && $posts !== false ) { $posts = array( $posts ); }
-		ob_start();
-		if ( $posts ):
 
-			// Enqueue JS
-			$include_js_libs = UCF_Post_List_Config::get_option_or_default( 'include_js_libs' );
-			$include_js = UCF_Post_List_Config::get_option_or_default( 'include_js' );
+		if ( $posts ) {
+			// Enqueue JS:
+			$post_list_search_settings_dep = 'ucf-post-list-js';
 
-			if ( $include_js_libs ) {
+			if ( wp_script_is( 'ucf-post-list-typeahead-js', 'registered' ) ) {
 				wp_enqueue_script( 'ucf-post-list-typeahead-js' );
+			}
+			if ( wp_script_is( 'ucf-post-list-handlebars-js', 'registered' ) ) {
 				wp_enqueue_script( 'ucf-post-list-handlebars-js' );
 			}
-			if ( $include_js ) {
-				wp_enqueue_script( 'ucf-post-list-js' );
+
+			if ( ! wp_script_is( 'ucf-post-list-js', 'registered' ) ) {
+				$post_list_search_settings_dep = apply_filters( 'ucf_post_list_search_settings_dep', $post_list_search_settings_dep );
 			}
 
-			// TODO: the JSON below should be replaced with a direct
-			// json_encode() echo.
-			// Doing this requires ensuring that our hooks for each
-			// typeahead setting return valid JSON (particularly, object keys
-			// MUST be wrapped in double quotes).
-			// See `ucf_post_list_search_localdata`, `ucf_post_list_search_classnames`,
-			// `ucf_post_list_search_limit`, and `ucf_post_list_search_templates`.
-	?>
-		<script class="post-list-search-settings" data-list-id="post-list-<?php echo $atts['list_id']; ?>" type="application/json">
-		{
-			"localdata": <?php echo $typeahead_settings['localdata']; ?>,
-			"classnames": <?php echo $typeahead_settings['classnames']; ?>,
-			"limit": <?php echo $typeahead_settings['limit']; ?>,
-			"templates": <?php echo $typeahead_settings['templates']; ?>
-		}
-		</script>
-	<?php
-		endif;
+			// Generate inline script that initializes the search
+			// with provided $typeahead_settings:
+			$post_list_search_settings = '';
+			ob_start();
+		?>
+			(function($) {
+				$('.ucf-post-search-form[data-id="post-list-<?php echo $atts['list_id']; ?>"] .typeahead')
+					.UCFPostListSearch({
+						localdata: <?php echo $typeahead_settings['localdata']; ?>,
+						classnames: <?php echo $typeahead_settings['classnames']; ?>,
+						limit: <?php echo $typeahead_settings['limit']; ?>,
+						templates: <?php echo $typeahead_settings['templates']; ?>
+					});
+			}(jQuery));
+		<?php
+			$post_list_search_settings = trim( ob_get_clean() );
 
-		return ob_get_clean();
+			// Enqueue inline init script:
+			wp_add_inline_script( $post_list_search_settings_dep, $post_list_search_settings );
+
+			// Enqueue post list JS:
+			if ( wp_script_is( 'ucf-post-list-js', 'registered' ) ) {
+				wp_enqueue_script( 'ucf-post-list-js' );
+			}
+		}
+
+		return '';
 	}
 
 	add_filter( 'ucf_post_list_search_script', 'ucf_post_list_search_script', 10, 4 );
