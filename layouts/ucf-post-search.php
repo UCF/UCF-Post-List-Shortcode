@@ -42,13 +42,6 @@ if ( !function_exists( 'ucf_post_list_search_script' ) ) {
 			// Enqueue JS:
 			$post_list_search_settings_dep = 'ucf-post-list-js';
 
-			if ( wp_script_is( 'ucf-post-list-typeahead-js', 'registered' ) ) {
-				wp_enqueue_script( 'ucf-post-list-typeahead-js' );
-			}
-			if ( wp_script_is( 'ucf-post-list-handlebars-js', 'registered' ) ) {
-				wp_enqueue_script( 'ucf-post-list-handlebars-js' );
-			}
-
 			if ( ! wp_script_is( 'ucf-post-list-js', 'registered' ) ) {
 				$post_list_search_settings_dep = apply_filters( 'ucf_post_list_search_settings_dep', $post_list_search_settings_dep );
 			}
