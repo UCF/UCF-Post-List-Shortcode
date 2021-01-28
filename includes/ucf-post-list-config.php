@@ -627,7 +627,7 @@ if ( !class_exists( 'UCF_Post_List_Config' ) ) {
 		 * @return Mixed | formatted number value or null
 		 **/
 		public static function format_option_num_or_null( $val ) {
-			return is_null( $val ) ? $val : $val + 0;
+			return is_null( $val ) ? $val : intval( $val );
 		}
 
 		/**
