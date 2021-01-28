@@ -17,7 +17,7 @@ if ( ! class_exists( 'UCF_Post_List_Admin' ) ) {
 					wp_enqueue_script( 'thickbox' );
 					wp_enqueue_media();
 				}
-				wp_enqueue_script( 'ucf-post-list-admin', plugins_url( 'static/js/ucf-post-list-admin.min.js', UCF_POST_LIST__PLUGIN_FILE ), array(), $version, true );
+				wp_enqueue_script( 'ucf-post-list-admin', UCF_POST_LIST__SCRIPT_URL . '/ucf-post-list-admin.min.js', array(), $version, true );
 			}
 		}
 	}
