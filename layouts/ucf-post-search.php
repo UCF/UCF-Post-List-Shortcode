@@ -72,7 +72,7 @@ if ( !function_exists( 'ucf_post_list_search_script' ) ) {
 			}
 		}
 
-		return '';
+		return $content;
 	}
 
 	add_filter( 'ucf_post_list_search_script', 'ucf_post_list_search_script', 10, 4 );
