@@ -9,12 +9,12 @@ const UCFPostListUpload = function ($) {
       },
       multiple: false
     })
-    .on('select', () => {
-      const attachment = uploader.state().get('selection').first().toJSON();
-      $('.ucf_post_list_fallback_image_preview').attr('src', attachment.url);
-      $('.ucf_post_list_fallback_image').val(attachment.id);
-    })
-    .open();
+      .on('select', () => {
+        const attachment = uploader.state().get('selection').first().toJSON();
+        $('.ucf_post_list_fallback_image_preview').attr('src', attachment.url);
+        $('.ucf_post_list_fallback_image').val(attachment.id);
+      })
+      .open();
   });
 };
 
