@@ -3,7 +3,7 @@ Contributors: ucfwebcom
 Tags: ucf, shortcode, posts, wp_query, get_posts
 Requires at least: 4.7.3
 Tested up to: 4.9.8
-Stable tag: 2.0.6
+Stable tag: 2.0.7
 License: GPLv3 or later
 License URI: http://www.gnu.org/copyleft/gpl-3.0.html
 
@@ -90,6 +90,20 @@ In addition, "date_query" and "meta_query" are not yet supported.
 
 == Changelog ==
 
+= 2.0.7 =
+Enhancements
+* Added late enqueuing of JS assets, and moved all scripts to the document footer.  `ucf_post_list_search_script()` has been modified to return empty contents and add inline initialization of typeaheads via `wp_add_inline_script()` instead of returning a `<script>` tag directly.
+* Renamed Typeahead and Handlebars script handles for consistency with other plugins
+* Added constants for static CSS/JS URL paths
+* Removed redundant `has_filter()` checks when displaying post list layouts
+* Added absolute dirs for required files in main plugin file
+* Removed ID attr on `.ucf-post-search-form` wrapper elem, as it's not necessary
+* Upgraded packages
+* Added plugin version cache-busting to plugin CSS and JS (excluding CDN'd assets)
+
+Bug fixes
+* Updated `UCF_Post_List_Config::format_option_num_or_null()` to actually cast non-null values to `int` instead of trying to force addition on a potentially non-numeric value
+
 = 2.0.6 =
 Bug fix
 * Updated version and added Github Plugin URI
@@ -137,7 +151,7 @@ n/a
 
 == Installation Requirements ==
 
-jQuery must be included in the document head when using post list searches with Typeahead.js and Handlebars.
+Prior to v2.0.7, jQuery was required in the document head.  From v2.0.7 onward, jQuery is still required, but does not specifically have to be in the document head.
 
 
 == Development & Contributing ==
