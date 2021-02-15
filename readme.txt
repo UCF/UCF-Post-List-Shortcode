@@ -2,8 +2,8 @@
 Contributors: ucfwebcom
 Tags: ucf, shortcode, posts, wp_query, get_posts
 Requires at least: 4.7.3
-Tested up to: 4.9.8
-Stable tag: 2.0.7
+Tested up to: 4.6.1
+Stable tag: 2.0.8
 License: GPLv3 or later
 License URI: http://www.gnu.org/copyleft/gpl-3.0.html
 
@@ -89,6 +89,9 @@ In addition, "date_query" and "meta_query" are not yet supported.
 
 
 == Changelog ==
+= 2.0.8 =
+Bug Fixes:
+* Readds the default markup on layout filters to ensure backwards compatibility.
 
 = 2.0.7 =
 Enhancements
