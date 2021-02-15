@@ -82,6 +82,9 @@ In addition, "date_query" and "meta_query" are not yet supported.
 
 
 ## Changelog ##
+### 2.0.8 ###
+Bug Fixes:
+* Readds the default markup on layout filters to ensure backwards compatibility.
 
 ### 2.0.7 ###
 Enhancements
