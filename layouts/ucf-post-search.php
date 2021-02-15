@@ -21,7 +21,7 @@ if ( !function_exists( 'ucf_post_list_search' ) ) {
 		ob_start();
 	?>
 		<?php if ( $posts ): ?>
-			<div class="ucf-post-search-form" id="post-list-search-<?php echo $atts['list_id']; ?>" data-id="post-list-<?php echo $atts['list_id']; ?>">
+			<div class="ucf-post-search-form" data-id="post-list-<?php echo $atts['list_id']; ?>">
 				<input class="typeahead" type="text" placeholder="<?php echo $atts['search_placeholder']; ?>">
 			</div>
 		<?php endif; ?>
@@ -37,24 +37,42 @@ if ( !function_exists( 'ucf_post_list_search_script' ) ) {
 
 	function ucf_post_list_search_script( $content, $posts, $atts, $typeahead_settings ) {
 		if ( ! is_array( $posts ) && $posts !== false ) { $posts = array( $posts ); }
-		ob_start();
-		if ( $posts ):
-	?>
-		<script>
-		(function($) {
-			$('#post-list-search-<?php echo $atts['list_id']; ?> .typeahead')
-				.UCFPostListSearch({
-					localdata: <?php echo $typeahead_settings['localdata']; ?>,
-					classnames: <?php echo $typeahead_settings['classnames']; ?>,
-					limit: <?php echo $typeahead_settings['limit']; ?>,
-					templates: <?php echo $typeahead_settings['templates']; ?>
-				});
-		}(jQuery));
-		</script>
-	<?php
-		endif;
 
-		return ob_get_clean();
+		if ( $posts ) {
+			// Enqueue JS:
+			$post_list_search_settings_dep = 'ucf-post-list-js';
+
+			if ( ! wp_script_is( 'ucf-post-list-js', 'registered' ) ) {
+				$post_list_search_settings_dep = apply_filters( 'ucf_post_list_search_settings_dep', $post_list_search_settings_dep );
+			}
+
+			// Generate inline script that initializes the search
+			// with provided $typeahead_settings:
+			$post_list_search_settings = '';
+			ob_start();
+		?>
+			(function($) {
+				$('.ucf-post-search-form[data-id="post-list-<?php echo $atts['list_id']; ?>"] .typeahead')
+					.UCFPostListSearch({
+						localdata: <?php echo $typeahead_settings['localdata']; ?>,
+						classnames: <?php echo $typeahead_settings['classnames']; ?>,
+						limit: <?php echo $typeahead_settings['limit']; ?>,
+						templates: <?php echo $typeahead_settings['templates']; ?>
+					});
+			}(jQuery));
+		<?php
+			$post_list_search_settings = trim( ob_get_clean() );
+
+			// Enqueue inline init script:
+			wp_add_inline_script( $post_list_search_settings_dep, $post_list_search_settings );
+
+			// Enqueue post list JS:
+			if ( wp_script_is( 'ucf-post-list-js', 'registered' ) ) {
+				wp_enqueue_script( 'ucf-post-list-js' );
+			}
+		}
+
+		return $content;
 	}
 
 	add_filter( 'ucf_post_list_search_script', 'ucf_post_list_search_script', 10, 4 );
