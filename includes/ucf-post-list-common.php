@@ -246,11 +246,14 @@ if ( !class_exists( 'UCF_Post_List_Common' ) ) {
 			if ( empty( $item->post_excerpt ) ) {
 				//This scrubs HTML tags and WordPress block tags from the content, before calculating strlen
 				$filtered_content = wp_strip_all_tags($item->post_content);
+				$stripped_content = preg_replace("~(?:\[/?)[^/\]]+/?\]~s", '', $filtered_content);
+
 			} else {
 				$filtered_content = wp_strip_all_tags($item->post_excerpt);
+				$stripped_content = preg_replace("~(?:\[/?)[^/\]]+/?\]~s", '', $filtered_content);
 			}
 
-			$filtered_words = explode (' ', $filtered_content, $max_words+1);
+			$filtered_words = explode (' ', $stripped_content, $max_words+1);
 			if ($max_words > 0) {
 				if (count($filtered_words) >= $max_words ) {
 					array_pop($filtered_words);
