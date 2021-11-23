@@ -115,7 +115,7 @@ if ( !class_exists( 'UCF_Post_List_Config' ) ) {
 					'default'		  => false,
 					'format_callback' => array( 'UCF_Post_List_Config', 'format_option_bool')
 				) ),
-				'max_chars'			  => new UCF_Post_List_Option( 'max_chars', array (
+				'max_words'			  => new UCF_Post_List_Option( 'max_words', array (
 					'default' 	  	  => 0,
 					'format_callback' => array( 'UCF_Post_List_Config', 'format_option_int' )
 				) ),

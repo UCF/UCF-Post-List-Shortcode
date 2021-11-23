@@ -54,7 +54,7 @@ if ( ! function_exists( 'ucf_post_list_display_card' ) ) {
 				}
 
 				if( $atts['show_excerpt'] ) {
-					$char_limit = $atts['max_chars'];
+					$char_limit = $atts['max_words'];
 					$item_excerpt	 = UCF_Post_List_Common::get_excerpt( $item, $char_limit );
 				}
 			?>
