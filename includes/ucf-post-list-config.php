@@ -111,6 +111,15 @@ if ( !class_exists( 'UCF_Post_List_Config' ) ) {
 					'default' => 'Search'
 				) ),
 				'list_title'          => new UCF_Post_List_Option( 'list_title' ),
+				'show_excerpt'		  => new UCF_Post_List_Option( 'list_excerpt', array (
+					'default'		  => false,
+					'format_callback' => array( 'UCF_Post_List_Config', 'format_option_bool')
+				) ),
+				'max_chars'			  => new UCF_Post_List_Option( 'max_chars', array (
+					'default' 	  	  => 0,
+					'format_callback' => array( 'UCF_Post_List_Config', 'format_option_int' )
+				) ),
+
 				'show_image'          => new UCF_Post_List_Option( 'show_image', array(
 					'default'         => true,
 					'format_callback' => array( 'UCF_Post_List_Config', 'format_option_bool' )
