@@ -1,6 +1,6 @@
 {
   "root": true,
-  "parser": "babel-eslint",
+  "parser": "@babel/eslint-parser",
   "env": {
     "browser": true,
     "es6": true,
@@ -8,9 +8,8 @@
     "amd": true
   },
   "globals": {
-    "wp": true,
     "Bloodhound": true,
-    "Handlebars": true
+    "wp": true
   },
   "extends": "eslint:recommended",
   "parserOptions": {
