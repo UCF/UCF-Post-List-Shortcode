@@ -231,6 +231,33 @@ if ( !class_exists( 'UCF_Post_List_Common' ) ) {
 		}
 
 		/**
+		 * Retrieves the post excerpt and sets a character limit
+		 *
+		 * @author Mike Setzer
+		 * @since 2.0.8
+		 * @param object $item | object containing the WP Post
+		 * @param int $excerpt_length | Maximum characters displayed from excerpt
+		 * @return string $excerpt | Excerpt text
+		 **/
+		public static function get_excerpt ( $item, $excerpt_length) {
+			$excerpt = '';
+
+			//If excerpt is left empty, the post_content will be taken instead
+			$custom_filter = function( $l ) use ( $excerpt_length ) {
+				if ( $excerpt_length > 0 ) {
+					return $excerpt_length;
+				}
+				return $l;
+			};
+
+			add_filter( 'excerpt_length', $custom_filter, 999 );
+			$excerpt = wp_strip_all_tags( get_the_excerpt( $item ) );
+			remove_filter( 'excerpt_length', $custom_filter, 999 );
+
+			return $excerpt;
+		}
+
+		/**
 		 * Retreives a srcset attribute for a post's image, or the srcset
 		 * for the plugin's fallback image.
 		 *

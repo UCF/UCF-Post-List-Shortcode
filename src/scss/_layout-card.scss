@@ -52,6 +52,11 @@
     }
   }
 
+  .ucf-post-list-excerpt-text {
+    color: black;
+    font-style: normal;
+  }
+
   .ucf-post-list-card-deck {
     @media (min-width: 768px) {
       display: flex;
