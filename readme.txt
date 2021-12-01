@@ -1,9 +1,9 @@
 === UCF Post List Shortcode ===
 Contributors: ucfwebcom
 Tags: ucf, shortcode, posts, wp_query, get_posts
-Requires at least: 4.7.3
-Tested up to: 4.9.8
-Stable tag: 2.0.7
+Requires at least: 5.2
+Tested up to: 5.3
+Stable tag: 2.1.0
 License: GPLv3 or later
 License URI: http://www.gnu.org/copyleft/gpl-3.0.html
 
@@ -48,6 +48,12 @@ Heading text to display above the list of posts.  No heading is displayed by def
 `show_image`
 True/false; whether or not an image for the post should be displayed.  Only applicable on layouts that support images.
 
+'show_excerpt'
+True/false; whether or not to display an excerpt of the post. If no excerpt exists, post content will be displayed instead. Defaults to false.
+
+'excerpt_length'
+Any positive int; Max number of words to display for the excerpt. If set to 0, no limit is used. Defaults to 0. WordPress default excerpt size is 55 words.
+
 `posts_per_row`
 The number of posts to display per row within the chosen layout.  Only applicable on layouts that support column-based post lists.
 
@@ -89,6 +95,15 @@ In addition, "date_query" and "meta_query" are not yet supported.
 
 
 == Changelog ==
+= 2.1.0 =
+Enhancements:
+* Added new shortcode attributes, `show_excerpt` and `excerpt_length`, for toggling display of post excerpts and their lengths within supported layouts (currently, this includes the "card" layout.)  Thanks @mikesetzer!
+* Bumped required WordPress version and "tested to" version.
+* Upgraded packages and required version of node for development.
+
+= 2.0.8 =
+Bug Fixes:
+* Readds the default markup on layout filters to ensure backwards compatibility.
 
 = 2.0.7 =
 Enhancements
@@ -154,6 +169,34 @@ n/a
 Prior to v2.0.7, jQuery was required in the document head.  From v2.0.7 onward, jQuery is still required, but does not specifically have to be in the document head.
 
 
-== Development & Contributing ==
+== Development ==
 
-NOTE: this plugin's readme.md file is automatically generated.  Please only make modifications to the readme.txt file, and make sure the `gulp readme` command has been run before committing readme changes.
+Note that compiled, minified css and js files are included within the repo.  Changes to these files should be tracked via git (so that users installing the plugin using traditional installation methods will have a working plugin out-of-the-box.)
+
+[Enabling debug mode](https://codex.wordpress.org/Debugging_in_WordPress) in your `wp-config.php` file is recommended during development to help catch warnings and bugs.
+
+= Requirements =
+* node v16+
+* gulp-cli
+
+= Instructions =
+1. Clone the UCF-Post-List-Shortcode repo into your local development environment, within your WordPress installation's `plugins/` directory: `git clone https://github.com/UCF/UCF-Post-List-Shortcode.git`
+2. `cd` into the new UCF-Post-List-Shortcode directory, and run `npm install` to install required packages for development into `node_modules/` within the repo
+3. Optional: If you'd like to enable [BrowserSync](https://browsersync.io) for local development, or make other changes to this project's default gulp configuration, copy `gulp-config.template.json`, make any desired changes, and save as `gulp-config.json`.
+
+    To enable BrowserSync, set `sync` to `true` and assign `syncTarget` the base URL of a site on your local WordPress instance that will use this plugin, such as `http://localhost/wordpress/my-site/`.  Your `syncTarget` value will vary depending on your local host setup.
+
+    The full list of modifiable config values can be viewed in `gulpfile.js` (see `config` variable).
+3. Run `gulp default` to process front-end assets.
+4. If you haven't already done so, create a new WordPress site on your development environment to test this plugin against.
+5. Activate this plugin on your development WordPress site.
+6. Configure plugin settings from the WordPress admin under "UCF Post List".
+7. Run `gulp watch` to continuously watch changes to scss and js files.  If you enabled BrowserSync in `gulp-config.json`, it will also reload your browser when plugin files change.
+
+= Other Notes =
+* This plugin's README.md file is automatically generated. Please only make modifications to the README.txt file, and make sure the `gulp readme` command has been run before committing README changes.  See the [contributing guidelines](https://github.com/UCF/UCF-Post-List-Shortcode/blob/master/CONTRIBUTING.md) for more information.
+
+
+== Contributing ==
+
+Want to submit a bug report or feature request?  Check out our [contributing guidelines](https://github.com/UCF/UCF-Post-List-Shortcode/blob/master/CONTRIBUTING.md) for more information.  We'd love to hear from you!

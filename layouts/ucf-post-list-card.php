@@ -52,6 +52,11 @@ if ( ! function_exists( 'ucf_post_list_display_card' ) ) {
 				if( $atts['posts_per_row'] > 0 && $index !== 0 && ( $index % $atts['posts_per_row'] ) === 0 ) {
 					echo '</div><div class="ucf-post-list-card-deck">';
 				}
+
+				if( $atts['show_excerpt'] ) {
+					$char_limit = $atts['excerpt_length'];
+					$item_excerpt	 = UCF_Post_List_Common::get_excerpt( $item, $char_limit );
+				}
 			?>
 				<div class="ucf-post-list-card">
 					<a class="ucf-post-list-card-link" href="<?php echo get_permalink( $item->ID ); ?>">
@@ -60,6 +65,9 @@ if ( ! function_exists( 'ucf_post_list_display_card' ) ) {
 						<?php endif; ?>
 						<div class="ucf-post-list-card-block">
 							<h3 class="ucf-post-list-card-title"><?php echo $item->post_title; ?></h3>
+							<?php if( $atts['show_excerpt'] ) : ?>
+								<div class="ucf-post-list-excerpt-text ucf-post-list-card-text"><?php echo $item_excerpt; ?></div>
+							<?php endif; ?>
 							<p class="ucf-post-list-card-text"><?php echo $date; ?></p>
 						</div>
 					</a>

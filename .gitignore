@@ -32,3 +32,5 @@ typings
 
 # debug files
 npm-debug.log
+
+.idea

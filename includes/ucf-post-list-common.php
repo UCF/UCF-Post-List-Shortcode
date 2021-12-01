@@ -109,39 +109,80 @@ if ( !class_exists( 'UCF_Post_List_Common' ) ) {
 			ob_start();
 
 			// Post List Before
-			$layout_before = apply_filters( 'ucf_post_list_display_' . $layout . '_before', '', $posts, $atts );
+			$layout_before = apply_filters(
+				'ucf_post_list_display_' . $layout . '_before',
+				ucf_post_list_display_default_before( '', $posts, $atts ),
+				$posts,
+				$atts
+			);
 			echo $layout_before;
 
 			// Post List Title
-			$layout_title = apply_filters( 'ucf_post_list_display_' . $layout . '_title', '', $posts, $atts );
+			$layout_title = apply_filters(
+				'ucf_post_list_display_' . $layout . '_title',
+				ucf_post_list_display_default_title( '', $posts, $atts ),
+				$posts,
+				$atts
+			);
 			echo $layout_title;
 
 			if ( $atts['display_search'] ) {
 
 				// Search Before
-				$search_before = apply_filters( 'ucf_post_list_search_before', '', $posts, $atts );
+				$search_before = apply_filters(
+					'ucf_post_list_search_before',
+					ucf_post_list_search_before( '', $posts, $atts ),
+					$posts,
+					$atts
+				);
 				echo $search_before;
 
 				// Search Content
-				$search_content = apply_filters( 'ucf_post_list_search', '', $posts, $atts );
+				$search_content = apply_filters(
+					'ucf_post_list_search',
+					ucf_post_list_search( '', $posts, $atts ),
+					$posts,
+					$atts
+				);
 				echo $search_content;
 
 				// Search Script
-				$search_script = apply_filters( 'ucf_post_list_search_script', '', $posts, $atts, $typeahead_settings );
+				$search_script = apply_filters(
+					'ucf_post_list_search_script',
+					ucf_post_list_search_script( '', $posts, $atts, $typeahead_settings ),
+					$posts,
+					$atts,
+					$typeahead_settings
+				);
 				echo $search_script;
 
 				// Search After
-				$search_after = apply_filters( 'ucf_post_list_search_after', '', $posts, $atts );
+				$search_after = apply_filters(
+					'ucf_post_list_search_after',
+					ucf_post_list_search_after( '', $posts, $atts ),
+					$posts,
+					$atts
+				);
 				echo $search_after;
 
 			}
 
 			// Post List Content/Loop
-			$layout_content = apply_filters( 'ucf_post_list_display_' . $layout, '', $posts, $atts );
+			$layout_content = apply_filters(
+				'ucf_post_list_display_' . $layout,
+				ucf_post_list_display_default( '', $posts, $atts ),
+				$posts,
+				$atts
+			);
 			echo $layout_content;
 
 			// Post List After
-			$layout_after = apply_filters( 'ucf_post_list_display_' . $layout . '_after', '', $posts, $atts );
+			$layout_after = apply_filters(
+				'ucf_post_list_display_' . $layout . '_after',
+				ucf_post_list_display_default_after( '', $posts, $atts ),
+				$posts,
+				$atts
+			);
 			echo $layout_after;
 
 			return ob_get_clean();
@@ -187,6 +228,33 @@ if ( !class_exists( 'UCF_Post_List_Common' ) ) {
 			}
 
 			return $img;
+		}
+
+		/**
+		 * Retrieves the post excerpt and sets a character limit
+		 *
+		 * @author Mike Setzer
+		 * @since 2.0.8
+		 * @param object $item | object containing the WP Post
+		 * @param int $excerpt_length | Maximum characters displayed from excerpt
+		 * @return string $excerpt | Excerpt text
+		 **/
+		public static function get_excerpt ( $item, $excerpt_length) {
+			$excerpt = '';
+
+			//If excerpt is left empty, the post_content will be taken instead
+			$custom_filter = function( $l ) use ( $excerpt_length ) {
+				if ( $excerpt_length > 0 ) {
+					return $excerpt_length;
+				}
+				return $l;
+			};
+
+			add_filter( 'excerpt_length', $custom_filter, 999 );
+			$excerpt = wp_strip_all_tags( get_the_excerpt( $item ) );
+			remove_filter( 'excerpt_length', $custom_filter, 999 );
+
+			return $excerpt;
 		}
 
 		/**
