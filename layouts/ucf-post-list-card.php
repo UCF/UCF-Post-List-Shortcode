@@ -54,7 +54,7 @@ if ( ! function_exists( 'ucf_post_list_display_card' ) ) {
 				}
 
 				if( $atts['show_excerpt'] ) {
-					$char_limit = $atts['max_words'];
+					$char_limit = $atts['excerpt_length'];
 					$item_excerpt	 = UCF_Post_List_Common::get_excerpt( $item, $char_limit );
 				}
 			?>
@@ -66,7 +66,7 @@ if ( ! function_exists( 'ucf_post_list_display_card' ) ) {
 						<div class="ucf-post-list-card-block">
 							<h3 class="ucf-post-list-card-title"><?php echo $item->post_title; ?></h3>
 							<?php if( $atts['show_excerpt'] ) : ?>
-								<p class="ucf-post-list-excerpt-text ucf-post-list-card-text"><?php echo $item_excerpt; ?></p>
+								<div class="ucf-post-list-excerpt-text ucf-post-list-card-text"><?php echo $item_excerpt; ?></div>
 							<?php endif; ?>
 							<p class="ucf-post-list-card-text"><?php echo $date; ?></p>
 						</div>

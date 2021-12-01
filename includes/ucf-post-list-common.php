@@ -236,34 +236,23 @@ if ( !class_exists( 'UCF_Post_List_Common' ) ) {
 		 * @author Mike Setzer
 		 * @since 2.0.8
 		 * @param object $item | object containing the WP Post
-		 * @param int $max_words | Maximum characters displayed from excerpt
+		 * @param int $excerpt_length | Maximum characters displayed from excerpt
 		 * @return string $excerpt | Excerpt text
 		 **/
-		public static function get_excerpt ( $item, $max_words) {
-			$excerpt = null;
+		public static function get_excerpt ( $item, $excerpt_length) {
+			$excerpt = '';
 
 			//If excerpt is left empty, the post_content will be taken instead
-			if ( empty( $item->post_excerpt ) ) {
-				//This scrubs HTML tags and WordPress block tags from the content, before calculating strlen
-				$filtered_content = wp_strip_all_tags($item->post_content);
-				$stripped_content = preg_replace("~(?:\[/?)[^/\]]+/?\]~s", '', $filtered_content);
-
-			} else {
-				$filtered_content = wp_strip_all_tags($item->post_excerpt);
-				$stripped_content = preg_replace("~(?:\[/?)[^/\]]+/?\]~s", '', $filtered_content);
-			}
-
-			$filtered_words = explode (' ', $stripped_content, $max_words+1);
-			if ($max_words > 0) {
-				if (count($filtered_words) >= $max_words ) {
-					array_pop($filtered_words);
-					$excerpt = implode(" ", $filtered_words) . '...';
-				} else {
-					$excerpt = implode(" ", $filtered_words);
+			$custom_filter = function( $l ) use ( $excerpt_length ) {
+				if ( $excerpt_length > 0 ) {
+					return $excerpt_length;
 				}
-			} else {
-				$excerpt = implode (" ", $filtered_words);
-			}
+				return $l;
+			};
+
+			add_filter( 'excerpt_length', $custom_filter, 999 );
+			$excerpt = wp_strip_all_tags( get_the_excerpt( $item ) );
+			remove_filter( 'excerpt_length', $custom_filter, 999 );
 
 			return $excerpt;
 		}

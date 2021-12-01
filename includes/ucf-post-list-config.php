@@ -115,7 +115,7 @@ if ( !class_exists( 'UCF_Post_List_Config' ) ) {
 					'default'		  => false,
 					'format_callback' => array( 'UCF_Post_List_Config', 'format_option_bool')
 				) ),
-				'max_words'			  => new UCF_Post_List_Option( 'max_words', array (
+				'excerpt_length'	  => new UCF_Post_List_Option( 'excerpt_length', array (
 					'default' 	  	  => 0,
 					'format_callback' => array( 'UCF_Post_List_Config', 'format_option_int' )
 				) ),
@@ -221,6 +221,9 @@ if ( !class_exists( 'UCF_Post_List_Config' ) ) {
 
 				// Tag
 				'tag'         => new UCF_Post_List_Option( 'tag' ),
+				'tag_name'    => new UCF_Post_List_Option( 'tag_name' , array(
+					'format_callback' => array( 'UCF_Post_List_Config', 'format_option_str_array' )
+				)),
 				'tag_id'      => new UCF_Post_List_Option( 'tag_id', array(
 					'format_callback' => array( 'UCF_Post_List_Config', 'format_option_int_or_null' )
 				) ),

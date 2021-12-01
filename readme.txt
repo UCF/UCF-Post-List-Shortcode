@@ -51,7 +51,7 @@ True/false; whether or not an image for the post should be displayed.  Only appl
 'show_excerpt'
 True/false; whether or not to display an excerpt of the post. If no excerpt exists, post content will be displayed instead. Defaults to false.
 
-'max_words'
+'excerpt_length'
 Any positive int; Max number of words to display for the excerpt. If set to 0, no limit is used. Defaults to 0. WordPress default excerpt size is 55 words.
 
 `posts_per_row`
