@@ -8,8 +8,9 @@
     "amd": true
   },
   "globals": {
+    "wp": true,
     "Bloodhound": true,
-    "wp": true
+    "Handlebars": true
   },
   "extends": "eslint:recommended",
   "parserOptions": {
