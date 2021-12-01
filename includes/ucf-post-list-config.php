@@ -221,9 +221,6 @@ if ( !class_exists( 'UCF_Post_List_Config' ) ) {
 
 				// Tag
 				'tag'         => new UCF_Post_List_Option( 'tag' ),
-				'tag_name'    => new UCF_Post_List_Option( 'tag_name' , array(
-					'format_callback' => array( 'UCF_Post_List_Config', 'format_option_str_array' )
-				)),
 				'tag_id'      => new UCF_Post_List_Option( 'tag_id', array(
 					'format_callback' => array( 'UCF_Post_List_Config', 'format_option_int_or_null' )
 				) ),
