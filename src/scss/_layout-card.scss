@@ -1,8 +1,18 @@
 .ucf-post-list.card-layout {
   .ucf-post-list-card-link {
+    height: 100%;
+    text-decoration: none;
+
     @media (max-width: 767px) {
       display: flex;
       flex-direction: row;
+    }
+
+    &:hover,
+    &:focus {
+      .ucf-post-list-card-title {
+        text-decoration: underline;
+      }
     }
   }
 
@@ -45,10 +55,10 @@
     font-size: .75rem;
     font-style: italic;
     font-weight: normal;
-    padding: 0 .8rem;
+    padding: 0 .8rem .8rem;
 
     @media (min-width: 1200px) {
-      font-size: .9rem;
+      font-size: .85rem;
     }
   }
 
