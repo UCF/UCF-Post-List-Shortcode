@@ -68,7 +68,7 @@ if ( ! function_exists( 'ucf_post_list_display_card' ) ) {
 							<?php if( $atts['show_excerpt'] ) : ?>
 								<div class="ucf-post-list-excerpt-text ucf-post-list-card-text"><?php echo $item_excerpt; ?></div>
 							<?php endif; ?>
-							<p class="ucf-post-list-card-text"><?php echo $date; ?></p>
+							<div class="ucf-post-list-card-text"><?php echo $date; ?></div>
 						</div>
 					</a>
 				</div>
