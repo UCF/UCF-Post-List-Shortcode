@@ -3,7 +3,7 @@ Contributors: ucfwebcom
 Tags: ucf, shortcode, posts, wp_query, get_posts
 Requires at least: 5.2
 Tested up to: 5.3
-Stable tag: 2.1.0
+Stable tag: 2.1.1
 License: GPLv3 or later
 License URI: http://www.gnu.org/copyleft/gpl-3.0.html
 
@@ -95,6 +95,15 @@ In addition, "date_query" and "meta_query" are not yet supported.
 
 
 == Changelog ==
+
+= 2.1.1 =
+Enhancements:
+* Added adjustments to "card" layout styles:
+  - Updated link underline styles for compatibility with Athena v1.1.1+
+  - Updated wrapper link around card content to span the full height of its parent, eliminating unclickable dead space at the bottom of cards with little content
+  - Updated `.ucf-post-list-card-text` to be wrapped in a `<div>` instead of `<p>` as a workaround for accessibility scans flagging that content for overuse of italics.
+* Upgraded packages
+
 = 2.1.0 =
 Enhancements:
 * Added new shortcode attributes, `show_excerpt` and `excerpt_length`, for toggling display of post excerpts and their lengths within supported layouts (currently, this includes the "card" layout.)  Thanks @mikesetzer!
