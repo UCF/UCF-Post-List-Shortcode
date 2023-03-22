@@ -1,0 +1,8 @@
+{
+    "name": "ucf/ucf-post-list-shortcode",
+    "description": "Provides a shortcode for displaying lists of posts.",
+    "type": "wordpress-plugin",
+    "require": {
+        "composer/installers": "~1.0"
+    }
+}

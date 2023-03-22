@@ -89,6 +89,10 @@ In addition, "date_query" and "meta_query" are not yet supported.
 
 ## Changelog ##
 
+### 2.1.2 ###
+Enhancements:
+* Added composer file.
+
 ### 2.1.1 ###
 Enhancements:
 * Added adjustments to "card" layout styles:

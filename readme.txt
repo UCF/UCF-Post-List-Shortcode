@@ -2,8 +2,8 @@
 Contributors: ucfwebcom
 Tags: ucf, shortcode, posts, wp_query, get_posts
 Requires at least: 5.2
-Tested up to: 5.3
-Stable tag: 2.1.1
+Tested up to: 6.1
+Stable tag: 2.1.2
 License: GPLv3 or later
 License URI: http://www.gnu.org/copyleft/gpl-3.0.html
 
@@ -95,6 +95,10 @@ In addition, "date_query" and "meta_query" are not yet supported.
 
 
 == Changelog ==
+
+= 2.1.2 =
+Enhancements:
+* Added composer file.
 
 = 2.1.1 =
 Enhancements:
